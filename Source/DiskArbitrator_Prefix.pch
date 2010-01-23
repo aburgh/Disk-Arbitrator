@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'DiskArbitrator' target in the 'DiskArbitrator' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif

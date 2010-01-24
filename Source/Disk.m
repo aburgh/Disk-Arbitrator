@@ -37,13 +37,14 @@
 
 - (id)initWithDiskRef:(DADiskRef)diskRef
 {
+	NSAssert(diskRef, @"No Disk Arbitration disk provided to initializer.");
+			 
 	if (self = [super init]) 
 	{
 		children = [NSMutableArray new];
 		description = DADiskCopyDescription(diskRef);
-		CFRetain(description);
 
-		BSDName = (NSString *) CFDictionaryGetValue(description, kDADiskDescriptionMediaBSDNameKey);
+		BSDName = [(NSString *) CFDictionaryGetValue(description, kDADiskDescriptionMediaBSDNameKey) copy];
 		[self refreshFromDescription];
 		
 //		CFShow(description);

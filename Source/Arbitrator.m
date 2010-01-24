@@ -187,8 +187,12 @@ void DiskAppearedCallback(DADiskRef diskRef, void *arbitrator)
 	[disks addObject:disk];
 	
 	if ([disk isWholeDisk] == NO) {
-		Disk *parentDisk = [Disk diskWithDiskRef:DADiskCopyWholeDisk(diskRef)];
-	
+		Disk *parentDisk;
+		
+		DADiskRef parentDiskRef = DADiskCopyWholeDisk(diskRef);
+		parentDisk = [Disk diskWithDiskRef:parentDiskRef];
+		CFRelease(parentDiskRef);
+		
 		// We are going to add the new disk to its parent, so we need the actual parent disk object
 		// from the disks array, not just a disk that matches isEqual:.  For efficiency, the algorithm 
 		// enumerates the disks only once
@@ -216,10 +220,15 @@ void DiskDisappearedCallback(DADiskRef diskRef, void *arbitrator)
 		[disks removeObject:tmpDisk];
 	}
 	else {
-		Disk *parentDisk = [Disk diskWithDiskRef:DADiskCopyWholeDisk(diskRef)];
-		for (Disk *potentialParent in disks) {
-			if ([potentialParent isEqual:parentDisk])
-				[[potentialParent mutableArrayValueForKey:@"children"] removeObject:tmpDisk];
+		DADiskRef parentDiskRef = DADiskCopyWholeDisk(diskRef);
+		if (parentDiskRef) {
+			Disk *parentDisk = [Disk diskWithDiskRef:parentDiskRef];
+			CFRelease(parentDiskRef);
+
+			for (Disk *potentialParent in disks) {
+				if ([potentialParent isEqual:parentDisk])
+					[[potentialParent mutableArrayValueForKey:@"children"] removeObject:tmpDisk];
+			}
 		}
 	}
 }

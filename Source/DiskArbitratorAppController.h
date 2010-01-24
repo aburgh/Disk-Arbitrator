@@ -27,6 +27,4 @@
 
 - (IBAction)showMainWindow:(id)sender;
 
-#pragma mark TableView Delegates
-
 @end

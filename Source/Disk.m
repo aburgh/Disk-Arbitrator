@@ -9,12 +9,21 @@
 #import "Disk.h"
 #import <IOKit/kext/KextManager.h>
 
+
+NSMutableSet *uniqueDisks;
+
 @implementation Disk
 
 @synthesize BSDName;
 @synthesize mounted;
 @synthesize icon;
+@synthesize parent;
 @synthesize children;
+
++ (void)initialize
+{
+	uniqueDisks = [NSMutableSet new];
+}
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key
 {
@@ -38,16 +47,40 @@
 - (id)initWithDiskRef:(DADiskRef)diskRef
 {
 	NSAssert(diskRef, @"No Disk Arbitration disk provided to initializer.");
-			 
+	
+	// Return unique instance 
+	NSString *bsdname  = [NSString stringWithUTF8String:DADiskGetBSDName(diskRef)];
+	
+	for (Disk *uniqueDisk in uniqueDisks) {
+		if ([uniqueDisk hash] == [bsdname hash]) {
+			[super dealloc];
+			return [uniqueDisk retain];
+		}
+	}
+	
 	if (self = [super init]) 
 	{
-		children = [NSMutableArray new];
+		CFRetain(diskRef);
+		disk = diskRef;
+		children = [NSMutableSet new];
 		description = DADiskCopyDescription(diskRef);
-
-		BSDName = [(NSString *) CFDictionaryGetValue(description, kDADiskDescriptionMediaBSDNameKey) copy];
+		BSDName = [[NSString alloc] initWithUTF8String:DADiskGetBSDName(diskRef)];
 		[self refreshFromDescription];
 		
 //		CFShow(description);
+		
+		[uniqueDisks addObject:self];
+		
+		if ([self isWholeDisk] == NO) 
+		{
+			DADiskRef parentRef = DADiskCopyWholeDisk(diskRef);
+			if (parentRef && parentRef != diskRef) {
+				Disk *parentDisk = [Disk diskWithDiskRef:parentRef];
+				parent = parentDisk; // weak reference
+				[[parent mutableSetValueForKey:@"children"] addObject:self];
+				CFRelease(parentRef);
+			}
+		}
 	}
 
 	return self;
@@ -55,30 +88,36 @@
 
 - (void)dealloc
 {
-	CFRelease(description);
+	if (disk) CFRelease(disk);
+	if (description) CFRelease(description);
 	[BSDName release];
 	[icon release];
+	parent = nil;
 	[children release];
 	[super dealloc];
 }
 
+- (NSUInteger)hash
+{
+	return [BSDName hash];
+}
 - (BOOL)isEqual:(id)object
 {
-	if ([object isKindOfClass:[Disk class]] == NO)
-		return NO;
-	
-	NSString *name = [object BSDName];
-	if (name)
-		return [name isEqual:BSDName];
-	
-	NSDictionary *desc = (NSDictionary *)[object description];
-	if (desc)
-		return [desc isEqualToDictionary:(NSDictionary *) description];
-	
-	fprintf(stderr, "Failed to compare Disk objects: %p, %p\n", self, object);
-	
-	return NO;
+	return ([BSDName hash] == [object hash]);
 }
+
+- (void)diskDidDisappear
+{
+	[uniqueDisks removeObject:self];
+	[[parent mutableSetValueForKey:@"children"] removeObject:self];
+
+	CFRelease(disk);
+	disk = NULL;
+
+	self.parent = nil;
+	[children removeAllObjects];
+}
+
 
 - (BOOL)isWholeDisk
 {
@@ -97,15 +136,19 @@
 	// BSDName cannot change so do not refresh it
 
 	self.icon = nil;
-	mounted = CFDictionaryGetValue(description, kDADiskDescriptionVolumePathKey) ? YES : NO;
+	if (description) {
+		mounted = CFDictionaryGetValue(description, kDADiskDescriptionVolumePathKey) ? YES : NO;
+	}
 }
 
 - (void)setDescription:(CFDictionaryRef)desc
 {
 	if (desc != description) {
 		[self willChangeValueForKey:@"description"];
+
 		CFRelease(description);
-		description = CFRetain(desc);
+		description = desc ? CFRetain(desc) : NULL;
+
 		[self didChangeValueForKey:@"description"];
 		
 		[self refreshFromDescription];

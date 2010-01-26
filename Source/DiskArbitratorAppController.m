@@ -13,10 +13,11 @@
 @implementation AppController
 
 @synthesize window;
-@synthesize statusItem;
 @synthesize statusMenu;
-@synthesize arbitrator;
+@synthesize disksArrayController;
 @synthesize sortDescriptors;
+@synthesize statusItem;
+@synthesize arbitrator;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
@@ -46,20 +47,21 @@
 
 #pragma mark TableView Delegates
 
+// A custom cell is used for the media description column.  Couldn't find a way to bind it to the disk
+// object, so implemented the dataSource delegate.
+
 - (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)column row:(int)rowIndex
 {
     Disk *disk;
 	
     NSParameterAssert(rowIndex >= 0 && rowIndex < [arbitrator.disks count]);
-    disk = [arbitrator.disks objectAtIndex:rowIndex];
+    disk = [[disksArrayController arrangedObjects] objectAtIndex:rowIndex];
 
 	if ([[column identifier] isEqual:@"BSDName"])
 		return disk.BSDName;
-//	fprintf(stdout, "getting value: %s\n", [disk.BSDName UTF8String]);
+
+	//	fprintf(stdout, "getting value: %s\n", [disk.BSDName UTF8String]);
 	return disk;
-	
-//    theValue = [theRecord objectForKey:[column identifier]];
-//    return theValue;
 }
 
 @end

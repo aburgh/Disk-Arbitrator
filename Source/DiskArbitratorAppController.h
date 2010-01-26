@@ -15,15 +15,18 @@
     NSWindow *window;
 	NSStatusItem *statusItem;
 	NSMenu *statusMenu;
+	
+	NSArrayController *disksArrayController;
 	Arbitrator *arbitrator;
 	NSArray *sortDescriptors;
 }
 
 @property (assign) IBOutlet NSWindow *window;
-@property (retain) NSStatusItem *statusItem;
 @property (assign) IBOutlet NSMenu *statusMenu;
-@property (retain) Arbitrator *arbitrator;
+@property (assign) IBOutlet NSArrayController *disksArrayController;
 @property (copy) NSArray *sortDescriptors;
+@property (retain) NSStatusItem *statusItem;
+@property (retain) Arbitrator *arbitrator;
 
 - (IBAction)showMainWindow:(id)sender;
 

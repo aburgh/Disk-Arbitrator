@@ -16,6 +16,7 @@
 	NSString *BSDName;
 	NSString *mediaName;
 	NSNumber *mediaSize;
+	NSString *volumeName;
 }
 
 @property (retain) NSImageCell *iconCell;
@@ -24,5 +25,6 @@
 @property (copy) NSString *BSDName;
 @property (copy) NSString *mediaName;
 @property (copy) NSNumber *mediaSize;
+@property (copy) NSString *volumeName;
 
 @end

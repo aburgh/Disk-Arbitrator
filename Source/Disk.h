@@ -12,11 +12,13 @@
 
 @interface Disk : NSObject 
 {
+	DADiskRef disk;
 	NSString *BSDName;
 	CFDictionaryRef description;
 	BOOL mounted;
 	NSImage *icon;
-	NSMutableArray *children;
+	Disk *parent;
+	NSMutableSet *children;
 }
 
 @property (copy) NSString *BSDName;
@@ -24,7 +26,8 @@
 @property (readonly) BOOL mounted;
 @property (readonly) BOOL isWholeDisk;
 @property (retain) NSImage *icon;
-@property (retain) NSMutableArray *children;
+@property (assign) Disk *parent;
+@property (retain) NSMutableSet *children;
 
 + (id)diskWithDiskRef:(DADiskRef)diskRef;
 

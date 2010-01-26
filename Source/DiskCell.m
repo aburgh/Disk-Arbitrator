@@ -21,6 +21,7 @@
 @synthesize mediaName;
 @synthesize mediaSize;
 @synthesize BSDName;
+@synthesize volumeName;
 
 
 - (id)copyWithZone:(NSZone *)zone
@@ -70,6 +71,7 @@
 		CFDictionaryRef descRef = [disk description];
 		self.mediaName = (NSString *) CFDictionaryGetValue(descRef, kDADiskDescriptionMediaNameKey);
 		self.mediaSize = (NSNumber *) CFDictionaryGetValue(descRef, kDADiskDescriptionMediaSizeKey);
+		self.volumeName = (NSString *) CFDictionaryGetValue(descRef, kDADiskDescriptionVolumeNameKey);
 		
 		// Create Text description cell
 		
@@ -87,7 +89,9 @@
 		}
 		NSMutableString *desc = sizeDisplayValue ? [sizeDisplayValue mutableCopy] : [NSMutableString new];
 
-		if (mediaName) 
+		if (volumeName)
+			[desc appendString:volumeName];
+		else if (mediaName) 
 			[desc appendString:mediaName];
 
 		self.textCell = [[[NSCell alloc] initTextCell:desc] autorelease];

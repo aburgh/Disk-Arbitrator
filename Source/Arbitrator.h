@@ -16,13 +16,13 @@
 	DASessionRef session;
 	DAApprovalSessionRef approvalSession;
 	
-	NSMutableArray *disks;
+	NSMutableSet *disks;
 	
 	BOOL activated;
 }
 
-@property (retain) NSMutableArray *disks;
-@property (readonly) NSArray *wholeDisks;
+@property (retain) NSMutableSet *disks;
+@property (readonly) NSSet *wholeDisks;
 @property (readonly) BOOL isActivated;
 
 - (BOOL)registerSession;

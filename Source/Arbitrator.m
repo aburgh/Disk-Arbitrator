@@ -9,6 +9,9 @@
 #import "Arbitrator.h"
 #import "Disk.h"
 
+@interface Disk (DiskPrivate)
+- (void)diskDidDisappear;
+@end
 
 @implementation Arbitrator
 
@@ -27,7 +30,7 @@
 {
 	if (self = [super init]) 
 	{
-		disks = [NSMutableArray new];
+		disks = [NSMutableSet new];
 		[self registerSession];
 	}
 	return self;
@@ -125,14 +128,52 @@
 	return approvalSession ? YES : NO;
 }
 
-- (NSArray *)wholeDisks
+- (NSSet *)wholeDisks
 {
-	NSMutableArray *wholeDisks = [NSMutableArray new];
+	NSMutableSet *wholeDisks = [NSMutableSet new];
+
 	for (Disk *disk in disks)
 		if ([disk isWholeDisk])
 			[wholeDisks addObject:disk];
 	
-	return wholeDisks;
+	return [wholeDisks autorelease];
+}
+
+#pragma mark Disks KVC Methods
+
+- (NSUInteger)countOfDisks
+{
+	return [disks count];
+}
+
+- (NSEnumerator *)enumeratorOfDisks
+{
+    return [disks objectEnumerator];
+}
+
+- (Disk *)memberOfDisks:(Disk *)anObject
+{
+    return [disks member:anObject];
+}
+
+- (void)addDisksObject:(Disk *)object
+{
+	[disks addObject:object];
+}
+
+- (void)addDisks:(NSSet *)objects
+{
+    [disks unionSet:objects];
+}
+
+- (void)removeDisksObject:(Disk *)anObject
+{
+    [disks removeObject:anObject];
+}
+
+- (void)removeDisks:(NSSet *)objects
+{
+    [disks minusSet:objects];
 }
 
 @end
@@ -148,105 +189,72 @@ NSString * BSDNameFromDADisk(DADiskRef disk)
 
 void DiskAppearedCallback(DADiskRef diskRef, void *arbitrator)
 {
-	fprintf(stderr, "disk appeared: %s\n", DADiskGetBSDName(diskRef));
-
+	fprintf(stderr, "disk %p appeared: %s\n", diskRef, DADiskGetBSDName(diskRef));
+	
 	//
 	// Reject certain disk media
 	//
-	
-	// Reject if no BSDName
-	if (DADiskGetBSDName(diskRef) == NULL)
-		return;
+
+	BOOL isOK = YES;
 	
 	CFDictionaryRef desc = DADiskCopyDescription(diskRef);
+//	CFShow(desc);
+	
+	// Reject if no BSDName
+	if (DADiskGetBSDName(diskRef) == NULL) isOK = NO;
 	
 	// Reject if no key-value for Whole Media
 	CFBooleanRef wholeMediaValue = CFDictionaryGetValue(desc, kDADiskDescriptionMediaWholeKey);
-	if (!wholeMediaValue)
-		return;
+	if (isOK && !wholeMediaValue) isOK = NO;
 	
 	// If not a whole disk, then must be a media leaf
-	if (CFBooleanGetValue(wholeMediaValue) == false)
+	if (isOK && CFBooleanGetValue(wholeMediaValue) == false)
 	{
 		CFBooleanRef mediaLeafValue = CFDictionaryGetValue(desc, kDADiskDescriptionMediaLeafKey);
-		if (!mediaLeafValue || CFBooleanGetValue(mediaLeafValue) == false)
-			return;
+		if (!mediaLeafValue || CFBooleanGetValue(mediaLeafValue) == false) isOK = NO;
 	}
-		
+	CFRelease(desc);
+	if (!isOK) return;
+	
 	//
 	// Disk accepted
 	//
-	Arbitrator *arb = (Arbitrator *)arbitrator;
 	Disk *disk = [Disk diskWithDiskRef:diskRef];
 
-	NSMutableArray *disks = [arb mutableArrayValueForKey:@"disks"];
-	
-	if ([disks containsObject:disk])
-		return;
-	
-	[disks addObject:disk];
-	
-	if ([disk isWholeDisk] == NO) {
-		Disk *parentDisk;
-		
-		DADiskRef parentDiskRef = DADiskCopyWholeDisk(diskRef);
-		parentDisk = [Disk diskWithDiskRef:parentDiskRef];
-		CFRelease(parentDiskRef);
-		
-		// We are going to add the new disk to its parent, so we need the actual parent disk object
-		// from the disks array, not just a disk that matches isEqual:.  For efficiency, the algorithm 
-		// enumerates the disks only once
+	Arbitrator *arb = (Arbitrator *)arbitrator;
+	NSMutableSet *disks = [arb mutableSetValueForKey:@"disks"];
 
-		NSUInteger parentIndex = [disks indexOfObject:parentDisk];
-		if (parentIndex == NSNotFound)
-			[disks addObject:parentDisk];
-		else 
-			parentDisk = [disks objectAtIndex:parentIndex];
-
-		[[parentDisk mutableArrayValueForKey:@"children"] addObject:disk];
-	}
-}
+	if ([disks containsObject:disk] == NO)
+		[disks addObject:disk];
+}	
 
 void DiskDisappearedCallback(DADiskRef diskRef, void *arbitrator)
 {
-	fprintf(stderr, "disk disappeared: %s\n", DADiskGetBSDName(diskRef));
-
-	Arbitrator *arb = (Arbitrator *)arbitrator;
-	NSMutableArray *disks = [arb mutableArrayValueForKey:@"wholeDisks"];
-
-	Disk *tmpDisk = [Disk diskWithDiskRef:diskRef];
+	fprintf(stderr, "disk %p disappeared: %s\n", diskRef, DADiskGetBSDName(diskRef));
 	
-	if ([tmpDisk isWholeDisk]) {
-		[disks removeObject:tmpDisk];
-	}
-	else {
-		DADiskRef parentDiskRef = DADiskCopyWholeDisk(diskRef);
-		if (parentDiskRef) {
-			Disk *parentDisk = [Disk diskWithDiskRef:parentDiskRef];
-			CFRelease(parentDiskRef);
+	Arbitrator *arb = (Arbitrator *)arbitrator;
+	NSMutableSet *disks = [arb mutableSetValueForKey:@"disks"];
+	
+	Disk *tmpDisk = [Disk diskWithDiskRef:diskRef];
 
-			for (Disk *potentialParent in disks) {
-				if ([potentialParent isEqual:parentDisk])
-					[[potentialParent mutableArrayValueForKey:@"children"] removeObject:tmpDisk];
-			}
-		}
-	}
+	[tmpDisk diskDidDisappear];
+	[disks removeObject:tmpDisk];
 }
 
 void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *arbitrator)
 {
-	fprintf(stderr, "disk description changed: %s\n", DADiskGetBSDName(diskRef));
+	fprintf(stderr, "disk %p description changed: %s\n", diskRef, DADiskGetBSDName(diskRef));
 	CFShow(keys);
 
-	Disk *tmpDisk = [Disk diskWithDiskRef:diskRef];
-	NSMutableArray *disks = [(Arbitrator *)arbitrator mutableArrayValueForKey:@"disks"];
-	Disk *disk = [disks objectAtIndex:[disks indexOfObject:tmpDisk]];
-	[disk setDescription:[tmpDisk description]];
+	Disk *disk = [Disk diskWithDiskRef:diskRef];
+	CFDictionaryRef desc = DADiskCopyDescription(diskRef);
+	disk.description = desc;
+	CFRelease(desc);
 }
 
 DADissenterRef DiskMountApprovalCallback(DADiskRef disk, void *arbitrator)
 {
-	fprintf(stderr, "%s called: %s\n", __FUNCTION__, DADiskGetBSDName(disk));
+	fprintf(stderr, "%s called: %p %s\n", __FUNCTION__, disk, DADiskGetBSDName(disk));
 	fprintf(stderr, "\t claimed: %s\n\n", DADiskIsClaimed(disk) ? "Yes" : "No");
 
 //	DADiskClaim(disk, kDADiskClaimOptionDefault, DiskClaimReleaseCallback, arbitrator, DiskClaimCallback, arbitrator);
@@ -261,7 +269,7 @@ DADissenterRef DiskMountApprovalCallback(DADiskRef disk, void *arbitrator)
 
 void DiskClaimCallback(DADiskRef disk, DADissenterRef dissenter, void *arbitrator)
 {
-	fprintf(stderr, "%s called: %s\n", __FUNCTION__, DADiskGetBSDName(disk));
+	fprintf(stderr, "%s called: %p %s\n", __FUNCTION__, disk, DADiskGetBSDName(disk));
 	fprintf(stderr, "\t claimed: %s\n\n", DADiskIsClaimed(disk) ? "Yes" : "No");
 	
 	CFShow(dissenter);
@@ -270,7 +278,7 @@ void DiskClaimCallback(DADiskRef disk, DADissenterRef dissenter, void *arbitrato
 
 DADissenterRef DiskClaimReleaseCallback(DADiskRef disk, void *arbitrator)
 {
-	fprintf(stderr, "%s called: %s\n", __FUNCTION__, DADiskGetBSDName(disk));
+	fprintf(stderr, "%s called: %p %s\n", __FUNCTION__, disk, DADiskGetBSDName(disk));
 	fprintf(stderr, "\t claimed: %s\n\n", DADiskIsClaimed(disk) ? "Yes" : "No");
 
 	return NULL;

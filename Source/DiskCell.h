@@ -13,6 +13,8 @@
 	NSImageCell *iconCell;
 	NSCell *textCell;
 	CGFloat indentation;
+	BOOL mountable;
+	BOOL mounted;
 	NSString *BSDName;
 	NSString *mediaName;
 	NSNumber *mediaSize;
@@ -22,6 +24,8 @@
 @property (retain) NSImageCell *iconCell;
 @property (retain) NSCell *textCell;
 @property CGFloat indentation;
+@property BOOL mountable;
+@property BOOL mounted;
 @property (copy) NSString *BSDName;
 @property (copy) NSString *mediaName;
 @property (copy) NSNumber *mediaSize;

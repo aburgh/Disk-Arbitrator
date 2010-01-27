@@ -15,6 +15,7 @@ NSMutableSet *uniqueDisks;
 @implementation Disk
 
 @synthesize BSDName;
+@synthesize mountable;
 @synthesize mounted;
 @synthesize icon;
 @synthesize parent;
@@ -30,6 +31,9 @@ NSMutableSet *uniqueDisks;
 	if ([key isEqual:@"isWholeDisk"])
 		return [NSSet setWithObject:@"description"];
 	
+	if ([key isEqual:@"mountable"])
+		return [NSSet setWithObject:@"description"];
+
 	if ([key isEqual:@"mounted"])
 		return [NSSet setWithObject:@"description"];
 	
@@ -137,6 +141,8 @@ NSMutableSet *uniqueDisks;
 
 	self.icon = nil;
 	if (description) {
+		CFBooleanRef flagRef = CFDictionaryGetValue(description, kDADiskDescriptionVolumeMountableKey);
+		mountable = flagRef ? CFBooleanGetValue(flagRef) : NO;
 		mounted = CFDictionaryGetValue(description, kDADiskDescriptionVolumePathKey) ? YES : NO;
 	}
 }
@@ -148,10 +154,9 @@ NSMutableSet *uniqueDisks;
 
 		CFRelease(description);
 		description = desc ? CFRetain(desc) : NULL;
+		[self refreshFromDescription];
 
 		[self didChangeValueForKey:@"description"];
-		
-		[self refreshFromDescription];
 	}
 }
 

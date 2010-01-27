@@ -17,6 +17,7 @@
 
 @synthesize disks;
 @synthesize isActivated;
+@synthesize mountMode;
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key
 {

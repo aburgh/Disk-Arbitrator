@@ -9,6 +9,10 @@
 #import <Cocoa/Cocoa.h>
 #import <DiskArbitration/DiskArbitration.h>
 
+// Mount Modes
+#define MM_BLOCK	0
+#define MM_READONLY	1
+
 
 @interface Arbitrator : NSObject 
 {
@@ -19,11 +23,13 @@
 	NSMutableSet *disks;
 	
 	BOOL activated;
+	NSInteger mountMode;
 }
 
 @property (retain) NSMutableSet *disks;
 @property (readonly) NSSet *wholeDisks;
 @property (readonly) BOOL isActivated;
+@property NSInteger mountMode;
 
 - (BOOL)registerSession;
 - (void)unregisterSession;

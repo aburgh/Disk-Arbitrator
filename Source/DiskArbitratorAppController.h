@@ -29,5 +29,11 @@
 @property (retain) Arbitrator *arbitrator;
 
 - (IBAction)showMainWindow:(id)sender;
+- (IBAction)performActivation:(id)sender;
+- (IBAction)performDeactivation:(id)sender;
+//- (IBAction)toggleActivation:(id)sender;
+
+- (IBAction)performSetMountBlockMode:(id)sender;
+- (IBAction)performSetMountReadOnlyMode:(id)sender;
 
 @end

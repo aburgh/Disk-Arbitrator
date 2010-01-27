@@ -19,24 +19,42 @@
 @synthesize statusItem;
 @synthesize arbitrator;
 
+- (void)setStatusItemIconWithName:(NSString *)name
+{
+	NSString *iconPath = [[NSBundle mainBundle] pathForResource:name ofType:@"png"];
+	NSImage *statusIcon = [[NSImage alloc] initWithContentsOfFile:iconPath];
+	[statusItem setImage:statusIcon];
+	[statusIcon release];
+}
+
+- (void)refreshStatusItemIcon
+{
+	if (arbitrator.isActivated == NO)
+		[self setStatusItemIconWithName:@"StatusItem Disabled 1"];
+	
+	else if (arbitrator.mountMode == MM_BLOCK)
+		[self setStatusItemIconWithName:@"StatusItem Green"];
+
+	else if (arbitrator.mountMode == MM_READONLY)
+		[self setStatusItemIconWithName:@"StatusItem Orange"];
+	
+	else
+		NSAssert1(NO, @"Invalid mount mode: %d\n", arbitrator.mountMode);
+}
+
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
 	// Insert code here to initialize your application 
 	
 	NSStatusBar *bar = [NSStatusBar systemStatusBar];
-//	self.statusItem = [bar statusItemWithLength:NSVariableStatusItemLength];
-//	[statusItem setTitle:@"Arbitrator..."];
 	self.statusItem = [bar statusItemWithLength:NSSquareStatusItemLength];
-	NSString *iconPath = [[NSBundle mainBundle] pathForResource:@"StatusItem Green" ofType:@"png"];
-	NSImage *statusIcon = [[NSImage alloc] initWithContentsOfFile:iconPath];
-	[statusItem setImage:statusIcon];
-	[statusIcon release];
+	[self setStatusItemIconWithName:@"StatusItem Disabled 1"];
 	[statusItem setMenu:statusMenu];
 	
 	self.arbitrator = [Arbitrator new];
-	[arbitrator activate];
+	[self performActivation:self];
 	
-	self.sortDescriptors = [NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"BSDName" ascending:YES] autorelease]]	;
+	self.sortDescriptors = [NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"BSDName" ascending:YES] autorelease]];
 }
 
 - (IBAction)showMainWindow:(id)sender
@@ -44,6 +62,42 @@
 //	[NSApp showWindow:window];
 	[window orderFront:sender];
 }
+
+- (IBAction)performActivation:(id)sender
+{
+	[arbitrator activate];
+	[self refreshStatusItemIcon];
+}
+
+- (IBAction)performDeactivation:(id)sender
+{
+	[arbitrator deactivate];
+	[self refreshStatusItemIcon];
+}
+
+- (IBAction)performSetMountBlockMode:(id)sender
+{
+	arbitrator.mountMode = MM_BLOCK;
+	[self refreshStatusItemIcon];
+}
+
+- (IBAction)performSetMountReadOnlyMode:(id)sender
+{
+	arbitrator.mountMode = MM_READONLY;
+	[self refreshStatusItemIcon];
+}
+
+//- (IBAction)toggleActivation:(id)sender;
+//{
+//	if ([arbitrator isActivated]) {
+//		[arbitrator deactivate];
+//		[self refreshStatusItemIcon];
+//	}
+//	else {
+//		[arbitrator activate];
+//		[self refreshStatusItemIcon];
+//	}
+//}
 
 #pragma mark TableView Delegates
 

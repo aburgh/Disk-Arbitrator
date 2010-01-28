@@ -8,6 +8,7 @@
 
 #import "Arbitrator.h"
 #import "Disk.h"
+#import "DiskArbitrationPrivateFunctions.h"
 
 
 @implementation Arbitrator
@@ -18,7 +19,7 @@
 
 + (void)initialize
 {
-	[Disk class]; // Ensure the Disk class is initialized
+	InitializeDiskArbitration();
 }
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key

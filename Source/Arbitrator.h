@@ -16,12 +16,8 @@
 
 @interface Arbitrator : NSObject 
 {
-	CFRunLoopRef runLoop;
-	DASessionRef session;
 	DAApprovalSessionRef approvalSession;
-	
 	NSMutableSet *disks;
-	
 	BOOL activated;
 	NSInteger mountMode;
 }
@@ -41,11 +37,6 @@
 
 @end
 
-NSString * BSDNameFromDADisk(DADiskRef disk);
-
-void DiskAppearedCallback(DADiskRef disk, void *arbitrator);
-void DiskDisappearedCallback(DADiskRef disk, void *arbitrator);
-void DiskDescriptionChangedCallback(DADiskRef disk, CFArrayRef keys, void *arbitrator);
 DADissenterRef DiskMountApprovalCallback(DADiskRef disk, void *arbitrator);
 void DiskClaimCallback(DADiskRef disk, DADissenterRef dissenter, void *arbitrator);
 DADissenterRef DiskClaimReleaseCallback(DADiskRef disk, void *arbitrator);

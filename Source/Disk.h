@@ -9,6 +9,10 @@
 #import <Cocoa/Cocoa.h>
 #import <DiskArbitration/DiskArbitration.h>
 
+extern NSString * const DADiskDidAppearNotification;
+extern NSString * const DADiskDidDisappearNotification;
+extern NSString * const DADiskDidChangeNotification;
+
 
 @interface Disk : NSObject 
 {
@@ -20,6 +24,7 @@
 	NSImage *icon;
 	Disk *parent;
 	NSMutableSet *children;
+	NSUInteger hash;
 }
 
 @property (copy) NSString *BSDName;

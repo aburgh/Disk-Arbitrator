@@ -9,15 +9,17 @@
 #import "Arbitrator.h"
 #import "Disk.h"
 
-@interface Disk (DiskPrivate)
-- (void)diskDidDisappear;
-@end
 
 @implementation Arbitrator
 
 @synthesize disks;
 @synthesize isActivated;
 @synthesize mountMode;
+
++ (void)initialize
+{
+	[Disk class]; // Ensure the Disk class is initialized
+}
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key
 {
@@ -42,8 +44,7 @@
 	if (approvalSession)
 		[self deactivate];
 	
-	if (session)
-		[self unregisterSession];
+	[self unregisterSession];
 	
 	[disks release];
 	[super dealloc];	
@@ -51,34 +52,33 @@
 
 - (BOOL)registerSession
 {
-	session = DASessionCreate(kCFAllocatorDefault);
-	if (!session) {
-		fprintf(stderr, "Failed to create Disk Arbitration session.\n");
-		return NO;
-	}
+	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 	
-	runLoop = CFRunLoopGetCurrent();
-	DASessionScheduleWithRunLoop(session, runLoop, kCFRunLoopCommonModes);
-	
-//	NSDictionary *matching = [NSDictionary dictionaryWithObjectsAndKeys:nil];
-	
-	DARegisterDiskAppearedCallback(session, NULL, DiskAppearedCallback, self);
-	DARegisterDiskDisappearedCallback(session, NULL, DiskDisappearedCallback, self);
-	DARegisterDiskDescriptionChangedCallback(session, NULL, NULL, DiskDescriptionChangedCallback, self);
-	
+	[nc addObserver:self selector:@selector(diskDidAppear:) name:DADiskDidAppearNotification object:nil];
+	[nc addObserver:self selector:@selector(diskDidDisappear:) name:DADiskDidDisappearNotification object:nil];
+	[nc addObserver:self selector:@selector(diskDidChange:) name:DADiskDidChangeNotification object:nil];
+
 	return YES;
 }
 
 - (void)unregisterSession
 {
-	if (session) {
-		DAUnregisterCallback(session, DiskAppearedCallback, self);
-		DAUnregisterCallback(session, DiskDisappearedCallback, self);
-		DAUnregisterCallback(session, DiskDescriptionChangedCallback, self);
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
-		DASessionUnscheduleFromRunLoop(session, runLoop, kCFRunLoopCommonModes);
-		session = NULL;
-	}
+- (void)diskDidAppear:(NSNotification *)notif
+{
+	[[self mutableSetValueForKey:@"disks"] addObject:[notif object]];
+}
+
+- (void)diskDidDisappear:(NSNotification *)notif
+{
+	[[self mutableSetValueForKey:@"disks"] removeObject:[notif object]];
+}
+
+- (void)diskDidChange:(NSNotification *)notif
+{
+	fprintf(stderr, "Changed disk notification: %s\n", [[notif description] UTF8String]);
 }
 
 - (BOOL)registerApprovalSession
@@ -89,7 +89,7 @@
 		return NO;
 	}
 	
-	DAApprovalSessionScheduleWithRunLoop(approvalSession, runLoop, kCFRunLoopCommonModes);
+	DAApprovalSessionScheduleWithRunLoop(approvalSession, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 
 	DARegisterDiskMountApprovalCallback(approvalSession, NULL, DiskMountApprovalCallback, self);
 	
@@ -101,7 +101,7 @@
 	if (approvalSession) {
 		DAUnregisterApprovalCallback(approvalSession, DiskMountApprovalCallback, self);
 
-		DAApprovalSessionUnscheduleFromRunLoop(approvalSession, runLoop, kCFRunLoopCommonModes);
+		DAApprovalSessionUnscheduleFromRunLoop(approvalSession, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 		approvalSession = NULL;
 	}
 }
@@ -179,79 +179,7 @@
 
 @end
 
-NSString * BSDNameFromDADisk(DADiskRef disk)
-{
-	const char *name = DADiskGetBSDName(disk);
-	
-	return name ? [NSString stringWithUTF8String:name] : nil;
-}
-
 #pragma mark Callbacks
-
-void DiskAppearedCallback(DADiskRef diskRef, void *arbitrator)
-{
-	fprintf(stderr, "disk %p appeared: %s\n", diskRef, DADiskGetBSDName(diskRef));
-	
-	//
-	// Reject certain disk media
-	//
-
-	BOOL isOK = YES;
-	
-	CFDictionaryRef desc = DADiskCopyDescription(diskRef);
-//	CFShow(desc);
-	
-	// Reject if no BSDName
-	if (DADiskGetBSDName(diskRef) == NULL) isOK = NO;
-	
-	// Reject if no key-value for Whole Media
-	CFBooleanRef wholeMediaValue = CFDictionaryGetValue(desc, kDADiskDescriptionMediaWholeKey);
-	if (isOK && !wholeMediaValue) isOK = NO;
-	
-	// If not a whole disk, then must be a media leaf
-	if (isOK && CFBooleanGetValue(wholeMediaValue) == false)
-	{
-		CFBooleanRef mediaLeafValue = CFDictionaryGetValue(desc, kDADiskDescriptionMediaLeafKey);
-		if (!mediaLeafValue || CFBooleanGetValue(mediaLeafValue) == false) isOK = NO;
-	}
-	CFRelease(desc);
-	if (!isOK) return;
-	
-	//
-	// Disk accepted
-	//
-	Disk *disk = [Disk diskWithDiskRef:diskRef];
-
-	Arbitrator *arb = (Arbitrator *)arbitrator;
-	NSMutableSet *disks = [arb mutableSetValueForKey:@"disks"];
-
-	if ([disks containsObject:disk] == NO)
-		[disks addObject:disk];
-}	
-
-void DiskDisappearedCallback(DADiskRef diskRef, void *arbitrator)
-{
-	fprintf(stderr, "disk %p disappeared: %s\n", diskRef, DADiskGetBSDName(diskRef));
-	
-	Arbitrator *arb = (Arbitrator *)arbitrator;
-	NSMutableSet *disks = [arb mutableSetValueForKey:@"disks"];
-	
-	Disk *tmpDisk = [Disk diskWithDiskRef:diskRef];
-
-	[tmpDisk diskDidDisappear];
-	[disks removeObject:tmpDisk];
-}
-
-void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *arbitrator)
-{
-	fprintf(stderr, "disk %p description changed: %s\n", diskRef, DADiskGetBSDName(diskRef));
-	CFShow(keys);
-
-	Disk *disk = [Disk diskWithDiskRef:diskRef];
-	CFDictionaryRef desc = DADiskCopyDescription(diskRef);
-	disk.description = desc;
-	CFRelease(desc);
-}
 
 DADissenterRef DiskMountApprovalCallback(DADiskRef disk, void *arbitrator)
 {

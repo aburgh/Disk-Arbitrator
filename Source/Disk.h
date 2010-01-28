@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <DiskArbitration/DiskArbitration.h>
 
 extern NSString * const DADiskDidAppearNotification;
 extern NSString * const DADiskDidDisappearNotification;
@@ -16,7 +15,7 @@ extern NSString * const DADiskDidChangeNotification;
 
 @interface Disk : NSObject 
 {
-	DADiskRef disk;
+	CFTypeRef disk;
 	NSString *BSDName;
 	CFDictionaryRef description;
 	BOOL mountable;
@@ -35,11 +34,5 @@ extern NSString * const DADiskDidChangeNotification;
 @property (retain) NSImage *icon;
 @property (assign) Disk *parent;
 @property (retain) NSMutableSet *children;
-
-+ (id)diskWithDiskRef:(DADiskRef)diskRef;
-
-- (id)initWithDiskRef:(DADiskRef)diskRef;
-
-- (void)refreshFromDescription;
 
 @end

@@ -7,17 +7,23 @@
 //
 
 #import "Disk.h"
+#import <DiskArbitration/DiskArbitration.h>
 #import <IOKit/kext/KextManager.h>
 
 
 NSMutableSet *uniqueDisks;
 DASessionRef session;
-CFRunLoopRef runLoop;
 
 NSUInteger DADiskHash(DADiskRef disk);
 void DiskAppearedCallback(DADiskRef diskRef, void *context);
 void DiskDisappearedCallback(DADiskRef diskRef, void *context);
 void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *context);
+
+
+@interface Disk (DiskPrivate)
+- (id)initWithDiskRef:(DADiskRef)diskRef;
+- (void)refreshFromDescription;
+@end
 
 
 @implementation Disk
@@ -29,7 +35,6 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 @synthesize parent;
 @synthesize children;
 
-
 + (void)initialize
 {
 	uniqueDisks = [NSMutableSet new];
@@ -40,8 +45,7 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 		return;
 	}
 	
-	runLoop = CFRunLoopGetCurrent();
-	DASessionScheduleWithRunLoop(session, runLoop, kCFRunLoopCommonModes);
+	DASessionScheduleWithRunLoop(session, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 	
 	//	NSDictionary *matching = [NSDictionary dictionaryWithObjectsAndKeys:nil];
 	
@@ -158,7 +162,7 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 - (NSUInteger)hash
 {
 	if (!hash) 
-		hash = DADiskHash(disk);
+		hash = DADiskHash((DADiskRef) disk);
 	
 	return hash;
 }

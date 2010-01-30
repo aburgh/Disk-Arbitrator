@@ -85,7 +85,7 @@
 		self.mounted = disk.mounted;
 		self.mountable = disk.mountable;
 		
-		CFDictionaryRef descRef = [disk description];
+		CFDictionaryRef descRef = disk.diskDescription;
 		self.mediaName = (NSString *) CFDictionaryGetValue(descRef, kDADiskDescriptionMediaNameKey);
 		self.mediaSize = (NSNumber *) CFDictionaryGetValue(descRef, kDADiskDescriptionMediaSizeKey);
 		self.volumeName = (NSString *) CFDictionaryGetValue(descRef, kDADiskDescriptionVolumeNameKey);

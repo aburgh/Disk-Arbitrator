@@ -29,16 +29,16 @@
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key
 {
 	if ([key isEqual:@"isWholeDisk"])
-		return [NSSet setWithObject:@"description"];
+		return [NSSet setWithObject:@"diskDescription"];
 	
 	if ([key isEqual:@"mountable"])
-		return [NSSet setWithObject:@"description"];
+		return [NSSet setWithObject:@"diskDescription"];
 
 	if ([key isEqual:@"mounted"])
-		return [NSSet setWithObject:@"description"];
+		return [NSSet setWithObject:@"diskDescription"];
 	
 	if ([key isEqual:@"icon"])
-		return [NSSet setWithObject:@"description"];
+		return [NSSet setWithObject:@"diskDescription"];
 	
 	return [super keyPathsForValuesAffectingValueForKey:key];
 }
@@ -67,7 +67,7 @@
 		CFRetain(diskRef);
 		disk = diskRef;
 		children = [NSMutableSet new];
-		description = DADiskCopyDescription(diskRef);
+		diskDescription = DADiskCopyDescription(diskRef);
 		BSDName = [[NSString alloc] initWithUTF8String:DADiskGetBSDName(diskRef)];
 		[self refreshFromDescription];
 		
@@ -93,7 +93,7 @@
 - (void)dealloc
 {
 	if (disk) CFRelease(disk);
-	if (description) CFRelease(description);
+	if (diskDescription) CFRelease(diskDescription);
 	[BSDName release];
 	[icon release];
 	parent = nil;
@@ -129,10 +129,10 @@
 
 - (BOOL)isWholeDisk
 {
-	if (!description)
+	if (!diskDescription)
 		return NO;
 
-	CFBooleanRef value = CFDictionaryGetValue(description, kDADiskDescriptionMediaWholeKey);
+	CFBooleanRef value = CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaWholeKey);
 	if (!value)
 		return YES;
 	
@@ -144,36 +144,36 @@
 	// BSDName cannot change so do not refresh it
 
 	self.icon = nil;
-	if (description) {
-		CFBooleanRef flagRef = CFDictionaryGetValue(description, kDADiskDescriptionVolumeMountableKey);
+	if (diskDescription) {
+		CFBooleanRef flagRef = CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumeMountableKey);
 		mountable = flagRef ? CFBooleanGetValue(flagRef) : NO;
-		mounted = CFDictionaryGetValue(description, kDADiskDescriptionVolumePathKey) ? YES : NO;
+		mounted = CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumePathKey) ? YES : NO;
 	}
 }
 
-- (void)setDescription:(CFDictionaryRef)desc
+- (void)setDiskDescription:(CFDictionaryRef)desc
 {
-	if (desc != description) {
-		[self willChangeValueForKey:@"description"];
+	if (desc != diskDescription) {
+		[self willChangeValueForKey:@"diskDescription"];
 
-		CFRelease(description);
-		description = desc ? CFRetain(desc) : NULL;
+		CFRelease(diskDescription);
+		diskDescription = desc ? CFRetain(desc) : NULL;
 		[self refreshFromDescription];
 
-		[self didChangeValueForKey:@"description"];
+		[self didChangeValueForKey:@"diskDescription"];
 	}
 }
 
-- (CFDictionaryRef)description
+- (CFDictionaryRef)diskDescription
 {
-	return description;	
+	return diskDescription;	
 }
 
 - (NSImage *)icon
 {
 	if (!icon) {
-		if (description) {
-			CFDictionaryRef iconRef = CFDictionaryGetValue(description, kDADiskDescriptionMediaIconKey);
+		if (diskDescription) {
+			CFDictionaryRef iconRef = CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaIconKey);
 			if (iconRef) {
 				
 				CFStringRef identifier = CFDictionaryGetValue(iconRef, CFSTR("CFBundleIdentifier"));

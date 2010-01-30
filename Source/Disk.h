@@ -17,7 +17,7 @@ extern NSString * const DADiskDidChangeNotification;
 {
 	CFTypeRef disk;
 	NSString *BSDName;
-	CFDictionaryRef description;
+	CFDictionaryRef diskDescription;
 	BOOL mountable;
 	BOOL mounted;
 	NSImage *icon;
@@ -27,7 +27,7 @@ extern NSString * const DADiskDidChangeNotification;
 }
 
 @property (copy) NSString *BSDName;
-@property CFDictionaryRef description;
+@property CFDictionaryRef diskDescription;
 @property (readonly) BOOL mountable;
 @property (readonly) BOOL mounted;
 @property (readonly) BOOL isWholeDisk;

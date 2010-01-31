@@ -3,7 +3,7 @@
 //  DiskArbitrator
 //
 //  Created by Aaron Burghardt on 1/10/10.
-//  Copyright 2010 . All rights reserved.
+//  Copyright 2010 Aaron Burghardt. All rights reserved.
 //
 
 #import "Disk.h"

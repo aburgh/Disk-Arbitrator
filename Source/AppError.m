@@ -11,9 +11,6 @@
 #include <syslog.h>
 
 
-BOOL shouldLogToSyslog = NO;
-
-
 void Log(int level, NSString *format, ...)
 {
 	va_list args;
@@ -27,7 +24,9 @@ void Log(int level, NSString *format, ...)
 	
 	const char *utfFormattedError = [formattedError UTF8String];
 	
-	if (shouldLogToSyslog) 
+	BOOL shouldUseSyslog = [[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSyslog"];
+	
+	if (shouldUseSyslog) 
 		syslog(level, "%s\n", utfFormattedError);
 	
 	fprintf(stderr, "%s\n", utfFormattedError);
@@ -38,5 +37,5 @@ void Log(int level, NSString *format, ...)
 
 void SetShouldLogToSyslog(BOOL flag)
 {
-	shouldLogToSyslog = flag;
+	[[NSUserDefaults standardUserDefaults] setBool:flag forKey:@"EnableSyslog"];
 }

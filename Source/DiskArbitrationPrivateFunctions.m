@@ -32,11 +32,13 @@ void InitializeDiskArbitration(void)
 	
 	DASessionScheduleWithRunLoop(session, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 	
-	//	NSDictionary *matching = [NSDictionary dictionaryWithObjectsAndKeys:nil];
+	NSMutableDictionary *matching = [NSMutableDictionary dictionary];
+	[matching setObject:[NSNumber numberWithBool:NO] 
+				 forKey:(NSString *) kDADiskDescriptionVolumeNetworkKey];
 	
-	DARegisterDiskAppearedCallback(session, NULL, DiskAppearedCallback, [Disk class]);
-	DARegisterDiskDisappearedCallback(session, NULL, DiskDisappearedCallback, [Disk class]);
-	DARegisterDiskDescriptionChangedCallback(session, NULL, NULL, DiskDescriptionChangedCallback, [Disk class]);
+	DARegisterDiskAppearedCallback(session, (CFDictionaryRef) matching, DiskAppearedCallback, [Disk class]);
+	DARegisterDiskDisappearedCallback(session, (CFDictionaryRef) matching, DiskDisappearedCallback, [Disk class]);
+	DARegisterDiskDescriptionChangedCallback(session, (CFDictionaryRef) matching, NULL, DiskDescriptionChangedCallback, [Disk class]);
 }
 
 BOOL DADiskValidate(DADiskRef diskRef)
@@ -49,7 +51,8 @@ BOOL DADiskValidate(DADiskRef diskRef)
 	
 	// Reject if no BSDName
 	if (DADiskGetBSDName(diskRef) == NULL) 
-		return NO;
+		[NSException raise:NSInternalInconsistencyException format:@"Disk without BSDName"];
+//		return NO;
 	
 	CFDictionaryRef desc = DADiskCopyDescription(diskRef);
 	//	CFShow(desc);

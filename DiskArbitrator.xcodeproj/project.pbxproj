@@ -38,7 +38,7 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* DiskArbitrator-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "DiskArbitrator-Info.plist"; path = "Resources/DiskArbitrator-Info.plist"; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* DiskArbitrator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DiskArbitrator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* Disk Arbitrator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Disk Arbitrator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		964E4D8B10F9E3C3007B3112 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = System/Library/Frameworks/DiskArbitration.framework; sourceTree = SDKROOT; };
 		964E4DC910F9E874007B3112 /* Arbitrator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Arbitrator.h; sourceTree = "<group>"; };
 		964E4DCA10F9E874007B3112 /* Arbitrator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Arbitrator.m; sourceTree = "<group>"; };
@@ -112,7 +112,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* DiskArbitrator.app */,
+				8D1107320486CEB800E47090 /* Disk Arbitrator.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -192,7 +192,7 @@
 			name = DiskArbitrator;
 			productInstallPath = "$(HOME)/Applications";
 			productName = DiskArbitrator;
-			productReference = 8D1107320486CEB800E47090 /* DiskArbitrator.app */;
+			productReference = 8D1107320486CEB800E47090 /* Disk Arbitrator.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -279,7 +279,7 @@
 				GCC_PREFIX_HEADER = Source/DiskArbitrator_Prefix.pch;
 				INFOPLIST_FILE = "Resources/DiskArbitrator-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = DiskArbitrator;
+				PRODUCT_NAME = "Disk Arbitrator";
 			};
 			name = Debug;
 		};
@@ -293,7 +293,7 @@
 				GCC_PREFIX_HEADER = Source/DiskArbitrator_Prefix.pch;
 				INFOPLIST_FILE = "Resources/DiskArbitrator-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				PRODUCT_NAME = DiskArbitrator;
+				PRODUCT_NAME = "Disk Arbitrator";
 			};
 			name = Release;
 		};
@@ -303,8 +303,10 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
@@ -316,8 +318,10 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
 			};

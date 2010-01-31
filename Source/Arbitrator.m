@@ -7,6 +7,7 @@
 //
 
 #import "Arbitrator.h"
+#import "AppError.h"
 #import "Disk.h"
 #import "DiskArbitrationPrivateFunctions.h"
 
@@ -71,7 +72,7 @@
 {
 	Disk *disk = [notif object];
 
-	fprintf(stderr, "%s disk: %s\n", __FUNCTION__, [disk.BSDName UTF8String]);
+	Log(LOG_DEBUG, @"%s disk: %@", __FUNCTION__, disk.BSDName);
 
 	[[self mutableSetValueForKey:@"disks"] addObject:disk];
 
@@ -103,14 +104,14 @@
 
 - (void)diskDidChange:(NSNotification *)notif
 {
-	fprintf(stderr, "Changed disk notification: %s\n", [[notif description] UTF8String]);
+	Log(LOG_DEBUG, @"Changed disk notification: %@", [notif description]);
 }
 
 - (BOOL)registerApprovalSession
 {
 	approvalSession = DAApprovalSessionCreate(kCFAllocatorDefault);
 	if (!approvalSession) {
-		fprintf(stderr, "Failed to create Disk Arbitration approval session.\n");
+		Log(LOG_CRIT, @"Failed to create Disk Arbitration approval session.");
 		return NO;
 	}
 	
@@ -208,8 +209,8 @@
 
 DADissenterRef DiskMountApprovalCallback(DADiskRef diskRef, void *arbitrator)
 {
-	fprintf(stderr, "%s called: %p %s\n", __FUNCTION__, diskRef, DADiskGetBSDName(diskRef));
-	fprintf(stderr, "\t claimed: %s\n\n", DADiskIsClaimed(diskRef) ? "Yes" : "No");
+	Log(LOG_DEBUG, @"%s called: %p %s", __FUNCTION__, diskRef, DADiskGetBSDName(diskRef));
+	Log(LOG_DEBUG, @"\t claimed: %s\n", DADiskIsClaimed(diskRef) ? "Yes" : "No");
 
 	Disk *disk = [[Disk alloc] initWithDiskRef:diskRef];
 	
@@ -231,8 +232,8 @@ DADissenterRef DiskMountApprovalCallback(DADiskRef diskRef, void *arbitrator)
 
 void DiskClaimCallback(DADiskRef disk, DADissenterRef dissenter, void *arbitrator)
 {
-	fprintf(stderr, "%s called: %p %s\n", __FUNCTION__, disk, DADiskGetBSDName(disk));
-	fprintf(stderr, "\t claimed: %s\n\n", DADiskIsClaimed(disk) ? "Yes" : "No");
+	Log(LOG_DEBUG, @"%s called: %p %s", __FUNCTION__, disk, DADiskGetBSDName(disk));
+	Log(LOG_DEBUG, @"\t claimed: %s\n", DADiskIsClaimed(disk) ? "Yes" : "No");
 	
 	if (dissenter)
 		CFShow(dissenter);
@@ -240,8 +241,8 @@ void DiskClaimCallback(DADiskRef disk, DADissenterRef dissenter, void *arbitrato
 
 DADissenterRef DiskClaimReleaseCallback(DADiskRef disk, void *arbitrator)
 {
-	fprintf(stderr, "%s called: %p %s\n", __FUNCTION__, disk, DADiskGetBSDName(disk));
-	fprintf(stderr, "\t claimed: %s\n\n", DADiskIsClaimed(disk) ? "Yes" : "No");
+	Log(LOG_DEBUG, @"%s called: %p %s", __FUNCTION__, disk, DADiskGetBSDName(disk));
+	Log(LOG_DEBUG, @"\t claimed: %s\n", DADiskIsClaimed(disk) ? "Yes" : "No");
 
 	return NULL;
 

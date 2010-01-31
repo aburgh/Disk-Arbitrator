@@ -8,6 +8,7 @@
  */
 
 #import "DiskArbitrationPrivateFunctions.h"
+#import "AppError.h"
 
 // Globals
 NSMutableSet *uniqueDisks;
@@ -96,7 +97,7 @@ void DiskAppearedCallback(DADiskRef diskRef, void *context)
 {
 	if (context != [Disk class]) return;
 	
-	fprintf(stderr, "disk %p appeared: %s\n", diskRef, DADiskGetBSDName(diskRef));
+	Log(LOG_DEBUG, @"%s <%p> %s", __FUNCTION__, diskRef, DADiskGetBSDName(diskRef));
 	
 	if (DADiskValidate(diskRef)) 
 	{
@@ -110,7 +111,7 @@ void DiskDisappearedCallback(DADiskRef diskRef, void *context)
 {
 	if (context != [Disk class]) return;
 	
-	fprintf(stderr, "disk %p disappeared: %s\n", diskRef, DADiskGetBSDName(diskRef));
+	Log(LOG_DEBUG, @"%s <%p> %s", __FUNCTION__, diskRef, DADiskGetBSDName(diskRef));
 	
 	Disk *tmpDisk = [[Disk alloc] initWithDiskRef:diskRef];
 	
@@ -125,7 +126,7 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 {
 	if (context != [Disk class]) return;
 	
-	fprintf(stderr, "disk %p description changed: %s\n", diskRef, DADiskGetBSDName(diskRef));
+	Log(LOG_DEBUG, @"%s <%p> %s, keys changed:", __FUNCTION__, diskRef, DADiskGetBSDName(diskRef));
 	CFShow(keys);
 	
 	for (Disk *disk in uniqueDisks) {
@@ -143,7 +144,7 @@ void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 {
 //	Disk *disk = (Disk *)context;
 	
-	fprintf(stderr, "%s disk %p dissenter %p\n", __FUNCTION__, diskRef, dissenter);
+	Log(LOG_DEBUG, @"%s <%p> dissenter <%p>", __FUNCTION__, diskRef, dissenter);
 	
 	if (dissenter) {
 		NSString *errorString = (NSString *) DADissenterGetStatusString(dissenter);
@@ -157,7 +158,7 @@ void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 		[info setObject:[NSString stringWithFormat:@"Error code: %d", code] forKey:NSLocalizedFailureReasonErrorKey];
 		NSError *error = [NSError errorWithDomain:@"AppErrorDomain" code:code userInfo:info];
 
-		NSLog(@"%@", error);
+		Log(LOG_DEBUG, @"%@", error);
 //		[NSApp presentError:error];
 	}
 }

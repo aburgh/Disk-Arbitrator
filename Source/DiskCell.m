@@ -53,8 +53,7 @@
 
 - (void)drawInteriorWithFrame:(NSRect)frame inView:(NSView *)controlView
 {
-//	fprintf(stderr, "Frame: %s\t\tView Frame: %s\n", [NSStringFromRect(frame) UTF8String],
-//			[NSStringFromRect([view frame]) UTF8String]);
+//	Log(LOG_DEBUG, @"Frame: %s\t\tView Frame: %@", NSStringFromRect(frame),	NSStringFromRect([view frame]));
 
 	NSRect iconFrame, textFrame;
 
@@ -79,7 +78,7 @@
 	Disk *disk = (Disk *)value;
 	
 	if (disk) {
-//		Log(1, @"%s self: %p disk: %p", __FUNCTION__, self, disk);
+//		Log(LOG_DEBUG, @"%s self: %p disk: %p", __FUNCTION__, self, disk);
 
 		self.indentation = disk.isWholeDisk ? 0.0 : 17.0;
 		self.mounted = disk.mounted;

@@ -28,6 +28,8 @@
 
 */
 
+#include <syslog.h>
+
 void Log(int level, NSString *format, ...);
 
 void SetShouldLogToSyslog(BOOL flag);

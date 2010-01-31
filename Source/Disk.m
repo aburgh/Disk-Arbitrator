@@ -7,6 +7,7 @@
 //
 
 #import "Disk.h"
+#import "AppError.h"
 #import <DiskArbitration/DiskArbitration.h>
 #import "DiskArbitrationPrivateFunctions.h"
 #import <IOKit/kext/KextManager.h>
@@ -128,7 +129,7 @@
 {
 	self.mounting = YES;
 
-	fprintf(stderr, "%s mounting %s arguments: %s\n", __FUNCTION__, [BSDName UTF8String], [[args description] UTF8String]);
+	Log(LOG_INFO, @"%s mounting %@ arguments: %@", __FUNCTION__, BSDName, [args description]);
 
 	// ensure arg list is NULL terminated
 	id *argv = calloc([args count] + 1, sizeof(id));

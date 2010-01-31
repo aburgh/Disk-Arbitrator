@@ -69,7 +69,31 @@
 
 - (void)diskDidAppear:(NSNotification *)notif
 {
-	[[self mutableSetValueForKey:@"disks"] addObject:[notif object]];
+	Disk *disk = [notif object];
+
+	fprintf(stderr, "%s disk: %s\n", __FUNCTION__, [disk.BSDName UTF8String]);
+
+	[[self mutableSetValueForKey:@"disks"] addObject:disk];
+
+	if (self.isActivated && mountMode == MM_READONLY && disk.mountable && !disk.mounted) {
+
+		CFDictionaryRef desc = disk.diskDescription;
+		CFStringRef volumeKindRef = CFDictionaryGetValue(desc, kDADiskDescriptionVolumeKindKey);
+
+		// Arguments will be passed via the -o flag of mount. If the file system specific mount, e.g. mount_hfs,
+		// supports additional flags that mount(8) doesn't, they can be passed to -o.  That feature is used to
+		// pass -j to mount_hfs, which instructs HFS to ignore journal.  Normally, an HFS volume that
+		// has a dirty journal will fail to mount read-only because the file system is inconsistent.  "-j" is
+		// a work-around.
+
+		NSArray *args;
+		if ([@"hfs" isEqual:(NSString *)volumeKindRef])
+			args = [NSArray arrayWithObjects:@"-j", @"rdonly", nil];
+		else
+			args = [NSArray arrayWithObjects:@"rdonly", nil];
+
+		[disk performSelector:@selector(mountWithArguments:) withObject:args afterDelay:0.0];
+	}
 }
 
 - (void)diskDidDisappear:(NSNotification *)notif
@@ -182,18 +206,26 @@
 
 #pragma mark Callbacks
 
-DADissenterRef DiskMountApprovalCallback(DADiskRef disk, void *arbitrator)
+DADissenterRef DiskMountApprovalCallback(DADiskRef diskRef, void *arbitrator)
 {
-	fprintf(stderr, "%s called: %p %s\n", __FUNCTION__, disk, DADiskGetBSDName(disk));
-	fprintf(stderr, "\t claimed: %s\n\n", DADiskIsClaimed(disk) ? "Yes" : "No");
+	fprintf(stderr, "%s called: %p %s\n", __FUNCTION__, diskRef, DADiskGetBSDName(diskRef));
+	fprintf(stderr, "\t claimed: %s\n\n", DADiskIsClaimed(diskRef) ? "Yes" : "No");
 
-//	DADiskClaim(disk, kDADiskClaimOptionDefault, DiskClaimReleaseCallback, arbitrator, DiskClaimCallback, arbitrator);
+	Disk *disk = [[Disk alloc] initWithDiskRef:diskRef];
 	
-//	return NULL;
-	DADissenterRef dissenter = DADissenterCreate(kCFAllocatorDefault,
+	DADissenterRef dissenter;
+
+	if (disk.mounting) {
+		disk.mounting = NO;
+		dissenter = NULL;
+	}
+	else {
+		 dissenter = DADissenterCreate(kCFAllocatorDefault,
 												 kDAReturnNotPermitted, 
-												 CFSTR("DiskArbitrator is in charge"));
-	
+												 CFSTR("Disk Arbitrator is in charge"));
+	}
+	[disk release];
+
 	return dissenter;
 }
 
@@ -202,8 +234,8 @@ void DiskClaimCallback(DADiskRef disk, DADissenterRef dissenter, void *arbitrato
 	fprintf(stderr, "%s called: %p %s\n", __FUNCTION__, disk, DADiskGetBSDName(disk));
 	fprintf(stderr, "\t claimed: %s\n\n", DADiskIsClaimed(disk) ? "Yes" : "No");
 	
-	CFShow(dissenter);
-	
+	if (dissenter)
+		CFShow(dissenter);
 }
 
 DADissenterRef DiskClaimReleaseCallback(DADiskRef disk, void *arbitrator)

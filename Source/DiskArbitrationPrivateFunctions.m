@@ -139,6 +139,29 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 	}
 }
 
+void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *context)
+{
+//	Disk *disk = (Disk *)context;
+	
+	fprintf(stderr, "%s disk %p dissenter %p\n", __FUNCTION__, diskRef, dissenter);
+	
+	if (dissenter) {
+		NSString *errorString = (NSString *) DADissenterGetStatusString(dissenter);
+		if (!errorString)
+			errorString = @"Unknown Disk Arbitration Mount error";
+
+		DAReturn code = DADissenterGetStatus(dissenter);
+		
+		NSMutableDictionary *info = [NSMutableDictionary dictionary];
+		[info setObject:errorString forKey:NSLocalizedDescriptionKey];
+		[info setObject:[NSString stringWithFormat:@"Error code: %d", code] forKey:NSLocalizedFailureReasonErrorKey];
+		NSError *error = [NSError errorWithDomain:@"AppErrorDomain" code:code userInfo:info];
+
+		NSLog(@"%@", error);
+//		[NSApp presentError:error];
+	}
+}
+
 NSString * const DADiskDidAppearNotification = @"DADiskDidAppearNotification";
 NSString * const DADiskDidDisappearNotification = @"DADiskDidDisppearNotification";
 NSString * const DADiskDidChangeNotification = @"DADiskDidChangeNotification";

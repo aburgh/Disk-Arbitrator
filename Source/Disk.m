@@ -17,6 +17,7 @@
 @synthesize BSDName;
 @synthesize mountable;
 @synthesize mounted;
+@synthesize mounting;
 @synthesize icon;
 @synthesize parent;
 @synthesize children;
@@ -112,6 +113,32 @@
 - (BOOL)isEqual:(id)object
 {
 	return ([BSDName hash] == [object hash]);
+}
+
+- (NSString *)description
+{
+	return [NSString stringWithFormat:@"<%@ 0x%p> BSD Name: = %@", [self class], self, BSDName];
+}
+
+- (void)mount
+{
+}
+
+- (void)mountWithArguments:(NSArray *)args
+{
+	self.mounting = YES;
+
+	fprintf(stderr, "%s mounting %s arguments: %s\n", __FUNCTION__, [BSDName UTF8String], [[args description] UTF8String]);
+
+	// ensure arg list is NULL terminated
+	id *argv = calloc([args count] + 1, sizeof(id));
+
+	[args getObjects:argv range:NSMakeRange(0, [args count])];
+
+	DADiskMountWithArguments((DADiskRef) disk, NULL, kDADiskMountOptionDefault,
+							 DiskMountCallback, self, (CFStringRef *)argv);
+
+	free(argv);
 }
 
 - (void)diskDidDisappear

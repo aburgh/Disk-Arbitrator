@@ -18,7 +18,6 @@
 {
 	DAApprovalSessionRef approvalSession;
 	NSMutableSet *disks;
-	BOOL activated;
 	NSInteger mountMode;
 }
 

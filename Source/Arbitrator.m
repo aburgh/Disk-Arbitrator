@@ -15,7 +15,6 @@
 @implementation Arbitrator
 
 @synthesize disks;
-@synthesize isActivated;
 @synthesize mountMode;
 
 + (void)initialize

@@ -10,7 +10,7 @@
 	<true/>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/Users/aburgh/Library/Caches/Xcode/Debug/DiskArbitrator.app/Contents/MacOS/DiskArbitrator</string>
+		<string>/Applications/Utilities/Disk Arbitrator.app/Contents/MacOS/Disk Arbitrator</string>
 	</array>
 </dict>
 </plist>

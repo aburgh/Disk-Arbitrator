@@ -15,6 +15,7 @@
     NSWindow *window;
 	NSStatusItem *statusItem;
 	NSMenu *statusMenu;
+	NSTableView *tableView;
 	
 	NSArrayController *disksArrayController;
 	Arbitrator *arbitrator;
@@ -23,6 +24,7 @@
 
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet NSMenu *statusMenu;
+@property (assign) IBOutlet NSTableView *tableView;
 @property (assign) IBOutlet NSArrayController *disksArrayController;
 @property (copy) NSArray *sortDescriptors;
 @property (retain) NSStatusItem *statusItem;

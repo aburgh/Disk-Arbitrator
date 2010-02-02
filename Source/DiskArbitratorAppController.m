@@ -14,6 +14,7 @@
 
 @synthesize window;
 @synthesize statusMenu;
+@synthesize tableView;
 @synthesize disksArrayController;
 @synthesize sortDescriptors;
 @synthesize statusItem;
@@ -50,6 +51,8 @@
 	self.statusItem = [bar statusItemWithLength:NSSquareStatusItemLength];
 	[self setStatusItemIconWithName:@"StatusItem Disabled 1"];
 	[statusItem setMenu:statusMenu];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(diskDidChange:) name:DADiskDidChangeNotification object:nil];
 	
 	self.arbitrator = [Arbitrator new];
 	[self performActivation:self];
@@ -116,6 +119,13 @@
 
 	//	fprintf(stdout, "getting value: %s\n", [disk.BSDName UTF8String]);
 	return disk;
+}
+
+- (void)diskDidChange:(NSNotification *)notif
+{
+	NSUInteger row = [[disksArrayController arrangedObjects] indexOfObject:[notif object]];
+	
+	[tableView setNeedsDisplayInRect:[tableView rectOfRow:row]];
 }
 
 @end

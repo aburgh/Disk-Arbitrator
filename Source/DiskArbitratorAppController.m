@@ -20,6 +20,16 @@
 @synthesize statusItem;
 @synthesize arbitrator;
 
+- (void)dealloc
+{
+	if (arbitrator.isActivated)
+		[arbitrator deactivate];
+	[arbitrator release];
+	[sortDescriptors release];
+	[statusItem release];
+	[super dealloc];
+}
+
 - (void)setStatusItemIconWithName:(NSString *)name
 {
 	NSString *iconPath = [[NSBundle mainBundle] pathForResource:name ofType:@"png"];
@@ -55,9 +65,19 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(diskDidChange:) name:DADiskDidChangeNotification object:nil];
 	
 	self.arbitrator = [Arbitrator new];
-	[self performActivation:self];
+	[arbitrator addObserver:self forKeyPath:@"isActivated" options:0 context:NULL];
+	[arbitrator addObserver:self forKeyPath:@"mountMode" options:0 context:NULL];
+	arbitrator.isActivated = YES;
+	[arbitrator release];
 	
 	self.sortDescriptors = [NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"BSDName" ascending:YES] autorelease]];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+	if (object == arbitrator)
+		if ([keyPath isEqual:@"isActivated"] || [keyPath isEqual:@"mountMode"])
+			[self refreshStatusItemIcon];
 }
 
 - (IBAction)showMainWindow:(id)sender
@@ -69,38 +89,31 @@
 - (IBAction)performActivation:(id)sender
 {
 	[arbitrator activate];
-	[self refreshStatusItemIcon];
 }
 
 - (IBAction)performDeactivation:(id)sender
 {
 	[arbitrator deactivate];
-	[self refreshStatusItemIcon];
+}
+
+- (IBAction)toggleActivation:(id)sender
+{
+	if (arbitrator.isActivated)
+		[self performDeactivation:sender];
+	else
+		[self performActivation:sender];
 }
 
 - (IBAction)performSetMountBlockMode:(id)sender
 {
 	arbitrator.mountMode = MM_BLOCK;
-	[self refreshStatusItemIcon];
 }
 
 - (IBAction)performSetMountReadOnlyMode:(id)sender
 {
 	arbitrator.mountMode = MM_READONLY;
-	[self refreshStatusItemIcon];
 }
 
-//- (IBAction)toggleActivation:(id)sender;
-//{
-//	if ([arbitrator isActivated]) {
-//		[arbitrator deactivate];
-//		[self refreshStatusItemIcon];
-//	}
-//	else {
-//		[arbitrator activate];
-//		[self refreshStatusItemIcon];
-//	}
-//}
 
 #pragma mark TableView Delegates
 

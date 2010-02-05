@@ -23,7 +23,7 @@
 
 @property (retain) NSMutableSet *disks;
 @property (readonly) NSSet *wholeDisks;
-@property (readonly) BOOL isActivated;
+@property BOOL isActivated;
 @property NSInteger mountMode;
 
 - (BOOL)registerSession;

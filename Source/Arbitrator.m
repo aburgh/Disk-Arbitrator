@@ -154,6 +154,15 @@
 	return approvalSession ? YES : NO;
 }
 
+- (void)setIsActivated:(BOOL)shouldActivate
+{
+	if (shouldActivate && !self.isActivated)
+		[self activate];
+
+	else if (!shouldActivate && self.isActivated)
+		[self deactivate];
+}
+
 - (NSSet *)wholeDisks
 {
 	NSMutableSet *wholeDisks = [NSMutableSet new];

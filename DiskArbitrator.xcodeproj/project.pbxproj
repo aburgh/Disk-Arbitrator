@@ -56,6 +56,7 @@
 		9654A20A110CB55B00E9B0C4 /* AppError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppError.m; sourceTree = "<group>"; };
 		9654A46B11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiskArbitrationPrivateFunctions.h; sourceTree = "<group>"; };
 		9654A46C11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiskArbitrationPrivateFunctions.m; sourceTree = "<group>"; };
+		9654B6D8111C2C7D00E9B0C4 /* Release Notes.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "Release Notes.markdown"; path = "Resources/Release Notes.markdown"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +151,7 @@
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
 				964E4F0110FAB2BE007B3112 /* Launchd Agent.plist */,
+				9654B6D8111C2C7D00E9B0C4 /* Release Notes.markdown */,
 			);
 			name = Resources;
 			sourceTree = "<group>";

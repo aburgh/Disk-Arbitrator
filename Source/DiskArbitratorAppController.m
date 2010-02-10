@@ -81,6 +81,7 @@
 	self.sortDescriptors = [NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"BSDName" ascending:YES] autorelease]];
 	
 	SetupToolbar(window, self);
+	[window setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context

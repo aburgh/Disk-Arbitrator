@@ -33,3 +33,5 @@
 void Log(int level, NSString *format, ...);
 
 void SetShouldLogToSyslog(BOOL flag);
+
+extern NSString * const AppErrorDomain;

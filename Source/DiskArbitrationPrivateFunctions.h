@@ -17,6 +17,7 @@ void DiskAppearedCallback(DADiskRef diskRef, void *context);
 void DiskDisappearedCallback(DADiskRef diskRef, void *context);
 void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *context);
 void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *context);
+void DiskUnmountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *context);
 
 
 @interface Disk (DiskPrivate)

@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class Arbitrator;
+@class Disk;
 
 @interface AppController : NSObject <NSApplicationDelegate> 
 {
@@ -20,6 +21,8 @@
 	NSArrayController *disksArrayController;
 	Arbitrator *arbitrator;
 	NSArray *sortDescriptors;
+	
+	NSMutableArray *displayErrorQueue; // 
 }
 
 @property (assign) IBOutlet NSWindow *window;
@@ -37,5 +40,10 @@
 
 - (IBAction)performSetMountBlockMode:(id)sender;
 - (IBAction)performSetMountReadOnlyMode:(id)sender;
+
+- (IBAction)performMount:(id)sender;
+- (IBAction)performEject:(id)sender;
+
+- (Disk *)selectedDisk;
 
 @end

@@ -19,6 +19,7 @@
 @synthesize mountable;
 @synthesize mounted;
 @synthesize mounting;
+@synthesize ejectable;
 @synthesize icon;
 @synthesize parent;
 @synthesize children;
@@ -39,9 +40,12 @@
 	if ([key isEqual:@"mounted"])
 		return [NSSet setWithObject:@"diskDescription"];
 	
+	if ([key isEqual:@"ejectable"])
+		return [NSSet setWithObject:@"diskDescription"];
+
 	if ([key isEqual:@"icon"])
 		return [NSSet setWithObject:@"diskDescription"];
-	
+
 	return [super keyPathsForValuesAffectingValueForKey:key];
 }
 
@@ -123,10 +127,14 @@
 
 - (void)mount
 {
+	[self mountWithArguments:[NSArray array]];
 }
 
 - (void)mountWithArguments:(NSArray *)args
 {
+	NSAssert(self.mountable, @"Disk isn't mountable.");
+	NSAssert(self.mounted == NO, @"Disk is already mounted.");
+
 	self.mounting = YES;
 
 	Log(LOG_INFO, @"%s mounting %@ arguments: %@", __FUNCTION__, BSDName, [args description]);
@@ -140,6 +148,14 @@
 							 DiskMountCallback, self, (CFStringRef *)argv);
 
 	free(argv);
+}
+
+- (void)unmountWithOptions:(NSUInteger)options
+{
+	NSAssert(self.mountable, @"Disk isn't mountable.");
+	NSAssert(self.mounted, @"Disk isn't mounted.");
+	
+	DADiskUnmount((DADiskRef) disk, options, DiskUnmountCallback, self);
 }
 
 - (void)diskDidDisappear
@@ -176,6 +192,9 @@
 		CFBooleanRef flagRef = CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumeMountableKey);
 		mountable = flagRef ? CFBooleanGetValue(flagRef) : NO;
 		mounted = CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumePathKey) ? YES : NO;
+		
+		flagRef = CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaEjectableKey);
+		ejectable = flagRef ? CFBooleanGetValue(flagRef) : NO;
 	}
 }
 

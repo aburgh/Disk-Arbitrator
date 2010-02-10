@@ -39,3 +39,5 @@ void SetShouldLogToSyslog(BOOL flag)
 {
 	[[NSUserDefaults standardUserDefaults] setBool:flag forKey:@"EnableSyslog"];
 }
+
+NSString * const AppErrorDomain = @"AppErrorDomain";

@@ -11,6 +11,15 @@
 extern NSString * const DADiskDidAppearNotification;
 extern NSString * const DADiskDidDisappearNotification;
 extern NSString * const DADiskDidChangeNotification;
+extern NSString * const DADiskDidAttemptUnmountNotification;
+
+extern NSString * const DAStatusErrorKey;
+
+enum { 
+    kDiskUnmountOptionDefault = 0x00000000, 
+    kDiskUnmountOptionForce = 0x00080000, 
+    kDiskUnmountOptionWhole = 0x00000001 
+};
 
 /* The mounting attribute exists because of a quirk when attaching a volume using "hdiutil attach".  Even if "-nomount"
  * is specified, the mount approval callback is called. This confuses the situation when attempting to initiate
@@ -29,6 +38,7 @@ extern NSString * const DADiskDidChangeNotification;
 	BOOL mountable;
 	BOOL mounted;
 	BOOL mounting;
+	BOOL ejectable;
 	NSImage *icon;
 	Disk *parent;
 	NSMutableSet *children;
@@ -40,6 +50,7 @@ extern NSString * const DADiskDidChangeNotification;
 @property (readonly) BOOL mountable;
 @property (readonly) BOOL mounted;
 @property (readwrite) BOOL mounting;
+@property (readonly) BOOL ejectable;
 @property (readonly) BOOL isWholeDisk;
 @property (retain) NSImage *icon;
 @property (assign) Disk *parent;
@@ -47,5 +58,6 @@ extern NSString * const DADiskDidChangeNotification;
 
 - (void)mount;
 - (void)mountWithArguments:(NSArray *)args;
+- (void)unmountWithOptions:(NSUInteger)options;
 
 @end

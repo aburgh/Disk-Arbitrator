@@ -11,9 +11,9 @@
 			<string key="NS.object.0">740</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="57"/>
-			<integer value="533"/>
 			<integer value="372"/>
+			<integer value="533"/>
+			<integer value="57"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1307,13 +1307,13 @@
 										<object class="NSTableView" id="475433248">
 											<reference key="NSNextResponder" ref="385315458"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrameSize">{424, 540}</string>
+											<string key="NSFrameSize">{466, 560}</string>
 											<reference key="NSSuperview" ref="385315458"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTableHeaderView" key="NSHeaderView" id="851431564">
 												<reference key="NSNextResponder" ref="625916963"/>
 												<int key="NSvFlags">256</int>
-												<string key="NSFrameSize">{424, 17}</string>
+												<string key="NSFrameSize">{466, 17}</string>
 												<reference key="NSSuperview" ref="625916963"/>
 												<reference key="NSTableView" ref="475433248"/>
 											</object>
@@ -1325,7 +1325,7 @@
 											</object>
 											<array class="NSMutableArray" key="NSTableColumns">
 												<object class="NSTableColumn" id="367919229">
-													<double key="NSWidth">330</double>
+													<double key="NSWidth">372</double>
 													<double key="NSMinWidth">40</double>
 													<double key="NSMaxWidth">1000</double>
 													<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -1441,7 +1441,7 @@
 											<int key="NSTableViewDraggingDestinationStyle">0</int>
 										</object>
 									</array>
-									<string key="NSFrame">{{1, 17}, {424, 540}}</string>
+									<string key="NSFrame">{{1, 17}, {466, 560}}</string>
 									<reference key="NSSuperview" ref="569266854"/>
 									<reference key="NSNextKeyView" ref="475433248"/>
 									<reference key="NSDocView" ref="475433248"/>
@@ -1465,7 +1465,7 @@
 									<int key="NSsFlags">1</int>
 									<reference key="NSTarget" ref="569266854"/>
 									<string key="NSAction">_doScroller:</string>
-									<double key="NSCurValue">0.27358490566037746</double>
+									<double key="NSCurValue">0.22985666855615844</double>
 									<double key="NSPercent">0.99764705882352944</double>
 								</object>
 								<object class="NSClipView" id="625916963">
@@ -1474,7 +1474,7 @@
 									<array class="NSMutableArray" key="NSSubviews">
 										<reference ref="851431564"/>
 									</array>
-									<string key="NSFrame">{{1, 0}, {424, 17}}</string>
+									<string key="NSFrame">{{1, 0}, {466, 17}}</string>
 									<reference key="NSSuperview" ref="569266854"/>
 									<reference key="NSNextKeyView" ref="851431564"/>
 									<reference key="NSDocView" ref="851431564"/>
@@ -1483,7 +1483,7 @@
 								</object>
 								<reference ref="677410636"/>
 							</array>
-							<string key="NSFrame">{{20, 53}, {426, 558}}</string>
+							<string key="NSFrame">{{-1, 53}, {468, 578}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSNextKeyView" ref="385315458"/>
 							<int key="NSsFlags">530</int>
@@ -4207,10 +4207,19 @@
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
 					<string key="className">AppController</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">Source/DiskArbitratorAppController+Toolbar.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">AppController</string>
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="performActivation:">id</string>
 						<string key="performDeactivation:">id</string>
+						<string key="performEject:">id</string>
+						<string key="performMount:">id</string>
 						<string key="performSetMountBlockMode:">id</string>
 						<string key="performSetMountReadOnlyMode:">id</string>
 						<string key="showMainWindow:">id</string>

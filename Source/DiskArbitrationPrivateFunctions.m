@@ -189,10 +189,37 @@ void DiskUnmountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *cont
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidAttemptUnmountNotification object:context userInfo:info];
 }
 
+void DiskEjectCallback(DADiskRef diskRef, DADissenterRef dissenter, void *context)
+{
+	NSDictionary *info = nil;
+	
+	if (dissenter) {
+		DAReturn status = DADissenterGetStatus(dissenter);
+		
+		NSString *statusString = (NSString *) DADissenterGetStatusString(dissenter);
+		if (!statusString)
+			statusString = [NSString stringWithFormat:@"Error code: %d", status];
+		
+		Log(LOG_INFO, @"%s disk: %@ dissenter: (%d) %@", __FUNCTION__, context, status, statusString);
+		
+		info = [NSDictionary dictionaryWithObjectsAndKeys:
+				[NSNumber numberWithInt:status], DAStatusErrorKey,
+				statusString, NSLocalizedFailureReasonErrorKey,
+				statusString, NSLocalizedRecoverySuggestionErrorKey,
+				nil];
+	}
+	else {
+		Log(LOG_DEBUG, @"%s disk ejected: %@ ", __FUNCTION__, context);
+	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidAttemptEjectNotification object:context userInfo:info];
+}
+
 
 NSString * const DADiskDidAppearNotification = @"DADiskDidAppearNotification";
 NSString * const DADiskDidDisappearNotification = @"DADiskDidDisppearNotification";
 NSString * const DADiskDidChangeNotification = @"DADiskDidChangeNotification";
 NSString * const DADiskDidAttemptUnmountNotification = @"DADiskDidAttemptUnmountNotification";
+NSString * const DADiskDidAttemptEjectNotification = @"DADiskDidAttemptEjectNotification";
 
 NSString * const DAStatusErrorKey = @"DAStatusErrorKey";

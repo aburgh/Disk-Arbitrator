@@ -158,6 +158,13 @@
 	DADiskUnmount((DADiskRef) disk, options, DiskUnmountCallback, self);
 }
 
+- (void)eject
+{
+	NSAssert(ejectable, @"Disk is not ejectable: %@", self);
+	
+	DADiskEject((DADiskRef) disk, kDADiskEjectOptionDefault, DiskEjectCallback, self);
+}
+
 - (void)diskDidDisappear
 {
 	[uniqueDisks removeObject:self];

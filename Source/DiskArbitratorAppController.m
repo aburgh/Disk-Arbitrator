@@ -69,6 +69,7 @@
 	
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 	[center addObserver:self selector:@selector(diskDidChange:) name:DADiskDidChangeNotification object:nil];
+	[center addObserver:self selector:@selector(didAttemptEject:) name:DADiskDidAttemptEjectNotification object:nil];
 	[center addObserver:self selector:@selector(didAttemptUnmount:) name:DADiskDidAttemptUnmountNotification object:nil];
 	
 	self.arbitrator = [Arbitrator new];
@@ -154,6 +155,7 @@
 
 - (IBAction)performEject:(id)sender
 {
+	[[self selectedDisk] eject];
 }
 
 - (Disk *)selectedDisk
@@ -246,7 +248,6 @@
 		else {
 			
 			[window makeKeyAndOrderFront:self];
-			//		[window presentError:error];
 			[NSApp presentError:error
 				 modalForWindow:window
 					   delegate:self
@@ -254,6 +255,43 @@
 					contextInfo:NULL];
 		}
 	}	
+}
+
+- (void)didAttemptEject:(NSNotification *)notif
+{
+	Disk *disk = [notif object];
+	
+	if ([notif userInfo]) {
+		
+		NSMutableDictionary *info = [[notif userInfo] mutableCopy];
+		
+		// If the eject failed, the notification userInfo will have keys/values that correspond to an NSError
+		
+		Log(LOG_INFO, @"Ejecting %@ failed: (%@) %@", disk.BSDName, [info objectForKey:DAStatusErrorKey], [info objectForKey:NSLocalizedFailureReasonErrorKey]);
+		
+		[info setObject:NSLocalizedString(@"Eject failed", nil) forKey:NSLocalizedDescriptionKey];
+		
+		NSError *error = [NSError errorWithDomain:AppErrorDomain
+											 code:[[info objectForKey:DAStatusErrorKey] intValue]
+										 userInfo:info];
+		[info release];
+		
+		if ([window attachedSheet]) {
+			[displayErrorQueue addObject:error];
+		}
+		else {
+			
+			[window makeKeyAndOrderFront:self];
+			[NSApp presentError:error
+				 modalForWindow:window
+					   delegate:self
+			 didPresentSelector:@selector(didPresentErrorWithRecovery:contextInfo:)
+					contextInfo:NULL];
+		}
+	}
+	else {
+		Log(LOG_DEBUG, @"%s: Ejected: %@", __FUNCTION__, disk);
+	}
 }
 
 @end

@@ -12,6 +12,7 @@ extern NSString * const DADiskDidAppearNotification;
 extern NSString * const DADiskDidDisappearNotification;
 extern NSString * const DADiskDidChangeNotification;
 extern NSString * const DADiskDidAttemptUnmountNotification;
+extern NSString * const DADiskDidAttemptEjectNotification;
 
 extern NSString * const DAStatusErrorKey;
 
@@ -59,5 +60,6 @@ enum {
 - (void)mount;
 - (void)mountWithArguments:(NSArray *)args;
 - (void)unmountWithOptions:(NSUInteger)options;
+- (void)eject;
 
 @end

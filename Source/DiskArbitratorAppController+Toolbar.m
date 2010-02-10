@@ -98,8 +98,14 @@
 		}
 	}
 	
-	else if ([[toolbarItem itemIdentifier] isEqual:ToolbarItemEjectIdentifier])
-		enabled = (selectedDisk = [self selectedDisk])  ? selectedDisk.ejectable : NO;
+	else if ([[toolbarItem itemIdentifier] isEqual:ToolbarItemEjectIdentifier]) {
+		selectedDisk = [self selectedDisk];
+		
+		if (selectedDisk && selectedDisk.isWholeDisk && selectedDisk.ejectable)
+			enabled = YES;
+		else
+			enabled = NO;
+	}
 	
 	return enabled;
 }

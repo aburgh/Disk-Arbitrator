@@ -144,7 +144,7 @@
 	[theDisk unmountWithOptions: theDisk.isWholeDisk ?  kDiskUnmountOptionWhole : kDiskUnmountOptionDefault];
 }
 
-- (IBAction)performToolbarMount:(id)sender
+- (IBAction)performMountOrUnmount:(id)sender
 {
 	Disk *theDisk = [self selectedDisk];
 	
@@ -157,6 +157,11 @@
 - (IBAction)performEject:(id)sender
 {
 	[[self selectedDisk] eject];
+}
+
+- (IBAction)performGetInfo:(id)sender
+{
+	
 }
 
 - (Disk *)selectedDisk

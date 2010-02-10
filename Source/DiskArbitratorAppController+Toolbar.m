@@ -20,8 +20,8 @@
 		[item setLabel:NSLocalizedString(@"Info", nil)];
 		[item setPaletteLabel:NSLocalizedString(@"Info", nil)];
 		[item setImage:[NSImage imageNamed:@"ToolbarItem Info"]]; // NSImageNameInfo]];
-		[item setTarget:window];
-		[item setAction:@selector(orderFront:)];
+		[item setTarget:self];
+		[item setAction:@selector(performGetInfo:)];
 		[item setToolTip:NSLocalizedString(@"Show detailed disk info", nil)];
 	} 
 	else if ([itemIdentifier isEqual:ToolbarItemEjectIdentifier]) {		// Eject
@@ -37,7 +37,7 @@
 		[item setPaletteLabel:NSLocalizedString(@"Mount", nil)];
 		[item setImage:[NSImage imageNamed:@"ToolbarItem Mount"]];
 		[item setTarget:self];
-		[item setAction:@selector(performToolbarMount:)];
+		[item setAction:@selector(performMountOrUnmount:)];
 		[item setToolTip:NSLocalizedString(@"Select a volume, then click to mount or unmount.", nil)];
 	}
 	return [item autorelease];
@@ -76,7 +76,7 @@
 	Disk *selectedDisk;
 	
     if ([[toolbarItem itemIdentifier] isEqual:ToolbarItemInfoIdentifier])
-		enabled = YES;
+		enabled = NO;
 	
 	else if ([[toolbarItem itemIdentifier] isEqual:ToolbarItemMountIdentifier]) {
 

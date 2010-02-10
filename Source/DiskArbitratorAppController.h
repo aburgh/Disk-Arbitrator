@@ -42,7 +42,10 @@
 - (IBAction)performSetMountReadOnlyMode:(id)sender;
 
 - (IBAction)performMount:(id)sender;
+- (IBAction)performUnmount:(id)sender;
+- (IBAction)performMountOrUnmount:(id)sender;
 - (IBAction)performEject:(id)sender;
+- (IBAction)performGetInfo:(id)sender;
 
 - (Disk *)selectedDisk;
 

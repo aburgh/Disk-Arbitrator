@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>ActiveLayerIndex</key>
-	<integer>1</integer>
+	<integer>0</integer>
 	<key>ApplicationVersion</key>
 	<array>
 		<string>com.omnigroup.OmniGrafflePro</string>
@@ -36,6 +36,305 @@
 	<integer>5</integer>
 	<key>GraphicsList</key>
 	<array>
+		<dict>
+			<key>Class</key>
+			<string>Group</string>
+			<key>Graphics</key>
+			<array>
+				<dict>
+					<key>Bounds</key>
+					<string>{{182.261, 266.187}, {2.69986, 2.69986}}</string>
+					<key>Class</key>
+					<string>ShapedGraphic</string>
+					<key>ID</key>
+					<integer>72</integer>
+					<key>Shape</key>
+					<string>Circle</string>
+					<key>Style</key>
+					<dict>
+						<key>fill</key>
+						<dict>
+							<key>Color</key>
+							<dict>
+								<key>b</key>
+								<string>0</string>
+								<key>g</key>
+								<string>0</string>
+								<key>r</key>
+								<string>0</string>
+							</dict>
+						</dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+					</dict>
+				</dict>
+				<dict>
+					<key>Bounds</key>
+					<string>{{175.902, 273.096}, {11.578, 1.74084}}</string>
+					<key>Class</key>
+					<string>ShapedGraphic</string>
+					<key>ID</key>
+					<integer>73</integer>
+					<key>Rotation</key>
+					<real>325</real>
+					<key>Shape</key>
+					<string>HorizontalTriangle</string>
+					<key>Style</key>
+					<dict>
+						<key>fill</key>
+						<dict>
+							<key>Color</key>
+							<dict>
+								<key>b</key>
+								<string>0</string>
+								<key>g</key>
+								<string>0</string>
+								<key>r</key>
+								<string>0</string>
+							</dict>
+						</dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+					</dict>
+				</dict>
+				<dict>
+					<key>Bounds</key>
+					<string>{{176, 260}, {15.2992, 15.2992}}</string>
+					<key>Class</key>
+					<string>ShapedGraphic</string>
+					<key>ID</key>
+					<integer>74</integer>
+					<key>Shape</key>
+					<string>Circle</string>
+					<key>Style</key>
+					<dict>
+						<key>fill</key>
+						<dict>
+							<key>Color</key>
+							<dict>
+								<key>b</key>
+								<string>0.22856</string>
+								<key>g</key>
+								<string>0.852941</string>
+								<key>r</key>
+								<string>0.00297903</string>
+							</dict>
+							<key>FillType</key>
+							<integer>3</integer>
+							<key>GradientColor</key>
+							<dict>
+								<key>b</key>
+								<string>0.661765</string>
+								<key>g</key>
+								<string>0.661765</string>
+								<key>r</key>
+								<string>0.661765</string>
+							</dict>
+						</dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>Width</key>
+							<real>1.5</real>
+						</dict>
+					</dict>
+				</dict>
+			</array>
+			<key>ID</key>
+			<integer>71</integer>
+			<key>Layer</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{29, 332}, {290, 98}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>FitText</key>
+			<string>Vertical</string>
+			<key>Flow</key>
+			<string>Resize</string>
+			<key>ID</key>
+			<integer>70</integer>
+			<key>Layer</key>
+			<integer>0</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>fill</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Align</key>
+				<integer>0</integer>
+				<key>Text</key>
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf250
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs24 \cf0 To make the app icon:\
+\
+ \'95\'a0export the large object at 256 dpi for 128 to 512 pixel reps.\
+\
+\'95 export the small version at 50 and 100 dpi\
+for the 16 &amp; 32 pixel reps.}</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Class</key>
+			<string>Group</string>
+			<key>Graphics</key>
+			<array>
+				<dict>
+					<key>Bounds</key>
+					<string>{{81.84, 237.26}, {21.059, 21.059}}</string>
+					<key>Class</key>
+					<string>ShapedGraphic</string>
+					<key>ID</key>
+					<integer>67</integer>
+					<key>Shape</key>
+					<string>Circle</string>
+					<key>Style</key>
+					<dict>
+						<key>fill</key>
+						<dict>
+							<key>Color</key>
+							<dict>
+								<key>b</key>
+								<string>0</string>
+								<key>g</key>
+								<string>0</string>
+								<key>r</key>
+								<string>0</string>
+							</dict>
+						</dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+					</dict>
+				</dict>
+				<dict>
+					<key>Bounds</key>
+					<string>{{32.2379, 291.15}, {90.3086, 13.5786}}</string>
+					<key>Class</key>
+					<string>ShapedGraphic</string>
+					<key>ID</key>
+					<integer>68</integer>
+					<key>Rotation</key>
+					<real>325</real>
+					<key>Shape</key>
+					<string>HorizontalTriangle</string>
+					<key>Style</key>
+					<dict>
+						<key>fill</key>
+						<dict>
+							<key>Color</key>
+							<dict>
+								<key>b</key>
+								<string>0</string>
+								<key>g</key>
+								<string>0</string>
+								<key>r</key>
+								<string>0</string>
+							</dict>
+						</dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+					</dict>
+				</dict>
+				<dict>
+					<key>Bounds</key>
+					<string>{{33, 189}, {119.334, 119.334}}</string>
+					<key>Class</key>
+					<string>ShapedGraphic</string>
+					<key>ID</key>
+					<integer>69</integer>
+					<key>Shape</key>
+					<string>Circle</string>
+					<key>Style</key>
+					<dict>
+						<key>fill</key>
+						<dict>
+							<key>Color</key>
+							<dict>
+								<key>b</key>
+								<string>0.22856</string>
+								<key>g</key>
+								<string>0.852941</string>
+								<key>r</key>
+								<string>0.00297903</string>
+							</dict>
+							<key>FillType</key>
+							<integer>3</integer>
+							<key>GradientColor</key>
+							<dict>
+								<key>b</key>
+								<string>0.661765</string>
+								<key>g</key>
+								<string>0.661765</string>
+								<key>r</key>
+								<string>0.661765</string>
+							</dict>
+						</dict>
+						<key>shadow</key>
+						<dict>
+							<key>Draws</key>
+							<string>NO</string>
+						</dict>
+						<key>stroke</key>
+						<dict>
+							<key>Width</key>
+							<real>1.5</real>
+						</dict>
+					</dict>
+				</dict>
+			</array>
+			<key>ID</key>
+			<integer>66</integer>
+			<key>Layer</key>
+			<integer>0</integer>
+		</dict>
 		<dict>
 			<key>Class</key>
 			<string>Group</string>
@@ -1436,7 +1735,7 @@
 			<key>Print</key>
 			<string>YES</string>
 			<key>View</key>
-			<string>YES</string>
+			<string>NO</string>
 		</dict>
 	</array>
 	<key>LayoutInfo</key>
@@ -1507,7 +1806,7 @@
 		</dict>
 	</array>
 	<key>ModificationDate</key>
-	<string>2010-02-10 16:37:33 -0500</string>
+	<string>2010-02-11 09:38:45 -0500</string>
 	<key>Modifier</key>
 	<string>Aaron Burghardt</string>
 	<key>NotesVisible</key>
@@ -1577,9 +1876,9 @@
 		<key>Frame</key>
 		<string>{{464, 101}, {1006, 996}}</string>
 		<key>VisibleRegion</key>
-		<string>{{32.875, 0}, {123.875, 111.375}}</string>
+		<string>{{-225, -85}, {991, 891}}</string>
 		<key>Zoom</key>
-		<real>8</real>
+		<real>1</real>
 	</dict>
 </dict>
 </plist>

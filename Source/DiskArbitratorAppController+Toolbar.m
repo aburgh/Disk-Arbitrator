@@ -34,7 +34,7 @@
 	}
 	else if ([itemIdentifier isEqual:ToolbarItemMountIdentifier]) {			// Mount
 		[item setLabel:NSLocalizedString(@"Mount", nil)];
-		[item setPaletteLabel:NSLocalizedString(@"Mount", nil)];
+		[item setPaletteLabel:NSLocalizedString(@"Mount/Unmount", nil)];
 		[item setImage:[NSImage imageNamed:@"ToolbarItem Mount"]];
 		[item setTarget:self];
 		[item setAction:@selector(performMountOrUnmount:)];
@@ -83,8 +83,7 @@
 		// Enable the item if the disk is mountable
 		// Set the label "Unmount" if mounted, otherwise to "Mount"
 
-		[toolbarItem setLabel:NSLocalizedString(@" Mount ", nil)];
-		[toolbarItem setPaletteLabel:NSLocalizedString(@" Mount ", nil)];
+		[toolbarItem setLabel:NSLocalizedString(@"Mount", nil)];
 		enabled = NO;
 		
 		selectedDisk = [self selectedDisk];
@@ -93,7 +92,6 @@
 			enabled = YES;
 			if (selectedDisk.mounted) {
 				[toolbarItem setLabel:NSLocalizedString(@"Unmount", nil)];
-				[toolbarItem setPaletteLabel:NSLocalizedString(@"Unmount", nil)];
 			}
 		}
 	}

@@ -11,6 +11,7 @@
 extern NSString * const DADiskDidAppearNotification;
 extern NSString * const DADiskDidDisappearNotification;
 extern NSString * const DADiskDidChangeNotification;
+extern NSString * const DADiskDidAttemptMountNotification;
 extern NSString * const DADiskDidAttemptUnmountNotification;
 extern NSString * const DADiskDidAttemptEjectNotification;
 

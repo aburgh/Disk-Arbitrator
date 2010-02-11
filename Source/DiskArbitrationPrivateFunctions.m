@@ -143,24 +143,27 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *context)
 {
 //	Disk *disk = (Disk *)context;
-	
-	Log(LOG_DEBUG, @"%s <%p> dissenter <%p>", __FUNCTION__, diskRef, dissenter);
+	NSMutableDictionary *info;
 	
 	if (dissenter) {
-		NSString *errorString = (NSString *) DADissenterGetStatusString(dissenter);
-		if (!errorString)
-			errorString = @"Unknown Disk Arbitration Mount error";
+		DAReturn status = DADissenterGetStatus(dissenter);
 
-		DAReturn code = DADissenterGetStatus(dissenter);
-		
-		NSMutableDictionary *info = [NSMutableDictionary dictionary];
-		[info setObject:errorString forKey:NSLocalizedDescriptionKey];
-		[info setObject:[NSString stringWithFormat:@"Error code: %d", code] forKey:NSLocalizedFailureReasonErrorKey];
-		NSError *error = [NSError errorWithDomain:AppErrorDomain code:code userInfo:info];
+		NSString *statusString = (NSString *) DADissenterGetStatusString(dissenter);
+		if (!statusString)
+			statusString = [NSString stringWithFormat:@"Error code: %d", status];
 
-		Log(LOG_DEBUG, @"%@", error);
-//		[NSApp presentError:error];
+		Log(LOG_DEBUG, @"%s disk %@ dissenter: (%d) %@", __FUNCTION__, context, status, statusString);
+
+		info = [NSMutableDictionary dictionary];
+		[info setObject:statusString forKey:NSLocalizedFailureReasonErrorKey];
+		[info setObject:statusString forKey:NSLocalizedRecoverySuggestionErrorKey];
+		[info setObject:[NSNumber numberWithInt:status] forKey:DAStatusErrorKey];
 	}
+	else {
+		Log(LOG_DEBUG, @"%s disk %@ mounted", __FUNCTION__, context);
+	}
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidAttemptMountNotification object:context userInfo:info];
 }
 
 void DiskUnmountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *context)
@@ -219,6 +222,7 @@ void DiskEjectCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 NSString * const DADiskDidAppearNotification = @"DADiskDidAppearNotification";
 NSString * const DADiskDidDisappearNotification = @"DADiskDidDisppearNotification";
 NSString * const DADiskDidChangeNotification = @"DADiskDidChangeNotification";
+NSString * const DADiskDidAttemptMountNotification = @"DADiskDidAttemptMountNotification";
 NSString * const DADiskDidAttemptUnmountNotification = @"DADiskDidAttemptUnmountNotification";
 NSString * const DADiskDidAttemptEjectNotification = @"DADiskDidAttemptEjectNotification";
 

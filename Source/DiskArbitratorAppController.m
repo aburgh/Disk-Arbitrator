@@ -11,6 +11,8 @@
 #import "AppError.h"
 #import "Arbitrator.h"
 #import "Disk.h"
+#import "SheetController.h"
+
 
 @implementation AppController
 
@@ -70,6 +72,7 @@
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 	[center addObserver:self selector:@selector(diskDidChange:) name:DADiskDidChangeNotification object:nil];
 	[center addObserver:self selector:@selector(didAttemptEject:) name:DADiskDidAttemptEjectNotification object:nil];
+	[center addObserver:self selector:@selector(didAttemptMount:) name:DADiskDidAttemptMountNotification object:nil];
 	[center addObserver:self selector:@selector(didAttemptUnmount:) name:DADiskDidAttemptUnmountNotification object:nil];
 	
 	self.arbitrator = [Arbitrator new];
@@ -82,6 +85,7 @@
 	
 	SetupToolbar(window, self);
 	[window setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
+	[window setWorksWhenModal:YES];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -125,14 +129,56 @@
 	arbitrator.mountMode = MM_READONLY;
 }
 
+- (void)performMountSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
+{
+	SheetController *controller = (SheetController *)contextInfo;
+	[sheet orderOut:self];
+	
+	Disk *selectedDisk = [self selectedDisk];
+	NSMutableArray *arguments = [NSMutableArray array];
+	
+	if (returnCode == NSOKButton) {
+		NSDictionary *options = controller.userInfo;
+		
+		if ([[options objectForKey:@"readOnly"] boolValue] == YES)
+			[arguments addObject:@"rdonly"];
+
+		if ([[options objectForKey:@"noOwners"] boolValue] == YES)
+			[arguments addObject:@"noowners"];
+
+		if ([[options objectForKey:@"noBrowse"] boolValue] == YES)
+			[arguments addObject:@"nobrowse"];
+
+		if ([[options objectForKey:@"ignoreJournal"] boolValue] == YES)
+			[arguments addObject:@"-j"];
+
+		NSString *path = [options objectForKey:@"path"];
+		
+		[selectedDisk mountAtPath:path withArguments:arguments];
+	}
+	[controller release];
+}
+
 - (IBAction)performMount:(id)sender
 {
 	Disk *selectedDisk = [self selectedDisk];
 
 	NSAssert(selectedDisk, @"No disk selected.");
 	NSAssert(selectedDisk.mounted == NO, @"Disk is already mounted.");
+
+	SheetController *controller = [[SheetController alloc] initWithWindowNibName:@"MountOptions"];
+	[controller window]; // triggers controller to load the NIB
 	
-	[selectedDisk mount];
+	[[controller userInfo] setObject:[NSNumber numberWithBool:YES] forKey:@"readOnly"];
+	[[controller userInfo] setObject:[NSNumber numberWithBool:YES] forKey:@"ignoreJournal"];
+	
+	[window makeKeyAndOrderFront:self];
+	
+	[NSApp beginSheet:[controller window]
+	   modalForWindow:window
+		modalDelegate:self
+	   didEndSelector:@selector(performMountSheetDidEnd:returnCode:contextInfo:)
+		  contextInfo:controller];
 }
 
 - (IBAction)performUnmount:(id)sender
@@ -225,6 +271,42 @@
 	NSUInteger row = [[disksArrayController arrangedObjects] indexOfObject:[notif object]];
 	
 	[tableView setNeedsDisplayInRect:[tableView rectOfRow:row]];
+}
+
+- (void)didAttemptMount:(NSNotification *)notif
+{
+	Disk *disk = [notif object];
+	NSMutableDictionary *info;
+	
+	if (disk.mounted) {
+		Log(LOG_DEBUG, @"%s: Mounted: %@", __FUNCTION__, disk.BSDName);
+	}
+	else {
+		// If the mount failed, the notification userInfo will have keys/values that correspond to an NSError
+		
+		info = [[notif userInfo] mutableCopy];
+		
+		Log(LOG_INFO, @"Mount failed: %@ (%@) %@", disk.BSDName, [info objectForKey:DAStatusErrorKey], [info objectForKey:NSLocalizedFailureReasonErrorKey]);
+		
+		[info setObject:NSLocalizedString(@"Mount failed", nil) forKey:NSLocalizedDescriptionKey];
+		
+		NSError *error = [NSError errorWithDomain:AppErrorDomain
+											 code:[[info objectForKey:DAStatusErrorKey] intValue]
+										 userInfo:info];
+		[info release];
+		
+		if ([window attachedSheet]) {
+			[displayErrorQueue addObject:error];
+		}
+		else {
+			[window makeKeyAndOrderFront:self];
+			[NSApp presentError:error
+				 modalForWindow:window
+					   delegate:self
+			 didPresentSelector:@selector(didPresentErrorWithRecovery:contextInfo:)
+					contextInfo:NULL];
+		}
+	}
 }
 
 - (void)didAttemptUnmount:(NSNotification *)notif

@@ -13,7 +13,7 @@
 
 @interface AppController : NSObject <NSApplicationDelegate> 
 {
-    NSWindow *window;
+    NSPanel *window;
 	NSStatusItem *statusItem;
 	NSMenu *statusMenu;
 	NSTableView *tableView;
@@ -25,7 +25,7 @@
 	NSMutableArray *displayErrorQueue; // 
 }
 
-@property (assign) IBOutlet NSWindow *window;
+@property (assign) IBOutlet NSPanel *window;
 @property (assign) IBOutlet NSMenu *statusMenu;
 @property (assign) IBOutlet NSTableView *tableView;
 @property (assign) IBOutlet NSArrayController *disksArrayController;

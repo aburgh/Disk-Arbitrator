@@ -1286,7 +1286,7 @@
 			<object class="NSWindowTemplate" id="972006081">
 				<int key="NSWindowStyleMask">31</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{335, 119}, {466, 631}}</string>
+				<string key="NSWindowRect">{{159, 453}, {466, 631}}</string>
 				<int key="NSWTFlags">1954021376</int>
 				<string key="NSWindowTitle">Disk Arbitrator</string>
 				<string key="NSWindowClass">NSPanel</string>
@@ -4040,9 +4040,9 @@
 				<integer value="1" key="351.ImportedFromIB2"/>
 				<string key="354.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="354.ImportedFromIB2"/>
-				<string key="371.IBEditorWindowLastContentRect">{{288, 510}, {466, 631}}</string>
+				<string key="371.IBEditorWindowLastContentRect">{{288, 497}, {466, 631}}</string>
 				<string key="371.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="371.IBWindowTemplateEditedContentRect">{{288, 510}, {466, 631}}</string>
+				<string key="371.IBWindowTemplateEditedContentRect">{{288, 497}, {466, 631}}</string>
 				<boolean value="YES" key="371.NSWindowTemplate.visibleAtLaunch"/>
 				<string key="371.editorWindowContentRectSynchronizationRect">{{33, 99}, {480, 360}}</string>
 				<string key="371.windowTemplate.maxSize">{3.40282e+38, 3.40282e+38}</string>
@@ -4127,7 +4127,7 @@
 				<string key="515.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="516.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="517.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="533.IBEditorWindowLastContentRect">{{89, 807}, {187, 123}}</string>
+				<string key="533.IBEditorWindowLastContentRect">{{101, 901}, {187, 123}}</string>
 				<string key="533.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="534.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="535.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -4219,9 +4219,12 @@
 						<string key="performActivation:">id</string>
 						<string key="performDeactivation:">id</string>
 						<string key="performEject:">id</string>
+						<string key="performGetInfo:">id</string>
 						<string key="performMount:">id</string>
+						<string key="performMountOrUnmount:">id</string>
 						<string key="performSetMountBlockMode:">id</string>
 						<string key="performSetMountReadOnlyMode:">id</string>
+						<string key="performUnmount:">id</string>
 						<string key="showMainWindow:">id</string>
 						<string key="toggleActivation:">id</string>
 					</dictionary>
@@ -4229,7 +4232,7 @@
 						<string key="disksArrayController">NSArrayController</string>
 						<string key="statusMenu">NSMenu</string>
 						<string key="tableView">NSTableView</string>
-						<string key="window">NSWindow</string>
+						<string key="window">NSPanel</string>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>

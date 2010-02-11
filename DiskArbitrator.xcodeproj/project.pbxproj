@@ -31,6 +31,8 @@
 		9626D296111F536500B803AB /* ToolbarItem Eject.png in Resources */ = {isa = PBXBuildFile; fileRef = 9626D294111F536500B803AB /* ToolbarItem Eject.png */; };
 		9626D297111F536500B803AB /* ToolbarItem Mount.png in Resources */ = {isa = PBXBuildFile; fileRef = 9626D295111F536500B803AB /* ToolbarItem Mount.png */; };
 		9626D2F41120FB7000B803AB /* ToolbarItem Info.png in Resources */ = {isa = PBXBuildFile; fileRef = 9626D2F31120FB7000B803AB /* ToolbarItem Info.png */; };
+		9626E44C1123779C00B803AB /* MountOptions.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9626E44A1123779C00B803AB /* MountOptions.xib */; };
+		9626E46A112395DD00B803AB /* SheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626E469112395DD00B803AB /* SheetController.m */; };
 		964E4D8C10F9E3C3007B3112 /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 964E4D8B10F9E3C3007B3112 /* DiskArbitration.framework */; };
 		964E4DCB10F9E874007B3112 /* Arbitrator.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DCA10F9E874007B3112 /* Arbitrator.m */; };
 		964E4DEE10F9F4BD007B3112 /* Disk.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DED10F9F4BD007B3112 /* Disk.m */; };
@@ -89,6 +91,9 @@
 		9626D294111F536500B803AB /* ToolbarItem Eject.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolbarItem Eject.png"; path = "Resources/ToolbarItem Eject.png"; sourceTree = "<group>"; };
 		9626D295111F536500B803AB /* ToolbarItem Mount.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolbarItem Mount.png"; path = "Resources/ToolbarItem Mount.png"; sourceTree = "<group>"; };
 		9626D2F31120FB7000B803AB /* ToolbarItem Info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolbarItem Info.png"; path = "Resources/ToolbarItem Info.png"; sourceTree = "<group>"; };
+		9626E44B1123779C00B803AB /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MountOptions.xib; sourceTree = "<group>"; };
+		9626E468112395DD00B803AB /* SheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SheetController.h; sourceTree = "<group>"; };
+		9626E469112395DD00B803AB /* SheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SheetController.m; sourceTree = "<group>"; };
 		964E4D8B10F9E3C3007B3112 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = System/Library/Frameworks/DiskArbitration.framework; sourceTree = SDKROOT; };
 		964E4DC910F9E874007B3112 /* Arbitrator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Arbitrator.h; sourceTree = "<group>"; };
 		964E4DCA10F9E874007B3112 /* Arbitrator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Arbitrator.m; sourceTree = "<group>"; };
@@ -140,6 +145,8 @@
 				9654A173110B178D00E9B0C4 /* DiskCell.m */,
 				9654A46B11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.h */,
 				9654A46C11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m */,
+				9626E468112395DD00B803AB /* SheetController.h */,
+				9626E469112395DD00B803AB /* SheetController.m */,
 			);
 			name = Classes;
 			path = Source;
@@ -181,6 +188,7 @@
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				964E4EF110FA8058007B3112 /* IOKit.framework */,
+				9626E44A1123779C00B803AB /* MountOptions.xib */,
 			);
 			name = DiskArbitrator;
 			sourceTree = "<group>";
@@ -292,6 +300,7 @@
 				9626D296111F536500B803AB /* ToolbarItem Eject.png in Resources */,
 				9626D297111F536500B803AB /* ToolbarItem Mount.png in Resources */,
 				9626D2F41120FB7000B803AB /* ToolbarItem Info.png in Resources */,
+				9626E44C1123779C00B803AB /* MountOptions.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,6 +335,7 @@
 				9654A20B110CB55B00E9B0C4 /* AppError.m in Sources */,
 				9654A46D11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m in Sources */,
 				9626D293111F476000B803AB /* DiskArbitratorAppController+Toolbar.m in Sources */,
+				9626E46A112395DD00B803AB /* SheetController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,6 +364,14 @@
 				1DDD58150DA1D0A300B32029 /* English */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		9626E44A1123779C00B803AB /* MountOptions.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9626E44B1123779C00B803AB /* English */,
+			);
+			name = MountOptions.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

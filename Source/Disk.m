@@ -127,24 +127,26 @@
 
 - (void)mount
 {
-	[self mountWithArguments:[NSArray array]];
+	[self mountAtPath:nil withArguments:[NSArray array]];
 }
 
-- (void)mountWithArguments:(NSArray *)args
+- (void)mountAtPath:(NSString *)path withArguments:(NSArray *)args
 {
 	NSAssert(self.mountable, @"Disk isn't mountable.");
 	NSAssert(self.mounted == NO, @"Disk is already mounted.");
 
 	self.mounting = YES;
 
-	Log(LOG_INFO, @"%s mounting %@ arguments: %@", __FUNCTION__, BSDName, [args description]);
+	Log(LOG_INFO, @"%s mount %@ at mountpoint: %@ arguments: %@", __FUNCTION__, BSDName, path, [args description]);
 
 	// ensure arg list is NULL terminated
 	id *argv = calloc([args count] + 1, sizeof(id));
 
 	[args getObjects:argv range:NSMakeRange(0, [args count])];
 
-	DADiskMountWithArguments((DADiskRef) disk, NULL, kDADiskMountOptionDefault,
+	NSURL *url = path ? [NSURL fileURLWithPath:[path stringByExpandingTildeInPath]] : NULL;
+	
+	DADiskMountWithArguments((DADiskRef) disk, (CFURLRef) url, kDADiskMountOptionDefault,
 							 DiskMountCallback, self, (CFStringRef *)argv);
 
 	free(argv);

@@ -58,7 +58,7 @@ enum {
 @property (retain) NSMutableSet *children;
 
 - (void)mount;
-- (void)mountWithArguments:(NSArray *)args;
+- (void)mountAtPath:(NSString *)path withArguments:(NSArray *)args;
 - (void)unmountWithOptions:(NSUInteger)options;
 - (void)eject;
 

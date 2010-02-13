@@ -76,7 +76,7 @@
 	Disk *selectedDisk;
 	
     if ([[toolbarItem itemIdentifier] isEqual:ToolbarItemInfoIdentifier])
-		enabled = NO;
+		enabled = YES;
 	
 	else if ([[toolbarItem itemIdentifier] isEqual:ToolbarItemMountIdentifier]) {
 

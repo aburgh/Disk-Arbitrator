@@ -12,6 +12,7 @@
 #import "Arbitrator.h"
 #import "Disk.h"
 #import "SheetController.h"
+#import "DiskInfoController.h"
 
 
 @implementation AppController
@@ -207,7 +208,12 @@
 
 - (IBAction)performGetInfo:(id)sender
 {
+	DiskInfoController *controller = [[DiskInfoController alloc] initWithWindowNibName:@"DiskInfo"];
+	controller.disk = [self selectedDisk];
+	[controller showWindow:self];
+	[controller refreshProperties];
 	
+//	[controller autorelease];
 }
 
 - (Disk *)selectedDisk

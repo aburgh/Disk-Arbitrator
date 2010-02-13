@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface DiskCell : NSCell 
+@interface DiskCell : NSTextFieldCell 
 {
 	NSImageCell *iconCell;
 	NSCell *textCell;

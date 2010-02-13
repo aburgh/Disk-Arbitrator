@@ -153,17 +153,11 @@
 	if ([key isEqual: (NSString *)kDADiskDescriptionMediaContentKey])    /* ( CFString     ) */
 		return value;
 
-//	if ([key isEqual: (NSString *)kDADiskDescriptionMediaEjectableKey])  /* ( CFBoolean    ) */
-//		return [value boolValue] ? @"Yes" : @"No";
-
 	if ([key isEqual: (NSString *)kDADiskDescriptionMediaIconKey])       /* ( CFDictionary ) */
 		return [value description];
 
 	if ([key isEqual: (NSString *)kDADiskDescriptionMediaKindKey])       /* ( CFString     ) */
 		return value;
-
-//	if ([key isEqual: (NSString *)kDADiskDescriptionMediaLeafKey])       /* ( CFBoolean    ) */
-//		return [value boolValue] ? @"Yes" : @"No";
 
 	if ([key isEqual: (NSString *)kDADiskDescriptionMediaNameKey])       /* ( CFString     ) */
 		return value;
@@ -171,26 +165,14 @@
 	if ([key isEqual: (NSString *)kDADiskDescriptionMediaPathKey])       /* ( CFString     ) */
 		return value;
 
-//	if ([key isEqual: (NSString *)kDADiskDescriptionMediaRemovableKey])  /* ( CFBoolean    ) */
-//		return [value boolValue] ? @"Yes" : @"No";
-
 	if ([key isEqual: (NSString *)kDADiskDescriptionMediaSizeKey])       /* ( CFNumber     ) */
 		return [value stringValue];
 
 	if ([key isEqual: (NSString *)kDADiskDescriptionMediaTypeKey])       /* ( CFString     ) */
 		return value;
 
-//	if ([key isEqual: (NSString *)kDADiskDescriptionMediaWholeKey])      /* ( CFBoolean    ) */
-//		return [value boolValue] ? @"Yes" : @"No";
-
-//	if ([key isEqual: (NSString *)kDADiskDescriptionMediaWritableKey])   /* ( CFBoolean    ) */
-//		return [value boolValue] ? @"Yes" : @"No";
-
 	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceGUIDKey])      /* ( CFData       ) */
 		return [value description];
-
-//	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceInternalKey])  /* ( CFBoolean    ) */
-//		return [value boolValue] ? @"Yes" : @"No";
 
 	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceModelKey])     /* ( CFString     ) */
 		return value;

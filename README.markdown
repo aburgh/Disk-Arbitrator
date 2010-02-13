@@ -13,7 +13,7 @@ It is important to note that Disk Arbitrator is *not* a software write blocker--
 
 ## Future Features
 
-* Automatic disk image mounting mounting.  Currently, when mounts are blocked, attaching a disk image with hdiutil will fail unless the -nomount option is also specified.  As a convenience, the utility will be manage the attach step, initiated via a File > Open command or drag-and-drop.
+* Automatic disk image mounting.  Currently, when the utility is set to block mounts, attaching a disk image with hdiutil will fail unless the -nomount option is also specified.  As a convenience, the utility will manage the attach step, initiated via a File > Open command or drag-and-drop, saving the user from a two-step process.
 
 * Mount options dialog.  This provides fields to specify custom options and mount paths.
 

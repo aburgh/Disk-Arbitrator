@@ -29,6 +29,8 @@
 
 - (void)dealloc
 {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+
 	[textView release];
 	[disk release];
 	[diskDescription release];
@@ -290,6 +292,21 @@
 
 	self.diskInfo = text;
 	[text release];
+}
+
+- (void)diskDidChange:(NSNotification *)notif
+{
+	[self refreshDiskInfo];
+}
+
+- (void)setDisk:(Disk *)newDisk
+{
+	if (newDisk	!= disk) {
+		[[NSNotificationCenter defaultCenter] removeObserver:self name:DADiskDidChangeNotification object:disk];
+		[disk autorelease];
+		disk = [newDisk retain];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(diskDidChange:) name:DADiskDidChangeNotification object:disk];
+	}
 }
 
 @end

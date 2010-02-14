@@ -14,6 +14,8 @@
 
 @end
 
+void SetupToolbar(NSWindow *window, id delegate);
+
 // Toolbar Item Identifier constants
 NSString * const ToolbarItemMainIdentifier;
 NSString * const ToolbarItemInfoIdentifier;

@@ -15,10 +15,14 @@
 	NSTextView *textView;
 	Disk *disk;
 	NSDictionary *diskDescription;
+	NSAttributedString *diskInfo;
 }
 
 @property (retain) IBOutlet NSTextView *textView;
 @property (retain) Disk *disk;
 @property (copy) NSDictionary *diskDescription;
+@property (copy) NSAttributedString *diskInfo;
+
+- (void)refreshDiskInfo;
 
 @end

@@ -17,6 +17,7 @@
 @synthesize textView;
 @synthesize disk;
 @synthesize diskDescription;
+@synthesize diskInfo;
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key
 {
@@ -24,6 +25,15 @@
 		return [NSSet setWithObject:@"disk.diskDescription"];
 
 	return [super keyPathsForValuesAffectingValueForKey:key];
+}
+
+- (void)dealloc
+{
+	[textView release];
+	[disk release];
+	[diskDescription release];
+	[diskInfo release];
+	[super dealloc];	
 }
 
 - (NSString *)localizedStringForDADiskKey:(NSString *)key
@@ -104,6 +114,26 @@
 	return @"N/A";
 }
 
+- (NSString *)formattedSizeDescriptionFromNumber:(NSNumber *)sizeValue
+{
+	NSString *formattedValue;
+
+	double size = [sizeValue doubleValue];
+	
+	if (size > 999.0 && size < 1000000.0)
+		formattedValue = [NSString stringWithFormat:@"%03.02f KB (%@ bytes)", (size / 1000.0), sizeValue];
+	else if (size > 999999.0 && size < 1000000000.0)
+		formattedValue = [NSString stringWithFormat:@"%03.02f MB (%@ bytes)", (size / 1000000.0), sizeValue];
+	else if (size > 999999999.0 && size < 1000000000000.0)
+		formattedValue = [NSString stringWithFormat:@"%03.02f GB (%@ bytes)", (size / 1000000000.0), sizeValue];
+	else if (size > 999999999999.0)
+		formattedValue = [NSString stringWithFormat:@"%03.02f TB (%@ bytes)", (size / 1000000000000.0), sizeValue];
+	else
+		formattedValue = [sizeValue stringValue];
+
+	return formattedValue;
+}
+
 - (NSString *)localizedValueStringForDADiskKey:(NSString *)key value:(id)value
 {
 	if ([key isEqual: (NSString *)kDADiskDescriptionVolumeKindKey])      /* ( CFString     ) */
@@ -166,7 +196,7 @@
 		return value;
 
 	if ([key isEqual: (NSString *)kDADiskDescriptionMediaSizeKey])       /* ( CFNumber     ) */
-		return [value stringValue];
+		return [self formattedSizeDescriptionFromNumber:(NSNumber *)value];
 
 	if ([key isEqual: (NSString *)kDADiskDescriptionMediaTypeKey])       /* ( CFString     ) */
 		return value;
@@ -213,7 +243,7 @@
 			[self localizedValueStringForDADiskKey:key value:value]];
 }
 
-- (void)refreshProperties
+- (void)refreshDiskInfo
 {
 	self.diskDescription = (NSDictionary *)disk.diskDescription;
 	
@@ -222,25 +252,25 @@
 	NSFont *font = [NSFont fontWithName:@"Helvetica Bold" size:12.0];
 	NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
 	
-
 	NSArray *keys = [(NSDictionary *)disk.diskDescription allKeys];
 	keys = [keys sortedArrayUsingSelector:@selector(compare:)];
 	
-	NSDictionary *keyValue;
-
 	for (NSString *key in keys)
 	{
+		// Ignore certain keys
+		if ([key isEqual: (NSString *)kDADiskDescriptionMediaIconKey])
+			continue;
+		
 		id value = [(NSDictionary *)disk.diskDescription objectForKey:key];
 		
 		NSString *string;
 		NSAttributedString *attrString;
-		
-//		string = [[NSAttributedString alloc] initWithString:[self stringForDADiskKey:key value:value]];
+
 		string = [NSString stringWithFormat:@"\t%@:\t", [self localizedStringForDADiskKey:key]];
 		attrString = [[NSAttributedString alloc] initWithString:string attributes:attrs];
 		[text appendAttributedString:attrString];
 		[attrString release];
-	
+
 		string = [NSString stringWithFormat:@"%@\n", [self localizedValueStringForDADiskKey:key value:value]];
 		attrString = [[NSAttributedString alloc] initWithString:string];
 		[text appendAttributedString:attrString];
@@ -258,7 +288,7 @@
 	attrs = [NSDictionary dictionaryWithObjectsAndKeys:style, NSParagraphStyleAttributeName, nil];
 	[text addAttributes:attrs range:NSMakeRange(0, [text length])];
 
-	[[textView textStorage] setAttributedString:text];
+	self.diskInfo = text;
 	[text release];
 }
 

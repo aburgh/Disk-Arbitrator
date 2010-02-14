@@ -211,7 +211,7 @@
 	DiskInfoController *controller = [[DiskInfoController alloc] initWithWindowNibName:@"DiskInfo"];
 	controller.disk = [self selectedDisk];
 	[controller showWindow:self];
-	[controller refreshProperties];
+	[controller refreshDiskInfo];
 	
 //	[controller autorelease];
 }

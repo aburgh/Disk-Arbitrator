@@ -1,3 +1,10 @@
+#### 0.2.0 2/14/2010
+
+* Added Disk Info window.
+* Added mounting feature with dialog for options and mountpoint path.
+* Added unmounting and ejecting.
+* Added toolbar and custom icons.
+* Improved logging.
 
 #### 0.1.1 2/7/2010
 

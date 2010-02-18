@@ -76,3 +76,7 @@ Disk Arbitrator provides a convenient way to execute the second step, and a futu
 * Incorporate libewf and/or libaff to enable imaging to a variety of forensic file formats.
 
 * Currently, Ejecting a disk fails if any file systems on the disk are mounted. The utility should automatically unmount file systems prior to attempting eject the disk.
+
+## Support and Feedback
+
+For questions, support, or feedback, contact me at aburgh at mac dot com.

@@ -201,9 +201,71 @@
 		[self performMount:sender];
 }
 
+- (void)_childDidAttemptUnmountBeforeEject:(NSNotification *)notif
+{
+	Disk *disk = [notif object];
+
+	// Disk may be a mountable whole disk that we were waiting on, so the parent may be the disk itself
+	
+	Disk *parent = disk.isWholeDisk ? disk : [disk parent];
+	
+	Log(LOG_DEBUG, @"%s disk: %@ child: %@", __FUNCTION__, parent, disk);
+	
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:DADiskDidAttemptUnmountNotification object:disk];
+	
+	// Confirm the child unmounted
+	
+	if (disk.mounted) {
+		// Unmount of child failed
+		
+		NSMutableDictionary *info = [[notif userInfo] mutableCopy];
+		
+		Log(LOG_INFO, @"%s eject disk: %@ canceled due to mounted child: %@", __FUNCTION__, disk, info);
+		
+		NSString *statusString = [NSString stringWithFormat:@"%@:\n\n%@",
+								  NSLocalizedString(@"Failed to unmount child", nil),
+								  [info objectForKey:NSLocalizedFailureReasonErrorKey]];
+		
+		[info setObject:statusString forKey:NSLocalizedFailureReasonErrorKey];
+		[info setObject:statusString forKey:NSLocalizedRecoverySuggestionErrorKey];
+		
+		[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidAttemptEjectNotification object:disk userInfo:info];
+	}
+	
+	// Child from notification is unmounted, check for remaining children to unmount
+	
+	for (Disk *child in parent.children) {
+		if (child.mounted)
+			return;			// Still waiting for child
+	}
+	
+	// Need to test if parent is ejectable because we enable "Eject" for a disk
+	// that has children that can be unmounted (ala Disk Utility)
+	
+	if (parent.ejectable)
+		[parent eject];
+}
+
 - (IBAction)performEject:(id)sender
 {
-	[[self selectedDisk] eject];
+	Disk *selectedDisk = [self selectedDisk];
+	BOOL waitForChildren = NO;
+	
+	for (Disk *child in selectedDisk.children) {
+		if (child.mountable && child.mounted) {
+			[[NSNotificationCenter defaultCenter] addObserver:self
+													 selector:@selector(_childDidAttemptUnmountBeforeEject:)
+														 name:DADiskDidAttemptUnmountNotification
+													   object:child];
+			[child unmountWithOptions:0];
+			waitForChildren = YES;
+		}
+	}
+	
+	if (!waitForChildren) {
+		if (selectedDisk.ejectable)
+			[selectedDisk eject];
+	}
 }
 
 - (IBAction)performGetInfo:(id)sender
@@ -228,7 +290,20 @@
 
 - (BOOL)canEjectSelectedDisk
 {
-	return [[self selectedDisk] ejectable];
+	/* "Eject" in the GUI means eject or unmount (like Disk Utility)
+	 * To the Disk class, "ejectable" means the media object is ejectable.
+	 */
+
+	Disk *selectedDisk = [self selectedDisk];
+	BOOL canEject = [selectedDisk ejectable];
+
+	if (!canEject) {
+		for (Disk *child in [selectedDisk children]) {
+			if (child.mountable && child.mounted)
+				canEject = YES;
+		}
+	}
+	return canEject;
 }
 
 - (BOOL)canMountSelectedDisk
@@ -306,6 +381,7 @@
 	NSUInteger row = [[disksArrayController arrangedObjects] indexOfObject:[notif object]];
 	
 	[tableView setNeedsDisplayInRect:[tableView rectOfRow:row]];
+	[[window toolbar] validateVisibleItems];
 }
 
 - (void)didAttemptMount:(NSNotification *)notif
@@ -342,6 +418,7 @@
 					contextInfo:NULL];
 		}
 	}
+	[[window toolbar] validateVisibleItems];
 }
 
 - (void)didAttemptUnmount:(NSNotification *)notif
@@ -377,7 +454,8 @@
 			 didPresentSelector:@selector(didPresentErrorWithRecovery:contextInfo:)
 					contextInfo:NULL];
 		}
-	}	
+	}
+	[[window toolbar] validateVisibleItems];
 }
 
 - (void)didAttemptEject:(NSNotification *)notif
@@ -415,6 +493,7 @@
 	else {
 		Log(LOG_DEBUG, @"%s: Ejected: %@", __FUNCTION__, disk);
 	}
+	[[window toolbar] validateVisibleItems];
 }
 
 @end

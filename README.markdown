@@ -79,4 +79,4 @@ Disk Arbitrator provides a convenient way to execute the second step, and a futu
 
 ## Support and Feedback
 
-For questions, support, or feedback, contact me at aburgh at mac dot com.
+For questions, support, or feedback, contact me at <aburgh@mac.com>.

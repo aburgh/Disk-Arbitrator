@@ -62,7 +62,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/$(INPUT_FILE_BASE).html",
 			);
-			script = "export PATH=/usr/local/bin:$PATH\n\nmarkdown --html4tags \"${INPUT_FILE_PATH}\" > \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.html\"";
+			script = "export PATH=/usr/local/bin:$PATH\n\n\"${SRCROOT}/scripts/markdown.pl\" \"${INPUT_FILE_PATH}\" > \"${DERIVED_FILES_DIR}/${INPUT_FILE_BASE}.html\"";
 		};
 /* End PBXBuildRule section */
 
@@ -101,6 +101,7 @@
 		9626E5071124C63100B803AB /* DiskInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiskInfoController.h; sourceTree = "<group>"; };
 		9626E5081124C63100B803AB /* DiskInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiskInfoController.m; sourceTree = "<group>"; };
 		9626E50B1124DC6900B803AB /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/DiskInfo.xib; sourceTree = "<group>"; };
+		9626E737112F47F100B803AB /* markdown.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = markdown.pl; path = scripts/markdown.pl; sourceTree = SOURCE_ROOT; };
 		964E4D8B10F9E3C3007B3112 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = System/Library/Frameworks/DiskArbitration.framework; sourceTree = SDKROOT; };
 		964E4DC910F9E874007B3112 /* Arbitrator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Arbitrator.h; sourceTree = "<group>"; };
 		964E4DCA10F9E874007B3112 /* Arbitrator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Arbitrator.m; sourceTree = "<group>"; };
@@ -211,6 +212,7 @@
 				9654A209110C8D4100E9B0C4 /* AppError.h */,
 				9654A20A110CB55B00E9B0C4 /* AppError.m */,
 				9654B7A9111E473200E9B0C4 /* build_dmg.sh */,
+				9626E737112F47F100B803AB /* markdown.pl */,
 			);
 			name = "Other Sources";
 			path = Source;

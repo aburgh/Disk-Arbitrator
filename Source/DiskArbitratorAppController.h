@@ -48,5 +48,8 @@
 - (IBAction)performGetInfo:(id)sender;
 
 - (Disk *)selectedDisk;
+- (BOOL)canEjectSelectedDisk;
+- (BOOL)canMountSelectedDisk;
+- (BOOL)canUnmountSelectedDisk;
 
 @end

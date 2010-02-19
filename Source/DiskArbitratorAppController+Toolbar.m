@@ -82,17 +82,16 @@
 
 		// Enable the item if the disk is mountable
 		// Set the label "Unmount" if mounted, otherwise to "Mount"
+		
+		if ([self canUnmountSelectedDisk]) {
+			[toolbarItem setLabel:NSLocalizedString(@"Unmount", nil)];
+			enabled	= YES;
+		}
+		else {
+			[toolbarItem setLabel:NSLocalizedString(@"Mount", nil)];
 
-		[toolbarItem setLabel:NSLocalizedString(@"Mount", nil)];
-		enabled = NO;
-		
-		selectedDisk = [self selectedDisk];
-		
-		if (selectedDisk && selectedDisk.mountable) {
-			enabled = YES;
-			if (selectedDisk.mounted) {
-				[toolbarItem setLabel:NSLocalizedString(@"Unmount", nil)];
-			}
+			if (![self canMountSelectedDisk])
+				enabled = NO;
 		}
 	}
 	

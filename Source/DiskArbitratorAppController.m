@@ -226,6 +226,35 @@
 		return nil;
 }
 
+- (BOOL)canEjectSelectedDisk
+{
+	return [[self selectedDisk] ejectable];
+}
+
+- (BOOL)canMountSelectedDisk
+{
+	Disk *disk = [self selectedDisk];
+	
+	if (disk.mountable && !disk.mounted)
+		return YES;
+	else
+		return NO;
+}
+
+- (BOOL)canUnmountSelectedDisk
+{
+	Disk *disk = [self selectedDisk];
+
+	return (disk.mountable && disk.mounted);
+	
+//	// Yes if the disk or any children are mounted
+//	
+//	if (disk.mountable && disk.mounted) return YES;
+//	
+//	for (Disk *child in [disk children])
+//		if (child.mountable && child.mounted)
+//			return YES;
+}
 
 #pragma mark TableView Delegates
 

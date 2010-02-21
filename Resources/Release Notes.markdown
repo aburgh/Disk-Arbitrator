@@ -1,3 +1,9 @@
+#### 0.3.0
+
+
+* Added disk menu to the status item menu.
+* Improved validation of toolbar items.
+
 #### 0.2.0 2/14/2010
 
 * Added Disk Info window.

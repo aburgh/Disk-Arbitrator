@@ -11,7 +11,7 @@
 			<string key="NS.object.0">740</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="666"/>
+			<integer value="533"/>
 			<integer value="563"/>
 			<integer value="57"/>
 		</array>
@@ -1685,7 +1685,7 @@
 							</array>
 						</object>
 					</object>
-					<object class="NSMenuItem" id="123552931">
+					<object class="NSMenuItem" id="514235583">
 						<reference key="NSMenu" ref="834044689"/>
 						<string key="NSTitle">Disk</string>
 						<string key="NSKeyEquiv"/>
@@ -1693,27 +1693,27 @@
 						<reference key="NSOnImage" ref="35465992"/>
 						<reference key="NSMixedImage" ref="502551668"/>
 						<string key="NSAction">submenuAction:</string>
-						<object class="NSMenu" key="NSSubmenu" id="38920916">
+						<object class="NSMenu" key="NSSubmenu" id="819538581">
 							<string key="NSTitle">Disk</string>
 							<array class="NSMutableArray" key="NSMenuItems">
-								<object class="NSMenuItem" id="374553510">
-									<reference key="NSMenu" ref="38920916"/>
+								<object class="NSMenuItem" id="999492835">
+									<reference key="NSMenu" ref="819538581"/>
 									<string key="NSTitle">Eject</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="35465992"/>
 									<reference key="NSMixedImage" ref="502551668"/>
 								</object>
-								<object class="NSMenuItem" id="86261259">
-									<reference key="NSMenu" ref="38920916"/>
+								<object class="NSMenuItem" id="307554053">
+									<reference key="NSMenu" ref="819538581"/>
 									<string key="NSTitle">Mount...</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="35465992"/>
 									<reference key="NSMixedImage" ref="502551668"/>
 								</object>
-								<object class="NSMenuItem" id="18155378">
-									<reference key="NSMenu" ref="38920916"/>
+								<object class="NSMenuItem" id="581811069">
+									<reference key="NSMenu" ref="819538581"/>
 									<string key="NSTitle">Unmount</string>
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
@@ -1722,6 +1722,14 @@
 								</object>
 							</array>
 						</object>
+					</object>
+					<object class="NSMenuItem" id="337070102">
+						<reference key="NSMenu" ref="834044689"/>
+						<string key="NSTitle">Attach Disk Image...</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="35465992"/>
+						<reference key="NSMixedImage" ref="502551668"/>
 					</object>
 					<object class="NSMenuItem" id="803318449">
 						<reference key="NSMenu" ref="834044689"/>
@@ -2755,7 +2763,7 @@
 					<object class="IBActionConnection" key="connection">
 						<string key="label">performEject:</string>
 						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="374553510"/>
+						<reference key="destination" ref="999492835"/>
 					</object>
 					<int key="connectionID">670</int>
 				</object>
@@ -2763,7 +2771,7 @@
 					<object class="IBActionConnection" key="connection">
 						<string key="label">performMount:</string>
 						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="86261259"/>
+						<reference key="destination" ref="307554053"/>
 					</object>
 					<int key="connectionID">671</int>
 				</object>
@@ -2771,17 +2779,17 @@
 					<object class="IBActionConnection" key="connection">
 						<string key="label">performUnmount:</string>
 						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="18155378"/>
+						<reference key="destination" ref="581811069"/>
 					</object>
 					<int key="connectionID">672</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: canUnmountSelectedDisk</string>
-						<reference key="source" ref="18155378"/>
+						<reference key="source" ref="581811069"/>
 						<reference key="destination" ref="976324537"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="18155378"/>
+							<reference key="NSSource" ref="581811069"/>
 							<reference key="NSDestination" ref="976324537"/>
 							<string key="NSLabel">enabled: canUnmountSelectedDisk</string>
 							<string key="NSBinding">enabled</string>
@@ -2794,10 +2802,10 @@
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: canMountSelectedDisk</string>
-						<reference key="source" ref="86261259"/>
+						<reference key="source" ref="307554053"/>
 						<reference key="destination" ref="976324537"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="86261259"/>
+							<reference key="NSSource" ref="307554053"/>
 							<reference key="NSDestination" ref="976324537"/>
 							<string key="NSLabel">enabled: canMountSelectedDisk</string>
 							<string key="NSBinding">enabled</string>
@@ -2810,10 +2818,10 @@
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: canEjectSelectedDisk</string>
-						<reference key="source" ref="374553510"/>
+						<reference key="source" ref="999492835"/>
 						<reference key="destination" ref="976324537"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="374553510"/>
+							<reference key="NSSource" ref="999492835"/>
 							<reference key="NSDestination" ref="976324537"/>
 							<string key="NSLabel">enabled: canEjectSelectedDisk</string>
 							<string key="NSBinding">enabled</string>
@@ -2822,6 +2830,14 @@
 						</object>
 					</object>
 					<int key="connectionID">680</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">performAttachDiskImage:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="337070102"/>
+					</object>
+					<int key="connectionID">682</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -3840,7 +3856,8 @@
 							<reference ref="331621906"/>
 							<reference ref="863260306"/>
 							<reference ref="858561929"/>
-							<reference ref="123552931"/>
+							<reference ref="514235583"/>
+							<reference ref="337070102"/>
 						</array>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">Status Menu</string>
@@ -4043,36 +4060,41 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">665</int>
-						<reference key="object" ref="123552931"/>
+						<reference key="object" ref="514235583"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="38920916"/>
+							<reference ref="819538581"/>
 						</array>
 						<reference key="parent" ref="834044689"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">666</int>
-						<reference key="object" ref="38920916"/>
+						<reference key="object" ref="819538581"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="374553510"/>
-							<reference ref="86261259"/>
-							<reference ref="18155378"/>
+							<reference ref="999492835"/>
+							<reference ref="307554053"/>
+							<reference ref="581811069"/>
 						</array>
-						<reference key="parent" ref="123552931"/>
+						<reference key="parent" ref="514235583"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">667</int>
-						<reference key="object" ref="374553510"/>
-						<reference key="parent" ref="38920916"/>
+						<reference key="object" ref="999492835"/>
+						<reference key="parent" ref="819538581"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">668</int>
-						<reference key="object" ref="86261259"/>
-						<reference key="parent" ref="38920916"/>
+						<reference key="object" ref="307554053"/>
+						<reference key="parent" ref="819538581"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">669</int>
-						<reference key="object" ref="18155378"/>
-						<reference key="parent" ref="38920916"/>
+						<reference key="object" ref="581811069"/>
+						<reference key="parent" ref="819538581"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">681</int>
+						<reference key="object" ref="337070102"/>
+						<reference key="parent" ref="834044689"/>
 					</object>
 				</array>
 			</object>
@@ -4293,7 +4315,7 @@
 				<string key="515.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="516.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="517.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="533.IBEditorWindowLastContentRect">{{798, 955}, {199, 163}}</string>
+				<string key="533.IBEditorWindowLastContentRect">{{798, 935}, {199, 183}}</string>
 				<string key="533.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="534.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="535.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -4343,6 +4365,7 @@
 				<string key="667.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="668.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="669.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="681.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="72.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="72.ImportedFromIB2"/>
 				<string key="73.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -4374,7 +4397,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">680</int>
+			<int key="maxID">682</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -4390,6 +4413,7 @@
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="performActivation:">id</string>
+						<string key="performAttachDiskImage:">id</string>
 						<string key="performDeactivation:">id</string>
 						<string key="performEject:">id</string>
 						<string key="performGetInfo:">id</string>

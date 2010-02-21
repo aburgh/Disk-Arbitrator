@@ -46,6 +46,7 @@
 - (IBAction)performMountOrUnmount:(id)sender;
 - (IBAction)performEject:(id)sender;
 - (IBAction)performGetInfo:(id)sender;
+- (IBAction)performAttachDiskImage:(id)sender;
 
 - (Disk *)selectedDisk;
 - (BOOL)canEjectSelectedDisk;

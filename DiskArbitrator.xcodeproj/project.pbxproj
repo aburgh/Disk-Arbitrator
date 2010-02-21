@@ -36,6 +36,8 @@
 		9626E4E711244EAF00B803AB /* App Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9626E4E611244EAF00B803AB /* App Icon.icns */; };
 		9626E5091124C63100B803AB /* DiskInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626E5081124C63100B803AB /* DiskInfoController.m */; };
 		9626E50C1124DC6900B803AB /* DiskInfo.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9626E50A1124DC6900B803AB /* DiskInfo.xib */; };
+		9626E815113149D000B803AB /* AttachDiskImageAccessory.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9626E813113149D000B803AB /* AttachDiskImageAccessory.xib */; };
+		9626E83211314E7600B803AB /* AttachDiskImageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626E83111314E7600B803AB /* AttachDiskImageController.m */; };
 		964E4D8C10F9E3C3007B3112 /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 964E4D8B10F9E3C3007B3112 /* DiskArbitration.framework */; };
 		964E4DCB10F9E874007B3112 /* Arbitrator.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DCA10F9E874007B3112 /* Arbitrator.m */; };
 		964E4DEE10F9F4BD007B3112 /* Disk.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DED10F9F4BD007B3112 /* Disk.m */; };
@@ -102,6 +104,9 @@
 		9626E5081124C63100B803AB /* DiskInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiskInfoController.m; sourceTree = "<group>"; };
 		9626E50B1124DC6900B803AB /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/DiskInfo.xib; sourceTree = "<group>"; };
 		9626E737112F47F100B803AB /* markdown.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = markdown.pl; path = scripts/markdown.pl; sourceTree = SOURCE_ROOT; };
+		9626E814113149D000B803AB /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/AttachDiskImageAccessory.xib; sourceTree = "<group>"; };
+		9626E83011314E7600B803AB /* AttachDiskImageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttachDiskImageController.h; sourceTree = "<group>"; };
+		9626E83111314E7600B803AB /* AttachDiskImageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttachDiskImageController.m; sourceTree = "<group>"; };
 		964E4D8B10F9E3C3007B3112 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = System/Library/Frameworks/DiskArbitration.framework; sourceTree = SDKROOT; };
 		964E4DC910F9E874007B3112 /* Arbitrator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Arbitrator.h; sourceTree = "<group>"; };
 		964E4DCA10F9E874007B3112 /* Arbitrator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Arbitrator.m; sourceTree = "<group>"; };
@@ -155,6 +160,8 @@
 				9654A46C11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m */,
 				9626E468112395DD00B803AB /* SheetController.h */,
 				9626E469112395DD00B803AB /* SheetController.m */,
+				9626E83011314E7600B803AB /* AttachDiskImageController.h */,
+				9626E83111314E7600B803AB /* AttachDiskImageController.m */,
 				9626E5071124C63100B803AB /* DiskInfoController.h */,
 				9626E5081124C63100B803AB /* DiskInfoController.m */,
 			);
@@ -198,8 +205,6 @@
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				964E4EF110FA8058007B3112 /* IOKit.framework */,
-				9626E44A1123779C00B803AB /* MountOptions.xib */,
-				9626E50A1124DC6900B803AB /* DiskInfo.xib */,
 			);
 			name = DiskArbitrator;
 			sourceTree = "<group>";
@@ -228,6 +233,9 @@
 				964E4F0110FAB2BE007B3112 /* Disk Arbitrator Agent.plist */,
 				9654B6D8111C2C7D00E9B0C4 /* Release Notes.markdown */,
 				9654B742111DE2EF00E9B0C4 /* README.markdown */,
+				9626E44A1123779C00B803AB /* MountOptions.xib */,
+				9626E50A1124DC6900B803AB /* DiskInfo.xib */,
+				9626E813113149D000B803AB /* AttachDiskImageAccessory.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -316,6 +324,7 @@
 				9626E44C1123779C00B803AB /* MountOptions.xib in Resources */,
 				9626E4E711244EAF00B803AB /* App Icon.icns in Resources */,
 				9626E50C1124DC6900B803AB /* DiskInfo.xib in Resources */,
+				9626E815113149D000B803AB /* AttachDiskImageAccessory.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -352,6 +361,7 @@
 				9626D293111F476000B803AB /* DiskArbitratorAppController+Toolbar.m in Sources */,
 				9626E46A112395DD00B803AB /* SheetController.m in Sources */,
 				9626E5091124C63100B803AB /* DiskInfoController.m in Sources */,
+				9626E83211314E7600B803AB /* AttachDiskImageController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,6 +406,14 @@
 				9626E50B1124DC6900B803AB /* English */,
 			);
 			name = DiskInfo.xib;
+			sourceTree = "<group>";
+		};
+		9626E813113149D000B803AB /* AttachDiskImageAccessory.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9626E814113149D000B803AB /* English */,
+			);
+			name = AttachDiskImageAccessory.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

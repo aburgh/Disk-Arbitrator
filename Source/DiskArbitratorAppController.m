@@ -15,6 +15,9 @@
 #import "DiskInfoController.h"
 #import "AttachDiskImageController.h"
 
+// Globals
+static NSArray *diskImageFileExtensions;
+
 
 @implementation AppController
 
@@ -25,6 +28,15 @@
 @synthesize sortDescriptors;
 @synthesize statusItem;
 @synthesize arbitrator;
+
+
++ (void)initialize
+{
+	static BOOL initialized = NO;
+	
+	if (!initialized)
+		diskImageFileExtensions = [[NSArray alloc] initWithObjects:@"img", @"dmg", @"sparseimage", @"sparsebundle", @"iso", @"cdr", nil];
+}
 
 - (void)dealloc
 {
@@ -485,7 +497,7 @@
 	[panel setAllowsMultipleSelection:NO];
 	[panel setMessage:NSLocalizedString(@"Select a disk image to attach:", nil)];
 	
-	[panel setAllowedFileTypes:[NSArray arrayWithObjects:@"img", @"dmg", @"sparseimage", @"sparsebundle", @"iso", @"cdr", nil]];
+	[panel setAllowedFileTypes:diskImageFileExtensions];
 	
 	AttachDiskImageController *controller = [[[AttachDiskImageController alloc] initWithWindowNibName:@"AttachDiskImageAccessory"] autorelease];
 	[controller window];

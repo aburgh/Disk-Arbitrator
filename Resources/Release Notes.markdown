@@ -1,6 +1,6 @@
 #### 0.3.0
 
-
+* Added Attach Disk Image feature.
 * Added disk menu to the status item menu.
 * Improved validation of toolbar items.
 

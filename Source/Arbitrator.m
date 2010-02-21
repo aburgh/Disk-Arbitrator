@@ -92,7 +92,7 @@
 		else
 			args = [NSArray arrayWithObjects:@"rdonly", nil];
 
-		[disk performSelector:@selector(mountWithArguments:) withObject:args afterDelay:0.0];
+		[disk mountAtPath:nil withArguments:args];
 	}
 }
 

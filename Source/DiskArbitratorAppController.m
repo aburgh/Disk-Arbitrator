@@ -100,6 +100,8 @@ static NSArray *diskImageFileExtensions;
 	SetupToolbar(window, self);
 	[window setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
 	[window setWorksWhenModal:YES];
+	
+	[tableView registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -587,6 +589,45 @@ static NSArray *diskImageFileExtensions;
 
 	//	fprintf(stdout, "getting value: %s\n", [disk.BSDName UTF8String]);
 	return disk;
+}
+
+- (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op
+{
+    Log(LOG_DEBUG, @"%s op: %ld info: %@", __FUNCTION__, op, info);
+
+    NSPasteboard* pboard = [info draggingPasteboard];
+
+	if (op == NSDragOperationCopy && [[pboard types] containsObject:NSFilenamesPboardType]) {
+		
+		NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
+
+		for (NSString *file in files) {
+			if ([diskImageFileExtensions containsObject:[file pathExtension]] == NO)
+				return NSDragOperationNone;
+		}
+		return NSDragOperationCopy;
+	}
+	return NSDragOperationNone;
+}
+
+- (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id <NSDraggingInfo>)info
+			  row:(int)row dropOperation:(NSTableViewDropOperation)operation
+{
+    NSPasteboard* pboard = [info draggingPasteboard];
+	
+	Log(LOG_DEBUG, @"%s", __FUNCTION__);
+
+	if (operation == NSDragOperationCopy && [[pboard types] containsObject:NSFilenamesPboardType] ) {
+		NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
+
+		Log(LOG_DEBUG, @"files: %@", files);
+
+		for (NSString *file in files) {
+			[self _attachDiskImageAtPath:file
+								 options:[NSArray arrayWithObjects:@"-readonly", @"-mount", @"optional", nil]
+								password:nil];
+		}
+	}
 }
 
 #pragma mark Disk Notifications

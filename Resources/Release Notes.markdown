@@ -1,6 +1,8 @@
 #### 0.3.0
 
 * Added Attach Disk Image feature.
+* Added check for encrypted disk image.
+* Added support for attaching a disk image by dragging the file into the disks window.
 * Added disk menu to the status item menu.
 * Improved validation of toolbar items.
 

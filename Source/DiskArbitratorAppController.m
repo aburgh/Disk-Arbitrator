@@ -645,7 +645,6 @@ static NSArray *diskImageFileExtensions;
 	if ([displayErrorQueue count] > 0)
 	{
 		NSError *nextError = [displayErrorQueue objectAtIndex:0];
-		[displayErrorQueue removeObjectAtIndex:0];
 	
 		[window makeKeyAndOrderFront:self];
 		[NSApp presentError:nextError
@@ -653,6 +652,8 @@ static NSArray *diskImageFileExtensions;
 				   delegate:self
 		 didPresentSelector:@selector(didPresentErrorWithRecovery:contextInfo:)
 				contextInfo:NULL];
+
+		[displayErrorQueue removeObjectAtIndex:0];
 	}		
 }
 

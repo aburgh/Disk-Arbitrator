@@ -58,11 +58,11 @@
 {
 	NSAssert(diskRef, @"No Disk Arbitration disk provided to initializer.");
 	
-	// Return unique instance 
-	NSString *bsdname  = [NSString stringWithUTF8String:DADiskGetBSDName(diskRef)];
+	// Return unique instance
+	hash = DADiskHash(diskRef);
 	
 	for (Disk *uniqueDisk in uniqueDisks) {
-		if ([uniqueDisk hash] == [bsdname hash]) {
+		if ([uniqueDisk hash] == hash) {
 			[super dealloc];
 			return [uniqueDisk retain];
 		}
@@ -70,11 +70,11 @@
 	
 	if (self = [super init]) 
 	{
+		BSDName = [[NSString alloc] initWithUTF8String:DADiskGetBSDName(diskRef)];
 		CFRetain(diskRef);
 		disk = diskRef;
 		children = [NSMutableSet new];
 		diskDescription = DADiskCopyDescription(diskRef);
-		BSDName = [[NSString alloc] initWithUTF8String:DADiskGetBSDName(diskRef)];
 		
 //		CFShow(description);
 		

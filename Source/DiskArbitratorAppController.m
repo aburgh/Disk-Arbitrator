@@ -180,7 +180,7 @@ static NSArray *diskImageFileExtensions;
 	Disk *selectedDisk = [self selectedDisk];
 
 	NSAssert(selectedDisk, @"No disk selected.");
-	NSAssert(selectedDisk.mounted == NO, @"Disk is already mounted.");
+	NSAssert(selectedDisk.isMounted == NO, @"Disk is already mounted.");
 
 	SheetController *controller = [[SheetController alloc] initWithWindowNibName:@"MountOptions"];
 	[controller window]; // triggers controller to load the NIB
@@ -210,7 +210,7 @@ static NSArray *diskImageFileExtensions;
 {
 	Disk *theDisk = [self selectedDisk];
 	
-	if (theDisk.mounted)
+	if (theDisk.isMounted)
 		[self performUnmount:sender];
 	else
 		[self performMount:sender];
@@ -230,7 +230,7 @@ static NSArray *diskImageFileExtensions;
 	
 	// Confirm the child unmounted
 	
-	if (disk.mounted) {
+	if (disk.isMounted) {
 		// Unmount of child failed
 		
 		NSMutableDictionary *info = [[notif userInfo] mutableCopy];
@@ -250,14 +250,14 @@ static NSArray *diskImageFileExtensions;
 	// Child from notification is unmounted, check for remaining children to unmount
 	
 	for (Disk *child in parent.children) {
-		if (child.mounted)
+		if (child.isMounted)
 			return;			// Still waiting for child
 	}
 	
 	// Need to test if parent is ejectable because we enable "Eject" for a disk
 	// that has children that can be unmounted (ala Disk Utility)
 	
-	if (parent.ejectable)
+	if (parent.isEjectable)
 		[parent eject];
 }
 
@@ -267,7 +267,7 @@ static NSArray *diskImageFileExtensions;
 	BOOL waitForChildren = NO;
 	
 	for (Disk *child in selectedDisk.children) {
-		if (child.mountable && child.mounted) {
+		if (child.isMountable && child.isMounted) {
 			[[NSNotificationCenter defaultCenter] addObserver:self
 													 selector:@selector(_childDidAttemptUnmountBeforeEject:)
 														 name:DADiskDidAttemptUnmountNotification
@@ -278,7 +278,7 @@ static NSArray *diskImageFileExtensions;
 	}
 	
 	if (!waitForChildren) {
-		if (selectedDisk.ejectable)
+		if (selectedDisk.isEjectable)
 			[selectedDisk eject];
 	}
 }
@@ -536,11 +536,11 @@ static NSArray *diskImageFileExtensions;
 	 */
 
 	Disk *selectedDisk = [self selectedDisk];
-	BOOL canEject = [selectedDisk ejectable];
+	BOOL canEject = [selectedDisk isEjectable];
 
 	if (!canEject) {
 		for (Disk *child in [selectedDisk children]) {
-			if (child.mountable && child.mounted)
+			if (child.isMountable && child.isMounted)
 				canEject = YES;
 		}
 	}
@@ -551,7 +551,7 @@ static NSArray *diskImageFileExtensions;
 {
 	Disk *disk = [self selectedDisk];
 	
-	if (disk.mountable && !disk.mounted)
+	if (disk.isMountable && !disk.isMounted)
 		return YES;
 	else
 		return NO;
@@ -561,7 +561,7 @@ static NSArray *diskImageFileExtensions;
 {
 	Disk *disk = [self selectedDisk];
 
-	return (disk.mountable && disk.mounted);
+	return (disk.isMountable && disk.isMounted);
 	
 //	// Yes if the disk or any children are mounted
 //	
@@ -669,7 +669,7 @@ static NSArray *diskImageFileExtensions;
 	Disk *disk = [notif object];
 	NSMutableDictionary *info;
 	
-	if (disk.mounted) {
+	if (disk.isMounted) {
 		Log(LOG_DEBUG, @"%s: Mounted: %@", __FUNCTION__, disk.BSDName);
 	}
 	else {
@@ -706,9 +706,9 @@ static NSArray *diskImageFileExtensions;
 	Disk *disk = [notif object];
 	NSMutableDictionary *info;
 
-	Log(LOG_DEBUG, @"%s: Unmount %@: %@", __FUNCTION__, (disk.mounted ? @"failed" : @"succeeded"), disk.BSDName);
+	Log(LOG_DEBUG, @"%s: Unmount %@: %@", __FUNCTION__, (disk.isMounted ? @"failed" : @"succeeded"), disk.BSDName);
 
-	if (disk.mounted) {
+	if (disk.isMounted) {
 		// If the unmount failed, the notification userInfo will have keys/values that correspond to an NSError
 		
 		info = [[notif userInfo] mutableCopy];

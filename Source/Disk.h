@@ -37,10 +37,7 @@ enum {
 	CFTypeRef disk;
 	NSString *BSDName;
 	CFDictionaryRef diskDescription;
-	BOOL mountable;
-	BOOL mounted;
-	BOOL mounting;
-	BOOL ejectable;
+	BOOL isMounting;
 	NSImage *icon;
 	Disk *parent;
 	NSMutableSet *children;
@@ -49,11 +46,15 @@ enum {
 
 @property (copy) NSString *BSDName;
 @property CFDictionaryRef diskDescription;
-@property (readonly) BOOL mountable;
-@property (readonly) BOOL mounted;
-@property (readwrite) BOOL mounting;
-@property (readonly) BOOL ejectable;
+@property (readonly) BOOL isMountable;
+@property (readonly) BOOL isMounted;
+@property (readwrite) BOOL isMounting;
+@property (readonly) BOOL isWritable;
+@property (readonly) BOOL isEjectable;
+@property (readonly) BOOL isRemovable;
 @property (readonly) BOOL isWholeDisk;
+@property (readonly) BOOL isLeaf;
+@property (readonly) BOOL isNetworkVolume;
 @property (retain) NSImage *icon;
 @property (assign) Disk *parent;
 @property (retain) NSMutableSet *children;

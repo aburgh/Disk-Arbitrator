@@ -12,7 +12,6 @@
 		</object>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="54"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -48,7 +47,7 @@
 				<nil key="NSViewClass"/>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<object class="NSView" key="NSWindowView" id="1006">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -212,7 +211,7 @@
 										<object class="NSTextView" id="174713936">
 											<reference key="NSNextResponder" ref="776701536"/>
 											<int key="NSvFlags">2322</int>
-											<string key="NSFrameSize">{557, 34}</string>
+											<string key="NSFrameSize">{557, 28}</string>
 											<reference key="NSSuperview" ref="776701536"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="446155928">
 												<object class="NSLayoutManager" key="NSLayoutManager">
@@ -348,7 +347,7 @@
 												<nil key="NSDefaultParagraphStyle"/>
 											</object>
 											<int key="NSTVFlags">6</int>
-											<string key="NSMaxSize">{660, 1e+07}</string>
+											<string key="NSMaxSize">{1131, 1e+07}</string>
 											<string key="NSMinize">{223, 0}</string>
 											<nil key="NSDelegate"/>
 										</object>
@@ -396,7 +395,6 @@
 						</object>
 					</object>
 					<string key="NSFrameSize">{609, 581}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>

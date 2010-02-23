@@ -81,8 +81,8 @@
 //		Log(LOG_DEBUG, @"%s self: %p disk: %p", __FUNCTION__, self, disk);
 
 		self.indentation = disk.isWholeDisk ? 0.0 : 17.0;
-		self.mounted = disk.mounted;
-		self.mountable = disk.mountable;
+		self.mounted = disk.isMounted;
+		self.mountable = disk.isMountable;
 		
 		CFDictionaryRef descRef = disk.diskDescription;
 		self.mediaName = (NSString *) CFDictionaryGetValue(descRef, kDADiskDescriptionMediaNameKey);

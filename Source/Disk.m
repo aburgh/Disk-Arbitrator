@@ -16,10 +16,7 @@
 @implementation Disk
 
 @synthesize BSDName;
-@synthesize mountable;
-@synthesize mounted;
-@synthesize mounting;
-@synthesize ejectable;
+@synthesize isMounting;
 @synthesize icon;
 @synthesize parent;
 @synthesize children;
@@ -31,18 +28,21 @@
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key
 {
-	if ([key isEqual:@"isWholeDisk"])
-		return [NSSet setWithObject:@"diskDescription"];
-	
-	if ([key isEqual:@"mountable"])
+	if ([key isEqual:@"isMountable"])
 		return [NSSet setWithObject:@"diskDescription"];
 
-	if ([key isEqual:@"mounted"])
-		return [NSSet setWithObject:@"diskDescription"];
-	
-	if ([key isEqual:@"ejectable"])
+	if ([key isEqual:@"isMounted"])
 		return [NSSet setWithObject:@"diskDescription"];
 
+	if ([key isEqual:@"isEjectable"])
+		return [NSSet setWithObject:@"diskDescription"];
+
+	if ([key isEqual:@"isWritable"])
+		return [NSSet setWithObject:@"diskDescription"];
+
+	if ([key isEqual:@"isRemovable"])
+		return [NSSet setWithObject:@"diskDescription"];
+	
 	if ([key isEqual:@"icon"])
 		return [NSSet setWithObject:@"diskDescription"];
 
@@ -75,7 +75,6 @@
 		children = [NSMutableSet new];
 		diskDescription = DADiskCopyDescription(diskRef);
 		BSDName = [[NSString alloc] initWithUTF8String:DADiskGetBSDName(diskRef)];
-		[self refreshFromDescription];
 		
 //		CFShow(description);
 		
@@ -132,10 +131,10 @@
 
 - (void)mountAtPath:(NSString *)path withArguments:(NSArray *)args
 {
-	NSAssert(self.mountable, @"Disk isn't mountable.");
-	NSAssert(self.mounted == NO, @"Disk is already mounted.");
+	NSAssert(self.isMountable, @"Disk isn't mountable.");
+	NSAssert(self.isMounted == NO, @"Disk is already mounted.");
 
-	self.mounting = YES;
+	self.isMounting = YES;
 
 	Log(LOG_INFO, @"%s mount %@ at mountpoint: %@ arguments: %@", __FUNCTION__, BSDName, path, [args description]);
 
@@ -154,15 +153,15 @@
 
 - (void)unmountWithOptions:(NSUInteger)options
 {
-	NSAssert(self.mountable, @"Disk isn't mountable.");
-	NSAssert(self.mounted, @"Disk isn't mounted.");
+	NSAssert(self.isMountable, @"Disk isn't mountable.");
+	NSAssert(self.isMounted, @"Disk isn't mounted.");
 	
 	DADiskUnmount((DADiskRef) disk, options, DiskUnmountCallback, self);
 }
 
 - (void)eject
 {
-	NSAssert(ejectable, @"Disk is not ejectable: %@", self);
+	NSAssert(self.isEjectable, @"Disk is not ejectable: %@", self);
 	
 	DADiskEject((DADiskRef) disk, kDADiskEjectOptionDefault, DiskEjectCallback, self);
 }
@@ -179,42 +178,71 @@
 	[children removeAllObjects];
 }
 
+- (BOOL)isMountable
+{
+	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumeMountableKey) : NULL;
+	
+	return value ? CFBooleanGetValue(value) : NO;
+}
+
+- (BOOL)isMounted
+{
+	CFStringRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumePathKey) : NULL;
+	
+	return value ? YES : NO;
+}
 
 - (BOOL)isWholeDisk
 {
-	if (!diskDescription)
-		return NO;
-
-	CFBooleanRef value = CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaWholeKey);
-	if (!value)
-		return YES;
+	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaWholeKey) : NULL;
 	
-	return CFBooleanGetValue(value);
+	return value ? CFBooleanGetValue(value) : NO;
 }
 
-- (void)refreshFromDescription
+- (BOOL)isLeaf
 {
-	// BSDName cannot change so do not refresh it
+	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaLeafKey) : NULL;
+	
+	return value ? CFBooleanGetValue(value) : NO;
+}
 
-	self.icon = nil;
-	if (diskDescription) {
-		CFBooleanRef flagRef = CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumeMountableKey);
-		mountable = flagRef ? CFBooleanGetValue(flagRef) : NO;
-		mounted = CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumePathKey) ? YES : NO;
-		
-		flagRef = CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaEjectableKey);
-		ejectable = flagRef ? CFBooleanGetValue(flagRef) : NO;
-	}
+- (BOOL)isNetworkVolume
+{
+	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumeNetworkKey) : NULL;
+	
+	return value ? CFBooleanGetValue(value) : NO;
+}
+
+- (BOOL)isWritable
+{
+	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaWritableKey) : NULL;
+	
+	return value ? CFBooleanGetValue(value) : NO;
+}
+
+- (BOOL)isEjectable
+{
+	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaEjectableKey) : NULL;
+	
+	return value ? CFBooleanGetValue(value) : NO;
+}
+
+- (BOOL)isRemovable
+{
+	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaRemovableKey) : NULL;
+	
+	return value ? CFBooleanGetValue(value) : NO;
 }
 
 - (void)setDiskDescription:(CFDictionaryRef)desc
 {
+	NSAssert(desc, @"A NULL disk description is not allowed.");
+	
 	if (desc != diskDescription) {
 		[self willChangeValueForKey:@"diskDescription"];
 
 		CFRelease(diskDescription);
-		diskDescription = desc ? CFRetain(desc) : NULL;
-		[self refreshFromDescription];
+		diskDescription = CFRetain(desc);
 
 		[self didChangeValueForKey:@"diskDescription"];
 	}

@@ -75,7 +75,7 @@
 
 	[[self mutableSetValueForKey:@"disks"] addObject:disk];
 
-	if (self.isActivated && mountMode == MM_READONLY && disk.mountable && !disk.mounted) {
+	if (self.isActivated && mountMode == MM_READONLY && disk.isMountable && !disk.isMounted) {
 
 		CFDictionaryRef desc = disk.diskDescription;
 		CFStringRef volumeKindRef = CFDictionaryGetValue(desc, kDADiskDescriptionVolumeKindKey);
@@ -224,8 +224,8 @@ DADissenterRef DiskMountApprovalCallback(DADiskRef diskRef, void *arbitrator)
 	
 	DADissenterRef dissenter;
 
-	if (disk.mounting) {
-		disk.mounting = NO;
+	if (disk.isMounting) {
+		disk.isMounting = NO;
 		dissenter = NULL;
 	}
 	else {

@@ -11,10 +11,13 @@
 #include <syslog.h>
 
 
-void Log(int level, NSString *format, ...)
+void Log(NSInteger level, NSString *format, ...)
 {
 	va_list args;
 	NSString *formattedError;
+
+	if (level > [[NSUserDefaults standardUserDefaults] integerForKey:AppLogLevelDefaultsKey])
+		return;
 	
 	va_start(args, format);
 	
@@ -24,7 +27,7 @@ void Log(int level, NSString *format, ...)
 	
 	const char *utfFormattedError = [formattedError UTF8String];
 	
-	BOOL shouldUseSyslog = [[NSUserDefaults standardUserDefaults] boolForKey:@"EnableSyslog"];
+	BOOL shouldUseSyslog = [[NSUserDefaults standardUserDefaults] boolForKey:AppShouldEnableSyslogDefaultsKey];
 	
 	if (shouldUseSyslog) 
 		syslog(level, "%s\n", utfFormattedError);
@@ -34,10 +37,16 @@ void Log(int level, NSString *format, ...)
 	[formattedError release];
 }
 
+void SetAppLogLevel(NSInteger level)
+{
+	[[NSUserDefaults standardUserDefaults] setInteger:level forKey:AppLogLevelDefaultsKey];	
+}
 
 void SetShouldLogToSyslog(BOOL flag)
 {
-	[[NSUserDefaults standardUserDefaults] setBool:flag forKey:@"EnableSyslog"];
+	[[NSUserDefaults standardUserDefaults] setBool:flag forKey:AppShouldEnableSyslogDefaultsKey];
 }
 
 NSString * const AppErrorDomain = @"AppErrorDomain";
+NSString * const AppLogLevelDefaultsKey = @"AppLogLevel";
+NSString * const AppShouldEnableSyslogDefaultsKey = @"AppShouldEnableSyslog";

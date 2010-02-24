@@ -30,8 +30,11 @@
 
 #include <syslog.h>
 
-void Log(int level, NSString *format, ...);
+void Log(NSInteger level, NSString *format, ...);
 
+void SetAppLogLevel(NSInteger level);
 void SetShouldLogToSyslog(BOOL flag);
 
 extern NSString * const AppErrorDomain;
+extern NSString * const AppLogLevelDefaultsKey;
+extern NSString * const AppShouldEnableSyslogDefaultsKey;

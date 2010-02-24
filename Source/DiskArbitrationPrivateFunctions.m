@@ -127,7 +127,7 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 	if (context != [Disk class]) return;
 	
 	Log(LOG_DEBUG, @"%s <%p> %s, keys changed:", __FUNCTION__, diskRef, DADiskGetBSDName(diskRef));
-	CFShow(keys);
+	Log(LOG_DEBUG, @"%@", keys);
 	
 	for (Disk *disk in uniqueDisks) {
 		if (DADiskHash(diskRef)	== [disk hash]) {

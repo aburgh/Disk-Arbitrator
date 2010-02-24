@@ -121,7 +121,7 @@
 
 - (NSString *)description
 {
-	return [NSString stringWithFormat:@"<%@ 0x%p> BSD Name: = %@", [self class], self, BSDName];
+	return [NSString stringWithFormat:@"<%@ 0x%p %@>", [self class], self, BSDName];
 }
 
 - (void)mount
@@ -136,7 +136,7 @@
 
 	self.isMounting = YES;
 
-	Log(LOG_INFO, @"%s mount %@ at mountpoint: %@ arguments: %@", __FUNCTION__, BSDName, path, [args description]);
+	Log(LOG_DEBUG, @"%s mount %@ at mountpoint: %@ arguments: %@", __FUNCTION__, BSDName, path, [args description]);
 
 	// ensure arg list is NULL terminated
 	id *argv = calloc([args count] + 1, sizeof(id));

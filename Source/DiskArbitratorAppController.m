@@ -74,7 +74,7 @@ static NSArray *diskImageFileExtensions;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
-	// Insert code here to initialize your application 
+	SetAppLogLevel(LOG_INFO);
 	
 	displayErrorQueue = [NSMutableArray new];
 	

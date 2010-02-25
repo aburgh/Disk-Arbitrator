@@ -266,17 +266,23 @@ static NSArray *diskImageFileExtensions;
 	Disk *selectedDisk = [self selectedDisk];
 	BOOL waitForChildren = NO;
 	
-	for (Disk *child in selectedDisk.children) {
-		if (child.isMountable && child.isMounted) {
+	NSSet *disks;
+	if (selectedDisk.isWholeDisk && selectedDisk.isLeaf)
+		disks = [NSSet setWithObject:selectedDisk];
+	else
+		disks = selectedDisk.children;
+	
+	for (Disk *disk in disks) {
+		if (disk.isMountable && disk.isMounted) {
 			[[NSNotificationCenter defaultCenter] addObserver:self
 													 selector:@selector(_childDidAttemptUnmountBeforeEject:)
 														 name:DADiskDidAttemptUnmountNotification
-													   object:child];
-			[child unmountWithOptions:0];
+													   object:disk];
+			[disk unmountWithOptions:0];
 			waitForChildren = YES;
 		}
 	}
-	
+
 	if (!waitForChildren) {
 		if (selectedDisk.isEjectable)
 			[selectedDisk eject];

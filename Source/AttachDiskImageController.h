@@ -16,4 +16,17 @@
 
 @property (retain) IBOutlet NSView *view;
 
++ (NSArray *)diskImageFileExtensions;
+
+- (void)attachDiskImageAtPath:(NSString *)path options:(NSArray *)options password:(NSString *)password;
+
+- (void)attachDiskImageOptionsSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
+
+- (IBAction)performAttachDiskImage:(id)sender;
+
+- (void)attachDiskImageOptionsSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
+
+
+- (void)panelSelectionDidChange:(id)sender;
+
 @end

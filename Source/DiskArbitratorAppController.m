@@ -288,7 +288,6 @@
 //	[controller autorelease];
 }
 
-
 - (IBAction)performAttachDiskImage:(id)sender
 {
 	AttachDiskImageController *controller = [[[AttachDiskImageController alloc] initWithWindowNibName:@"AttachDiskImageAccessory"] autorelease];
@@ -393,6 +392,9 @@
 - (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id <NSDraggingInfo>)info
 			  row:(int)row dropOperation:(NSTableViewDropOperation)operation
 {
+	BOOL isOK;
+	NSError *error;
+	
     NSPasteboard* pboard = [info draggingPasteboard];
 	
 	Log(LOG_DEBUG, @"%s", __FUNCTION__);
@@ -405,9 +407,11 @@
 		AttachDiskImageController *controller = [[[AttachDiskImageController alloc] initWithWindowNibName:@"AttachDiskImageAccessory"] autorelease];
 		
 		for (NSString *file in files) {
-			[controller attachDiskImageAtPath:file
-									  options:[NSArray arrayWithObjects:@"-readonly", @"-mount", @"optional", nil]
-									 password:nil];
+			isOK = [controller attachDiskImageAtPath:file
+											 options:[NSArray arrayWithObjects:@"-readonly", @"-mount", @"optional", nil]
+											password:nil
+											   error:&error];
+			if (!isOK) [NSApp presentError:error];
 		}
 	}
 }

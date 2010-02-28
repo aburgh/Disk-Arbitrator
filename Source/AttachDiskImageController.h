@@ -12,13 +12,28 @@
 @interface AttachDiskImageController : SheetController <NSOpenSavePanelDelegate>
 {
 	NSView *view;
+	NSTask *task;
+	NSString *errorMessage;
+@private
+	NSMutableString *stdoutBuffer;
+	NSMutableString *stderrBuffer;
 }
 
 @property (retain) IBOutlet NSView *view;
+@property (retain) NSTask *task;
+@property (copy) NSString *errorMessage;
 
 + (NSArray *)diskImageFileExtensions;
 
-- (void)attachDiskImageAtPath:(NSString *)path options:(NSArray *)options password:(NSString *)password;
+- (NSTask *)hdiutilTaskWithCommand:(NSString *)command path:(NSString *)path options:(NSArray *)options password:(NSString *)password;
+
+- (BOOL)getDiskImagePropertyList:(id *)outPlist atPath:(NSString *)path command:(NSString *)command password:(NSString *)password error:(NSError **)outError;
+
+- (BOOL)getDiskImageEncryptionStatus:(BOOL *)outFlag atPath:(NSString *)path error:(NSError **)outError;
+
+- (BOOL)getDiskImageSLAStatus:(BOOL *)outFlag atPath:(NSString *)path password:(NSString *)password error:(NSError **)outError;
+
+- (BOOL)attachDiskImageAtPath:(NSString *)path options:(NSArray *)options password:(NSString *)password error:(NSError **)error;
 
 - (void)attachDiskImageOptionsSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
 
@@ -26,6 +41,7 @@
 
 - (void)attachDiskImageOptionsSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
 
+#pragma mark Delegates
 
 - (void)panelSelectionDidChange:(id)sender;
 

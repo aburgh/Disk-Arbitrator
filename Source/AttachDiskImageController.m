@@ -12,6 +12,8 @@
 @implementation AttachDiskImageController
 
 @synthesize view;
+@synthesize task;
+@synthesize errorMessage;
 
 + (NSArray *)diskImageFileExtensions;
 {
@@ -25,104 +27,206 @@
 
 - (void)dealloc
 {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[stdoutBuffer release];
+	[stderrBuffer release];
+	[task release];
 	[view release];
 	[super dealloc];
 }
 
-- (BOOL)getDiskImageEncryptionStatus:(BOOL *)outFlag atPath:(NSString *)path error:(NSError **)outError
+- (NSTask *)hdiutilTaskWithCommand:(NSString *)command path:(NSString *)path options:(NSArray *)options password:(NSString *)password
 {
-	// hdiutil isencrypted -plist
-
-	BOOL retval = YES;
-	NSDictionary *info;
-	NSString *failureReason;
-	NSData *outputData;
-	NSPipe *outPipe = [NSPipe pipe];
-	NSTask *task = [NSTask new];
-
-	[task setLaunchPath:@"/usr/bin/hdiutil"];
-	[task setArguments:[NSArray arrayWithObjects:@"isencrypted", @"-plist", path, nil]];
-	[task setStandardOutput:outPipe];
-	[task launch];
-	[task waitUntilExit];
-
-	outputData = [[outPipe fileHandleForReading] readDataToEndOfFile];
-
-	if ([task terminationStatus] == 0) {
-		info = [NSPropertyListSerialization propertyListFromData:outputData
-												mutabilityOption:NSPropertyListImmutable
-														  format:NULL
-												errorDescription:&failureReason];
-
-		if (info && [info objectForKey:@"encrypted"]) {
-			*outFlag = [[info objectForKey:@"encrypted"] boolValue];
-		}
-		else {
-			failureReason = NSLocalizedString(@"Invalid output from hdiutil.", nil);
-			retval = NO;
-		}
-	}
-	else {
-		failureReason = NSLocalizedString(@"Executing \"hdiutil isencrypted file\" failed.", nil); 
-		retval = NO;
-	}
+	Log(LOG_DEBUG, @"%s command: %@ path: %@ options: %@", __FUNCTION__, command, path, options);
 	
-	if (retval == NO) {
-		info = [NSDictionary dictionaryWithObjectsAndKeys:
-				NSLocalizedString(@"Failed to get encryption status of disk image", nil), NSLocalizedDescriptionKey,
-				failureReason, NSLocalizedFailureReasonErrorKey,
-				nil];
-		*outError = [NSError errorWithDomain:AppErrorDomain code:-1 userInfo:info];
-	}
-	[task release];
-	
-	return retval;
-}
-
-- (void)hdiutilAttachDidTerminate:(NSNotification *)notif
-{
-	NSTask *task = [notif object];
-	
-	if ([task terminationStatus] != 0) {
-		
-		NSMutableDictionary *info = [NSMutableDictionary dictionary];
-		[info setObject:NSLocalizedString(@"Failed to attach disk image", nil)
-				 forKey:NSLocalizedDescriptionKey];
-		[info setObject:[NSString stringWithFormat:@"%@ %d", NSLocalizedString(@"Error code", nil), [task terminationStatus]]
-				 forKey:NSLocalizedFailureReasonErrorKey];
-		
-		NSError *error = [NSError errorWithDomain:AppErrorDomain code:[task terminationStatus] userInfo:info];
-		[NSApp presentError:error];
-	}
-}
-
-- (void)attachDiskImageAtPath:(NSString *)path options:(NSArray *)options password:(NSString *)password
-{
-	NSTask *task;
-	NSPipe *stdinPipe;
+	NSTask *newTask;
 	NSFileHandle *stdinHandle;
-	NSMutableArray *arguments = [NSMutableArray arrayWithObject:@"attach"];
 	
+	newTask = [[NSTask new] autorelease];
+	[newTask setLaunchPath:@"/usr/bin/hdiutil"];
+	
+	NSMutableArray *arguments = [NSMutableArray arrayWithObject:command];
 	[arguments addObject:path];
 	[arguments addObjectsFromArray:options];
 	
-	task = [[NSTask new] autorelease];
-	[task setLaunchPath:@"/usr/bin/hdiutil"];
+	[newTask setStandardOutput:[NSPipe pipe]];
+	[newTask setStandardError:[NSPipe pipe]];
+	[newTask setStandardInput:[NSPipe pipe]];
 	
 	if (password) {
-		stdinPipe = [NSPipe pipe];
-		[task setStandardInput:stdinPipe];
-		stdinHandle = [stdinPipe fileHandleForWriting];
+		stdinHandle = [[newTask standardInput] fileHandleForWriting];
 		[stdinHandle writeData:[password dataUsingEncoding:NSUTF8StringEncoding]];
 		[stdinHandle writeData:[NSData dataWithBytes:"" length:1]];
 		
 		[arguments addObject:@"-stdinpass"];
 	}
 	
-	[task setArguments:arguments];
+	[newTask setArguments:arguments];
+
+	return newTask;
+}
+
+- (BOOL)getDiskImagePropertyList:(id *)outPlist atPath:(NSString *)path command:(NSString *)command password:(NSString *)password error:(NSError **)outError
+{
+	BOOL retval = YES;
+	NSMutableDictionary *info;
+	NSString *failureReason;
+	NSData *outputData;
+	NSTask *newTask;
+
+	NSArray *options = [NSArray arrayWithObjects:@"-plist", nil];
+	newTask = [self hdiutilTaskWithCommand:command path:path options:options password:password];
+	[newTask launch];
+	[newTask waitUntilExit];
+
+	outputData = [[[newTask standardOutput] fileHandleForReading] readDataToEndOfFile];
+
+	if ([newTask terminationStatus] == 0) {
+		*outPlist = [NSPropertyListSerialization propertyListFromData:outputData
+													 mutabilityOption:NSPropertyListImmutable
+															   format:NULL
+													 errorDescription:&failureReason];
+		
+		if (!*outPlist) {
+			Log(LOG_ERR, @"Plist deserialization error: %@", failureReason);
+			failureReason = NSLocalizedString(@"hdiutil output is not a property list.", nil);
+			retval = NO;
+		}
+	}
+	else {
+		Log(LOG_ERR, @"hdiutil termination status: %d", [newTask terminationStatus]);
+		failureReason = NSLocalizedString(@"hdiutil ended abnormally.", nil); 
+		retval = NO;
+	}
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hdiutilAttachDidTerminate:) name:NSTaskDidTerminateNotification object:task];
-	[task launch];
+	if (retval == NO && *outError) {
+		info = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+				NSLocalizedString(@"Error executing hdiutil command", nil), NSLocalizedDescriptionKey,
+				failureReason, NSLocalizedFailureReasonErrorKey,
+				failureReason, NSLocalizedRecoverySuggestionErrorKey,
+				nil];
+		*outError = [NSError errorWithDomain:AppErrorDomain code:-1 userInfo:info];
+	}
+	
+	return retval;
+}
+
+- (BOOL)getDiskImageEncryptionStatus:(BOOL *)outFlag atPath:(NSString *)path error:(NSError **)outError
+{
+	BOOL retval;
+	BOOL isOK = YES;
+	NSMutableDictionary *plist;
+	id value;
+	
+	isOK = [self getDiskImagePropertyList:&plist atPath:path command:@"isencrypted" password:nil error:outError];
+	if (isOK) {
+		if (value = [plist objectForKey:@"encrypted"]) {
+			*outFlag = [value boolValue];
+		}
+		else {
+			NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+										 NSLocalizedString(@"Failed to get encryption property", nil), NSLocalizedDescriptionKey,
+										 NSLocalizedString(@"Check that \"/usr/bin/hdiutil isencrypted\" is functioning correctly.", nil), 
+										 NSLocalizedRecoverySuggestionErrorKey,
+										 nil];
+			*outError = [NSError errorWithDomain:AppErrorDomain code:-1 userInfo:info];
+			isOK = NO;
+		}
+	}
+
+	return isOK;
+}
+
+- (BOOL)getDiskImageSLAStatus:(BOOL *)outFlag atPath:(NSString *)path password:(NSString *)password error:(NSError **)outError
+{
+	BOOL isOK = YES;
+	NSMutableDictionary *plist;
+	
+	isOK = [self getDiskImagePropertyList:&plist atPath:path command:@"imageinfo" password:password error:outError];
+	if (isOK) {
+		id value = [plist valueForKeyPath:@"Properties.Software License Agreement"];
+		if (value) {
+			*outFlag = [value boolValue];
+		}
+		else if (*outError) {
+			NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+										 NSLocalizedString(@"Failed to get SLA property", nil), NSLocalizedDescriptionKey,
+										 NSLocalizedString(@"Check that \"/usr/bin/hdiutil imageinfo\" is functioning correctly.", nil),
+										 NSLocalizedRecoverySuggestionErrorKey,
+										 nil];
+			*outError = [NSError errorWithDomain:AppErrorDomain code:-1 userInfo:info];
+			isOK = NO;
+		}
+	}
+	return isOK;
+}
+
+#pragma mark Attaching
+
+- (void)hdiutilAttachDidTerminate:(NSNotification *)notif
+{
+	NSTask *theTask = [notif object];
+	
+	if ([theTask terminationStatus] != 0) {
+		
+		NSMutableDictionary *info = [NSMutableDictionary dictionary];
+
+		[info setObject:NSLocalizedString(@"Error attaching disk image", nil)
+				 forKey:NSLocalizedDescriptionKey];
+
+		[info setObject:self.errorMessage
+				 forKey:NSLocalizedFailureReasonErrorKey];
+
+		[info setObject:self.errorMessage
+				 forKey:NSLocalizedRecoverySuggestionErrorKey];
+		
+		NSError *error = [NSError errorWithDomain:AppErrorDomain code:[theTask terminationStatus] userInfo:info];
+		[NSApp presentError:error];
+	}
+	self.task = nil;
+	[self autorelease];
+}
+
+- (BOOL)attachDiskImageAtPath:(NSString *)path options:(NSArray *)options password:(NSString *)password error:(NSError **)outError
+{
+	Log(LOG_DEBUG, @"%s path: %@ options: %@", __FUNCTION__, path, options);
+	
+	BOOL hasSLA;
+	NSTask *newTask;
+	NSPipe *stdinPipe, *stdoutPipe, *stderrPipe;
+	NSFileHandle *stdinHandle;
+
+	if ([self getDiskImageSLAStatus:&hasSLA atPath:path password:password error:outError] == NO)
+		return NO;
+	
+	NSMutableArray *arguments = [NSMutableArray array];
+	[arguments addObject:@"-plist"];
+	[arguments addObject:@"-puppetstrings"];
+	[arguments addObjectsFromArray:options];
+	
+	newTask = [self hdiutilTaskWithCommand:@"attach" path:path options:arguments password:password];
+
+	if (hasSLA) {
+		[[[newTask standardInput] fileHandleForWriting] writeData:[NSData dataWithBytes:"Y\n" length:3]];
+	}
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(processStandardOutput:)
+												 name:NSFileHandleReadCompletionNotification
+											   object:[[newTask standardOutput] fileHandleForReading]];
+	[[[newTask standardOutput] fileHandleForReading] readInBackgroundAndNotify];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(processStandardError:)
+												 name:NSFileHandleReadCompletionNotification
+											   object:[[newTask standardError] fileHandleForReading]];
+	[[[newTask standardError] fileHandleForReading] readInBackgroundAndNotify];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hdiutilAttachDidTerminate:) name:NSTaskDidTerminateNotification object:newTask];
+	[newTask launch];
+	self.task = newTask;
+	[self retain];
+	return YES;
 }
 
 - (void)attachDiskImageOptionsSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
@@ -131,7 +235,8 @@
 		[sheet orderOut:self];
 	
 	NSString *password = nil;
-	
+	BOOL isOK;
+	NSError *error;
 	NSMutableArray *attachOptions = [NSMutableArray array];
 	
 	if (returnCode == NSOKButton) {
@@ -142,6 +247,8 @@
 		
 		if ([[options objectForKey:@"noVerify"] boolValue] == YES)
 			[attachOptions addObject:@"-noverify"];
+		else
+			[attachOptions addObject:@"-verify"];
 		
 		if ([[options objectForKey:@"attemptMount"] boolValue] == YES)
 		{
@@ -171,56 +278,10 @@
 		
 		password = [options objectForKey:@"password"];
 		
-		[self attachDiskImageAtPath:[options objectForKey:@"filePath"] options:attachOptions password:password];
+		isOK = [self attachDiskImageAtPath:[options objectForKey:@"filePath"] options:attachOptions password:password error:&error];
+		if (!isOK) [NSApp presentError:error];
 	}
 }
-
-//- (void)_beginSheetAttachDiskImageOptionsWithPath:(NSString *)filePath needPassword:(BOOL)needPassword
-//{
-//	SheetController *controller = [[[SheetController alloc] initWithWindowNibName:@"AttachDiskImageOptions"] autorelease];
-//	[controller window]; // triggers controller to load the NIB
-//	
-//	[[controller userInfo] setObject:[NSNumber numberWithBool:YES] forKey:@"readOnly"];
-//	[[controller userInfo] setObject:[NSNumber numberWithBool:needPassword] forKey:@"needPassword"];
-//	[[controller userInfo] setObject:filePath forKey:@"filePath"];
-//	
-//	[window makeKeyAndOrderFront:self];
-//	
-//	[NSApp beginSheet:[controller window]
-//	   modalForWindow:window
-//		modalDelegate:self
-//	   didEndSelector:@selector(attachDiskImageOptionsSheetDidEnd:returnCode:contextInfo:)
-//		  contextInfo:controller];
-//}
-
-//- (void)attachDiskImagePanelDidEnd:(NSOpenPanel *)panel returnCode:(int)returnCode contextInfo:(void *)contextInfo
-//{
-//	NSError *error;
-//	BOOL isEncrypted;
-//	NSArray *options;
-//	
-//	if (returnCode == NSOKButton) {
-//		
-//		if ([self getDiskImageEncryptionStatus:&isEncrypted atPath:[panel filename] error:&error]) {
-//			// got encryption status
-//
-//			if (isEncrypted) {
-//				[panel orderOut:self];
-//				[self _beginSheetAttachDiskImageOptionsWithPath:[panel filename] needPassword:YES];
-//			}
-//			else {
-//				options = [NSArray arrayWithObjects:@"-nomount", @"-readonly", @"-drivekey", @"disk_arbitrator=1", nil];
-//				
-//				[self _attachDiskImageAtPath:[panel filename] options:options password:nil];
-//			}
-//		}
-//		else {
-//			// failed to get encryption status
-//			
-//			[NSApp presentError:error modalForWindow:window delegate:nil didPresentSelector:NULL contextInfo:NULL];
-//		}
-//	}
-//}
 
 - (IBAction)performAttachDiskImage:(id)sender
 {
@@ -245,6 +306,8 @@
 		[self attachDiskImageOptionsSheetDidEnd:panel returnCode:NSOKButton contextInfo:self];
 	}
 }
+
+#pragma mark Delegates
 
 - (void)panelSelectionDidChange:(id)sender
 {
@@ -287,5 +350,111 @@
 	}
 }
 
+#pragma mark Notification Callbacks
+
+- (NSString *)_parseNextMessage:(NSMutableString **)bufferRef newData:(NSData *)data
+{
+	NSMutableString **buffer = bufferRef;
+	NSString *returnString = nil;
+	NSString *newString;
+
+	// If data, append to buffer
+	
+	if (data && [data length] > 0) {
+		newString = [[NSString alloc] initWithBytes:[data bytes] length:[data length] encoding:NSUTF8StringEncoding];
+		
+		if (newString) {
+			if (*buffer)
+				[*buffer appendString:newString];
+			else
+				*buffer = [newString mutableCopy];
+			[newString release];
+		}
+	}
+	
+	// Parse either a plist or a single-line message
+	
+	NSString *endOfMessage = [*buffer hasPrefix:@"<?xml"] ? @"</plist>\n" : @"\n";
+	
+	NSRange range = [*buffer rangeOfString:endOfMessage];
+	if (range.location != NSNotFound)
+	{
+		returnString = [*buffer substringToIndex:(range.location + range.length - 1)];
+		[*buffer deleteCharactersInRange:NSMakeRange(0, [returnString length] + 1)];
+	}
+
+	return returnString;
+}
+
+- (void)processStandardOutput:(NSNotification *)notif
+{
+	Log(LOG_DEBUG, @"%s", __FUNCTION__);
+
+	NSString *message;
+	NSFileHandle *stdoutHandle = [notif object];
+	double percentage;
+	
+//	NSData *data = [stdoutHandle availableData];
+	NSData *data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
+	
+	while (message = [self _parseNextMessage:&stdoutBuffer newData:data])
+	{
+		data = nil;
+		
+		if ([message hasPrefix:@"PERCENT:"]) {
+			percentage = [[message substringFromIndex:[@"PERCENT:" length]] doubleValue];
+			Log(LOG_DEBUG, @"Percent: %f", percentage);
+		}
+		
+		else if ([message hasPrefix:@"MESSAGE:"]) {
+			message = [message substringFromIndex:[@"MESSAGE:" length]];
+			Log(LOG_DEBUG, @"Message: %@", message);
+		}
+		
+		else if ([message hasPrefix:@"hdiutil:"]) {
+			message = [message substringFromIndex:[@"hdiutil:" length]];
+			// error?
+			Log(LOG_ERR, @"Error: %@", message);
+		}
+		
+		else if ([message hasPrefix:@"<?xml"]) {
+			Log(LOG_DEBUG, @"Got XML");
+			// not used yet
+		}
+
+		else {
+			Log(LOG_ERR, @"hdiutil stdout: %@", message);
+		}
+	}
+	
+	if (self.task && [self.task isRunning])
+		[stdoutHandle readInBackgroundAndNotify];
+}
+
+- (void)processStandardError:(NSNotification *)notif
+{
+	Log(LOG_DEBUG, @"%s", __FUNCTION__);
+	
+	NSString *message;
+	NSFileHandle *stderrHandle = [notif object];
+	
+//	NSData *data = [stderrHandle availableData];
+
+	NSData *data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
+	
+	while (message = [self _parseNextMessage:&stderrBuffer newData:data])
+	{
+		data = nil;
+		
+		if ([message hasPrefix:@"hdiutil:"])
+			message = [message substringFromIndex:[@"hdiutil:" length]];
+		
+		Log(LOG_ERR, @"Error: %@", message);
+		self.errorMessage = message;
+	}
+	
+	if (self.task && [self.task isRunning])
+		[stderrHandle readInBackgroundAndNotify];
+}
 
 @end

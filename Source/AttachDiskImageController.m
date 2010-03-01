@@ -20,7 +20,6 @@
 @synthesize isVerifying;
 @synthesize canceled;
 
-
 + (NSArray *)diskImageFileExtensions;
 {
 	static NSArray *diskImageFileExtensions = nil;

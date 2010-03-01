@@ -426,6 +426,7 @@
 			if (!isOK) [NSApp presentError:error];
 		}
 	}
+	return YES;
 }
 
 #pragma mark Disk Notifications

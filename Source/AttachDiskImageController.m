@@ -121,7 +121,6 @@
 
 - (BOOL)getDiskImageEncryptionStatus:(BOOL *)outFlag atPath:(NSString *)path error:(NSError **)outError
 {
-	BOOL retval;
 	BOOL isOK = YES;
 	NSMutableDictionary *plist;
 	id value;
@@ -203,8 +202,6 @@
 	
 	BOOL hasSLA;
 	NSTask *newTask;
-	NSPipe *stdinPipe, *stdoutPipe, *stderrPipe;
-	NSFileHandle *stdinHandle;
 
 	if ([self getDiskImageSLAStatus:&hasSLA atPath:path password:password error:outError] == NO)
 		return NO;

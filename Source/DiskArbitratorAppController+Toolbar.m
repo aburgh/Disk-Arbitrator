@@ -73,7 +73,6 @@
 //---------------------------------------------------------- 
 -(BOOL)validateToolbarItem:(NSToolbarItem*)toolbarItem {
 	BOOL enabled = YES;
-	Disk *selectedDisk;
 	
     if ([[toolbarItem itemIdentifier] isEqual:ToolbarItemInfoIdentifier])
 		enabled = YES;
@@ -98,13 +97,6 @@
 	else if ([[toolbarItem itemIdentifier] isEqual:ToolbarItemEjectIdentifier]) {
 		
 		enabled = [self canEjectSelectedDisk];
-		
-//		selectedDisk = [self selectedDisk];
-//		
-//		if (selectedDisk && selectedDisk.isWholeDisk && selectedDisk.ejectable)
-//			enabled = YES;
-//		else
-//			enabled = NO;
 	}
 	
 	return enabled;

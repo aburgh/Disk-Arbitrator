@@ -47,14 +47,15 @@ Disk Arbitrator continuously monitors for disks to appear and disappear and trac
 
 ### Working With Disk Images
 
-The fact that Disk Arbitrator rejects the initial mount attempt causes problems when working with disk images. Mounting a disk image is normally initiated by the user by double-clicking or using hdituil in the Terminal. This initiates a two-step process:
+As of version 0.3.0, Disk Arbitrator has support for disk images.  
 
-1. Attach the disk image to create a /dev/disk entry.  This is analogous to the act of plugging in an external drive.
-2. Mount any file systems found on the disk image.
+Using Disk Arbitrator's Attach Disk Image feature, attaching the disk image is effectively coordinated.  When "Attach Disk Image..." is selected from the menu, an open panel appears which includes additional options for attaching and mounting the disk image.  The default is to only attach the disk image.  When the "Open" button is clicked, Disk Arbitrator attaches the disk using hdiutil.  Once it is attached, Disk Arbitrator's normal behavior applies, so if it is activated and the mode is set to Read-Only, the volumes on the disk image will be mounted read-only.  If the mode is set to Block Mounts, the volumes will be ignored.
 
-The difficulty with disk images is that either method, double-clicking or using hdiutil, attempts to perform both steps. But, if the mount doesn't succeed, then the system detaches the disk image. Using hdiutil, you can work around this by passing the "-nomount" flag so that only the attach step is executed.
+The disk image open panel includes an option to attempt to mount the disk image for when Disk Arbitrator isn't activated and is being used as a convenient means to attach a disk image.  When the mount option is used, Disk Arbitrator passes "-mount optional" to hdiutil, which attempts to attach and mount the disk image, but with the benefit that if the mount fails, the disk image is not detached.
 
-A future version of Disk Arbitrator will include an feature to attach a disk image with the "-nomount" flag as a convenience for the user.
+Disk Arbitrator also supports drag and drop to attach a disk image.  Simply drag one or more disk images from a Finder window to Disk Arbitrator's list of disks to initiate attaching the disk images.  When using drag and drop, the default options include "-mount optional", so mounting is also attempted.  If the mount fails, the disk image remains attached and can be mounted manually.
+
+Note, attempting to attach and mount a disk image outside of Disk Arbitrator, either by double-clicking it in the Finder or using hdiutil attach, will behave as before: the disk image will be attached, then the system will attempt to mount it, Disk Arbitrator will reject the mount, and the disk image will be unattached because the mount failed.
 
 ### A Note On Dirty Journals
 
@@ -69,13 +70,9 @@ Disk Arbitrator provides a convenient way to execute the second step, and a futu
 
 ## Future Features
 
-* Automatic disk image mounting.  Currently, when the utility is set to block mounts, attaching a disk image with hdiutil will fail unless the -nomount option is also specified.  As a convenience, the utility will manage the attach step, initiated via a File > Open command or drag-and-drop, saving the user from a two-step process.
-
 * Disk imaging.  Provide disk imaging ala dd capturing and hashing of the data. 
 
 * Incorporate libewf and/or libaff to enable imaging to a variety of forensic file formats.
-
-* Currently, Ejecting a disk fails if any file systems on the disk are mounted. The utility should automatically unmount file systems prior to attempting eject the disk.
 
 ## Support and Feedback
 

@@ -1,8 +1,9 @@
-#### 0.3.0
+#### 0.3.0 pending
 
 * Added Attach Disk Image feature.
 * Added check for encrypted disk image.
 * Added support for attaching a disk image by dragging the file into the disks window.
+* Added a progress window while a disk image is verified.
 * Added disk menu to the status item menu.
 * Improved validation of toolbar items.
 

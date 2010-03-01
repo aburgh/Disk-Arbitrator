@@ -392,7 +392,7 @@
 - (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id <NSDraggingInfo>)info
 			  row:(int)row dropOperation:(NSTableViewDropOperation)operation
 {
-	BOOL isOK;
+	BOOL isOK, isEncrypted;
 	NSError *error;
 	
     NSPasteboard* pboard = [info draggingPasteboard];
@@ -405,12 +405,24 @@
 		Log(LOG_DEBUG, @"files: %@", files);
 
 		AttachDiskImageController *controller = [[[AttachDiskImageController alloc] initWithWindowNibName:@"AttachDiskImageAccessory"] autorelease];
+		[controller window];
 		
 		for (NSString *file in files) {
-			isOK = [controller attachDiskImageAtPath:file
-											 options:[NSArray arrayWithObjects:@"-readonly", @"-mount", @"optional", nil]
-											password:nil
-											   error:&error];
+			
+			isOK = [controller getDiskImageEncryptionStatus:&isEncrypted
+													 atPath:file
+													  error:&error];
+			if (isOK) {
+				if (isEncrypted) {
+					[controller performAttachDiskImageWithPath:file];
+				}
+				else {
+					isOK = [controller attachDiskImageAtPath:file
+													 options:[NSArray arrayWithObjects:@"-readonly", @"-mount", @"optional", nil]
+													password:nil
+													   error:&error];
+				}
+			}
 			if (!isOK) [NSApp presentError:error];
 		}
 	}

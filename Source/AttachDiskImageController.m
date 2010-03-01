@@ -13,7 +13,13 @@
 
 @synthesize view;
 @synthesize task;
+@synthesize title;
+@synthesize message;
 @synthesize errorMessage;
+@synthesize progress;
+@synthesize isVerifying;
+@synthesize canceled;
+
 
 + (NSArray *)diskImageFileExtensions;
 {
@@ -30,6 +36,9 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[stdoutBuffer release];
 	[stderrBuffer release];
+	[errorMessage release];
+	[message release];
+	[title	 release];
 	[task release];
 	[view release];
 	[super dealloc];
@@ -165,9 +174,11 @@
 
 - (void)hdiutilAttachDidTerminate:(NSNotification *)notif
 {
+	[[self window] orderOut:self];
+	
 	NSTask *theTask = [notif object];
 	
-	if ([theTask terminationStatus] != 0) {
+	if (!canceled && [theTask terminationStatus] != 0) {
 		
 		NSMutableDictionary *info = [NSMutableDictionary dictionary];
 
@@ -198,6 +209,8 @@
 
 	if ([self getDiskImageSLAStatus:&hasSLA atPath:path password:password error:outError] == NO)
 		return NO;
+	
+	self.title = [NSString stringWithFormat:@"Attaching \"%@\" ...", [path lastPathComponent]];
 	
 	NSMutableArray *arguments = [NSMutableArray array];
 	[arguments addObject:@"-plist"];
@@ -283,7 +296,9 @@
 	}
 }
 
-- (IBAction)performAttachDiskImage:(id)sender
+#pragma mark Actions
+
+- (void)performAttachDiskImageWithPath:(NSString *)path
 {
 	NSOpenPanel *panel = [NSOpenPanel openPanel];
 	[panel setCanChooseFiles:YES];
@@ -298,13 +313,31 @@
 	[panel setAccessoryView:self.view];
 	[panel setDelegate:self];
 	
+	NSString *directory = path ? [path stringByDeletingLastPathComponent] : nil;
+	NSString *filename = path ? [path lastPathComponent] : nil;
+
 	// This is a little strange, but left over from an initial implementation which used cascading sheets on
 	// the main window.  The code sheetDidEnd code is usable for this variation, though
-	
-	if ([panel runModal] == NSOKButton) {
+		 
+	if ([panel runModalForDirectory:directory file:filename] == NSOKButton) {
 		[self.userInfo setObject:[panel filename] forKey:@"filePath"];
 		[self attachDiskImageOptionsSheetDidEnd:panel returnCode:NSOKButton contextInfo:self];
 	}
+}
+
+- (IBAction)performAttachDiskImage:(id)sender
+{
+	[self performAttachDiskImageWithPath:nil];
+}
+
+- (IBAction)cancel:(id)sender
+{
+	self.canceled = YES;
+	[task terminate];
+}
+
+- (IBAction)skip:(id)sender
+{
 }
 
 #pragma mark Delegates
@@ -390,40 +423,52 @@
 {
 	Log(LOG_DEBUG, @"%s", __FUNCTION__);
 
-	NSString *message;
+	NSString *mymessage;
 	NSFileHandle *stdoutHandle = [notif object];
 	double percentage;
 	
 //	NSData *data = [stdoutHandle availableData];
 	NSData *data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
 	
-	while (message = [self _parseNextMessage:&stdoutBuffer newData:data])
+	while (mymessage = [self _parseNextMessage:&stdoutBuffer newData:data])
 	{
 		data = nil;
 		
-		if ([message hasPrefix:@"PERCENT:"]) {
-			percentage = [[message substringFromIndex:[@"PERCENT:" length]] doubleValue];
+		if ([mymessage hasPrefix:@"PERCENT:"]) {
+			percentage = [[mymessage substringFromIndex:[@"PERCENT:" length]] doubleValue];
 			Log(LOG_DEBUG, @"Percent: %f", percentage);
+			
+			if (percentage > 0.0) {
+				if (!self.isVerifying) {
+					self.isVerifying = YES;
+					[self showWindow:self];
+					[NSApp unhide:self];
+//					[self.window makeKeyAndOrderFront:self];
+				}
+				self.progress = percentage;
+			}
 		}
 		
-		else if ([message hasPrefix:@"MESSAGE:"]) {
-			message = [message substringFromIndex:[@"MESSAGE:" length]];
-			Log(LOG_DEBUG, @"Message: %@", message);
+		else if ([mymessage hasPrefix:@"MESSAGE:"]) {
+			mymessage = [mymessage substringFromIndex:[@"MESSAGE:" length]];
+			Log(LOG_DEBUG, @"Message: %@", mymessage);
+			
+			self.message = mymessage;
 		}
 		
-		else if ([message hasPrefix:@"hdiutil:"]) {
-			message = [message substringFromIndex:[@"hdiutil:" length]];
+		else if ([mymessage hasPrefix:@"hdiutil:"]) {
+			mymessage = [mymessage substringFromIndex:[@"hdiutil:" length]];
 			// error?
-			Log(LOG_ERR, @"Error: %@", message);
+			Log(LOG_ERR, @"Error: %@", mymessage);
 		}
 		
-		else if ([message hasPrefix:@"<?xml"]) {
+		else if ([mymessage hasPrefix:@"<?xml"]) {
 			Log(LOG_DEBUG, @"Got XML");
 			// not used yet
 		}
 
 		else {
-			Log(LOG_ERR, @"hdiutil stdout: %@", message);
+			Log(LOG_ERR, @"hdiutil stdout: %@", mymessage);
 		}
 	}
 	
@@ -435,22 +480,22 @@
 {
 	Log(LOG_DEBUG, @"%s", __FUNCTION__);
 	
-	NSString *message;
+	NSString *mymessage;
 	NSFileHandle *stderrHandle = [notif object];
 	
 //	NSData *data = [stderrHandle availableData];
 
 	NSData *data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
 	
-	while (message = [self _parseNextMessage:&stderrBuffer newData:data])
+	while (mymessage = [self _parseNextMessage:&stderrBuffer newData:data])
 	{
 		data = nil;
 		
-		if ([message hasPrefix:@"hdiutil:"])
-			message = [message substringFromIndex:[@"hdiutil:" length]];
+		if ([mymessage hasPrefix:@"hdiutil:"])
+			mymessage = [mymessage substringFromIndex:[@"hdiutil:" length]];
 		
-		Log(LOG_ERR, @"Error: %@", message);
-		self.errorMessage = message;
+		Log(LOG_ERR, @"Error: %@", mymessage);
+		self.errorMessage = mymessage;
 	}
 	
 	if (self.task && [self.task isRunning])

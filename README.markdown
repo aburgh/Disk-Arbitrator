@@ -55,7 +55,11 @@ The disk image open panel includes an option to attempt to mount the disk image 
 
 Disk Arbitrator also supports drag and drop to attach a disk image.  Simply drag one or more disk images from a Finder window to Disk Arbitrator's list of disks to initiate attaching the disk images.  When using drag and drop, the default options include "-mount optional", so mounting is also attempted.  If the mount fails, the disk image remains attached and can be mounted manually.
 
-Note, attempting to attach and mount a disk image outside of Disk Arbitrator, either by double-clicking it in the Finder or using hdiutil attach, will behave as before: the disk image will be attached, then the system will attempt to mount it, Disk Arbitrator will reject the mount, and the disk image will be unattached because the mount failed.
+Notes:
+
+* Attempting to attach and mount a disk image outside of Disk Arbitrator, either by double-clicking it in the Finder or using hdiutil attach, will behave as before: the disk image will be attached, then the system will attempt to mount it, Disk Arbitrator will reject the mount, and the disk image will be unattached because the mount failed.
+
+* If a disk image with a Software License Agreement is attached, Disk Arbitrator automatically replies "Yes" to the agreement.  Caveat Emptor.
 
 ### A Note On Dirty Journals
 

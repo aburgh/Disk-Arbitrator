@@ -143,20 +143,21 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *context)
 {
 //	Disk *disk = (Disk *)context;
-	NSMutableDictionary *info;
+	NSMutableDictionary *info = nil;
+
+	Log(LOG_DEBUG, @"%s %@ dissenter: %p", __FUNCTION__, context, dissenter);
 	
 	if (dissenter) {
 		DAReturn status = DADissenterGetStatus(dissenter);
 
 		NSString *statusString = (NSString *) DADissenterGetStatusString(dissenter);
 		if (!statusString)
-			statusString = [NSString stringWithFormat:@"Error code: %d", status];
+			statusString = [NSString stringWithFormat:@"%@: %d", NSLocalizedString(@"Dissenter status code", nil), status];
 
-		Log(LOG_DEBUG, @"%s disk %@ dissenter: (%d) %@", __FUNCTION__, context, status, statusString);
+		Log(LOG_INFO, @"%s %@ dissenter: (%d) %@", __FUNCTION__, context, status, statusString);
 
 		info = [NSMutableDictionary dictionary];
 		[info setObject:statusString forKey:NSLocalizedFailureReasonErrorKey];
-		[info setObject:statusString forKey:NSLocalizedRecoverySuggestionErrorKey];
 		[info setObject:[NSNumber numberWithInt:status] forKey:DAStatusErrorKey];
 	}
 	else {

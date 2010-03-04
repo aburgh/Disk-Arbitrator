@@ -180,15 +180,17 @@
 		
 		NSMutableDictionary *info = [NSMutableDictionary dictionary];
 
-		[info setObject:NSLocalizedString(@"Error attaching disk image", nil)
+		[info setObject:[NSString stringWithFormat:@"%@: %@.", NSLocalizedString(@"Error running hdiutil", nil), self.errorMessage]
 				 forKey:NSLocalizedDescriptionKey];
 
 		[info setObject:self.errorMessage
 				 forKey:NSLocalizedFailureReasonErrorKey];
-
-		[info setObject:self.errorMessage
-				 forKey:NSLocalizedRecoverySuggestionErrorKey];
 		
+		[info setObject:NSLocalizedString(@"Check the system log for details.", nil)
+				 forKey:NSLocalizedRecoverySuggestionErrorKey];
+
+		Log(LOG_ERR, @"%s termination status: (%d) %@", __FUNCTION__, [theTask terminationStatus], self.errorMessage);
+
 		NSError *error = [NSError errorWithDomain:AppErrorDomain code:[theTask terminationStatus] userInfo:info];
 		[NSApp presentError:error];
 	}

@@ -477,9 +477,10 @@
 		
 		info = [[notif userInfo] mutableCopy];
 		
-		Log(LOG_INFO, @"Mount failed: %@ (%@) %@", disk.BSDName, [info objectForKey:DAStatusErrorKey], [info objectForKey:NSLocalizedFailureReasonErrorKey]);
+		Log(LOG_ERR, @"Mount failed: %@ (%@) %@", disk.BSDName, [info objectForKey:DAStatusErrorKey], [info objectForKey:NSLocalizedFailureReasonErrorKey]);
 		
-		[info setObject:NSLocalizedString(@"Mount failed", nil) forKey:NSLocalizedDescriptionKey];
+		[info setObject:[NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Mount rejected", nil), disk.BSDName]
+				 forKey:NSLocalizedDescriptionKey];
 		
 		NSError *error = [NSError errorWithDomain:AppErrorDomain
 											 code:[[info objectForKey:DAStatusErrorKey] intValue]

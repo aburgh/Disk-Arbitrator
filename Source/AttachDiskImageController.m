@@ -282,9 +282,6 @@
 			[attachOptions addObject:@"-nomount"];
 		}
 		
-		[attachOptions addObject:@"-drivekey"];
-		[attachOptions addObject:@"disk_arbitrator=1"];
-		
 		password = [options objectForKey:@"password"];
 		
 		isOK = [self attachDiskImageAtPath:[options objectForKey:@"filePath"] options:attachOptions password:password error:&error];

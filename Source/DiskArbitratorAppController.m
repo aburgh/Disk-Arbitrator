@@ -417,10 +417,13 @@
 					[controller performAttachDiskImageWithPath:file];
 				}
 				else {
-					isOK = [controller attachDiskImageAtPath:file
-													 options:[NSArray arrayWithObjects:@"-readonly", @"-mount", @"optional", nil]
-													password:nil
-													   error:&error];
+					NSArray *options;
+					if (arbitrator.isActivated)
+						options = [NSArray arrayWithObjects:@"-readonly", @"-nomount", nil];
+					else
+						options = [NSArray arrayWithObjects:@"-readonly", @"-mount", @"optional", nil];
+
+					isOK = [controller attachDiskImageAtPath:file options:options password:nil error:&error];
 				}
 			}
 			if (!isOK) [NSApp presentError:error];

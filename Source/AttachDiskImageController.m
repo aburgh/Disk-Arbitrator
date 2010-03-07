@@ -7,6 +7,8 @@
 //
 
 #import "AttachDiskImageController.h"
+#import <Security/Security.h>
+#import <SecurityFoundation/SFAuthorization.h>
 #import "AppError.h"
 
 @implementation AttachDiskImageController
@@ -198,13 +200,83 @@
 	[self autorelease];
 }
 
+- (NSString *)promptUserForPasswordAtPath:(NSString *)path error:(NSError **)outError
+{
+	SFAuthorization *authorization;
+	AuthorizationRights rights;
+	AuthorizationEnvironment env;
+	AuthorizationFlags flags;
+	AuthorizationItemSet *info;
+	OSStatus status;
+	NSString *password;
+	
+	NSString *fileName = [path lastPathComponent];
+	NSString *prompt = [NSString stringWithFormat:NSLocalizedString(@"Enter password to access %@", nil), fileName];
+	
+	AuthorizationItem rightsItems[1] = { { "com.apple.builtin.generic-unlock", 0, NULL, 0 } };
+	rights.count = sizeof(rightsItems) / sizeof(AuthorizationItem);;
+	rights.items = rightsItems;
+
+	AuthorizationItem envItems[1] = {
+		{ kAuthorizationEnvironmentPrompt, strlen([prompt UTF8String]), (void *)[prompt UTF8String], 0 }
+//		{ kAuthorizationEnvironmentPassword, 0, NULL, 0 }
+	};
+	env.count = sizeof(envItems) / sizeof(AuthorizationItem);
+	env.items = envItems;
+
+	flags = kAuthorizationFlagDefaults| kAuthorizationFlagInteractionAllowed | kAuthorizationFlagPreAuthorize;
+	
+	authorization = [SFAuthorization authorization];
+
+	if (![authorization obtainWithRights:&rights flags:flags environment:&env authorizedRights:NULL error:outError])
+	{
+		if (outError && [*outError code] != errAuthorizationCanceled)
+			Log(LOG_ERR, @"Authorization error: %@", *outError);
+		return nil;
+	}
+	
+	password = nil;
+
+	status = AuthorizationCopyInfo([authorization authorizationRef], kAuthorizationEnvironmentPassword, &info);
+	
+	if (status == noErr) {
+		if (info->count > 0 && info->items[0].valueLength > 0)
+			password = [NSString stringWithUTF8String:info->items[0].value];
+	}
+	else {
+		if (outError) {
+			NSDictionary *info;
+			info = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Authorization did not return a password.", nil)
+											   forKey:NSLocalizedDescriptionKey];
+			*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:status userInfo:info];
+		}
+	}
+	
+	AuthorizationFreeItemSet(info);
+
+	return password;
+}
+
 - (BOOL)attachDiskImageAtPath:(NSString *)path options:(NSArray *)options password:(NSString *)password error:(NSError **)outError
 {
 	Log(LOG_DEBUG, @"%s path: %@ options: %@", __FUNCTION__, path, options);
 	
-	BOOL hasSLA;
+	BOOL isEncrypted, hasSLA;
 	NSTask *newTask;
 
+	if (!password) {
+		if ([self getDiskImageEncryptionStatus:&isEncrypted atPath:path error:outError]) {
+			if (isEncrypted) {
+				password = [self promptUserForPasswordAtPath:path error:outError];
+				if (!password)
+					return [*outError code] == errAuthorizationCanceled ? YES : NO;
+			}
+		}
+		else {
+			return NO; // get encryption status failed
+		}
+	}
+	
 	if ([self getDiskImageSLAStatus:&hasSLA atPath:path password:password error:outError] == NO)
 		return NO;
 	

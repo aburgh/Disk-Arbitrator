@@ -389,12 +389,28 @@
 	return NSDragOperationNone;
 }
 
+- (void)doAttachDiskImageAtPath:(NSString *)path
+{
+	NSError *error;
+	
+	AttachDiskImageController *controller = [[[AttachDiskImageController alloc] initWithWindowNibName:@"AttachDiskImageAccessory"] autorelease];
+	[controller window];
+
+	NSArray *options;
+	if (arbitrator.isActivated)
+		options = [NSArray arrayWithObjects:@"-readonly", @"-nomount", nil];
+	else
+		options = [NSArray arrayWithObjects:@"-readonly", @"-mount", @"optional", nil];
+	
+	if (![controller attachDiskImageAtPath:path options:options password:nil error:&error])
+	{
+		[NSApp presentError:error];
+	}
+}
+
 - (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id <NSDraggingInfo>)info
 			  row:(int)row dropOperation:(NSTableViewDropOperation)operation
 {
-	BOOL isOK, isEncrypted;
-	NSError *error;
-	
     NSPasteboard* pboard = [info draggingPasteboard];
 	
 	Log(LOG_DEBUG, @"%s", __FUNCTION__);
@@ -403,31 +419,9 @@
 		NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
 
 		Log(LOG_DEBUG, @"files: %@", files);
-
-		AttachDiskImageController *controller = [[[AttachDiskImageController alloc] initWithWindowNibName:@"AttachDiskImageAccessory"] autorelease];
-		[controller window];
 		
-		for (NSString *file in files) {
-			
-			isOK = [controller getDiskImageEncryptionStatus:&isEncrypted
-													 atPath:file
-													  error:&error];
-			if (isOK) {
-				if (isEncrypted) {
-					[controller performAttachDiskImageWithPath:file];
-				}
-				else {
-					NSArray *options;
-					if (arbitrator.isActivated)
-						options = [NSArray arrayWithObjects:@"-readonly", @"-nomount", nil];
-					else
-						options = [NSArray arrayWithObjects:@"-readonly", @"-mount", @"optional", nil];
-
-					isOK = [controller attachDiskImageAtPath:file options:options password:nil error:&error];
-				}
-			}
-			if (!isOK) [NSApp presentError:error];
-		}
+		for (NSString *file in files)
+			[self performSelector:@selector(doAttachDiskImageAtPath:) withObject:file afterDelay:0.01];
 	}
 	return YES;
 }

@@ -40,6 +40,14 @@
 		[item setAction:@selector(performMountOrUnmount:)];
 		[item setToolTip:NSLocalizedString(@"Select a volume, then click to mount or unmount.", nil)];
 	}
+	else if ([itemIdentifier isEqual:ToolbarItemAttachDiskImageIdentifier]) {			// Attach Disk Image
+		[item setLabel:NSLocalizedString(@"Attach", nil)];
+		[item setPaletteLabel:NSLocalizedString(@"Attach Disk Image", nil)];
+		[item setImage:[NSImage imageNamed:@"ToolbarItem Attach Disk Image"]];
+		[item setTarget:self];
+		[item setAction:@selector(performAttachDiskImage:)];
+		[item setToolTip:NSLocalizedString(@"Attach Disk Image", nil)];
+	}
 	return [item autorelease];
 }
 
@@ -54,6 +62,7 @@
 			ToolbarItemInfoIdentifier,
 			ToolbarItemMountIdentifier,
 			ToolbarItemEjectIdentifier,
+			ToolbarItemAttachDiskImageIdentifier,
 			nil];
 }
 
@@ -64,6 +73,8 @@
 			ToolbarItemInfoIdentifier,
 			ToolbarItemEjectIdentifier,
 			ToolbarItemMountIdentifier,
+			NSToolbarSpaceItemIdentifier,
+			ToolbarItemAttachDiskImageIdentifier,
 			NSToolbarFlexibleSpaceItemIdentifier,
 			NSToolbarCustomizeToolbarItemIdentifier, 
 			nil];
@@ -121,4 +132,5 @@ NSString * const ToolbarItemMainIdentifier = @"ToolbarItemMainIdentifier";
 NSString * const ToolbarItemInfoIdentifier = @"ToolbarItemInfoIdentifier"; 
 NSString * const ToolbarItemMountIdentifier = @"ToolbarItemMountIdentifier";
 NSString * const ToolbarItemEjectIdentifier = @"ToolbarItemEjectIdentifier"; 
+NSString * const ToolbarItemAttachDiskImageIdentifier = @"ToolbarItemAttachDiskImageIdentifier"; 
 

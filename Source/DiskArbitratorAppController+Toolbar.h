@@ -21,3 +21,4 @@ NSString * const ToolbarItemMainIdentifier;
 NSString * const ToolbarItemInfoIdentifier;
 NSString * const ToolbarItemMountIdentifier;
 NSString * const ToolbarItemEjectIdentifier;
+NSString * const ToolbarItemAttachDiskImageIdentifier;

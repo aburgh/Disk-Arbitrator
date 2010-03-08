@@ -54,6 +54,7 @@
 		9654B788111DEBBF00E9B0C4 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 9654B742111DE2EF00E9B0C4 /* README.markdown */; };
 		96FCBC761140C2E700E5554C /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCBC751140C2E700E5554C /* SecurityFoundation.framework */; };
 		96FCBC871140CBF400E5554C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCBC861140CBF400E5554C /* Security.framework */; };
+		96FCCE46114491E700E5554C /* ToolbarItem Attach Disk Image.png in Resources */ = {isa = PBXBuildFile; fileRef = 96FCCE45114491E700E5554C /* ToolbarItem Attach Disk Image.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -131,6 +132,7 @@
 		9654B7A9111E473200E9B0C4 /* build_dmg.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = build_dmg.sh; sourceTree = "<group>"; };
 		96FCBC751140C2E700E5554C /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = System/Library/Frameworks/SecurityFoundation.framework; sourceTree = SDKROOT; };
 		96FCBC861140CBF400E5554C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		96FCCE45114491E700E5554C /* ToolbarItem Attach Disk Image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolbarItem Attach Disk Image.png"; path = "Resources/ToolbarItem Attach Disk Image.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -268,6 +270,7 @@
 				9626D294111F536500B803AB /* ToolbarItem Eject.png */,
 				9626D295111F536500B803AB /* ToolbarItem Mount.png */,
 				9626D2F31120FB7000B803AB /* ToolbarItem Info.png */,
+				96FCCE45114491E700E5554C /* ToolbarItem Attach Disk Image.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -333,6 +336,7 @@
 				9626E4E711244EAF00B803AB /* App Icon.icns in Resources */,
 				9626E50C1124DC6900B803AB /* DiskInfo.xib in Resources */,
 				9626E815113149D000B803AB /* AttachDiskImageAccessory.xib in Resources */,
+				96FCCE46114491E700E5554C /* ToolbarItem Attach Disk Image.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

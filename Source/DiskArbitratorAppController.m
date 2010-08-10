@@ -91,6 +91,14 @@
 	[window setWorksWhenModal:YES];
 	
 	[tableView registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
+	
+	// Register user defaults
+	NSDictionary *defaults = [NSDictionary dictionaryWithObjectsAndKeys:
+							  [NSNumber numberWithBool:YES], @"ShowMainWindowAtStartup", nil];
+	[[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
+	
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ShowMainWindowAtStartup"])
+		[window makeKeyAndOrderFront:self];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -102,8 +110,17 @@
 
 - (IBAction)showMainWindow:(id)sender
 {
-//	[NSApp showWindow:window];
 	[window orderFront:sender];
+}
+
+- (IBAction)showPreferences:(id)sender
+{
+	static NSWindowController *controller = nil;
+
+	if (!controller)
+		controller = [[NSWindowController alloc] initWithWindowNibName:@"Preferences"];
+
+	[[controller window] makeKeyAndOrderFront:self];
 }
 
 - (IBAction)performActivation:(id)sender

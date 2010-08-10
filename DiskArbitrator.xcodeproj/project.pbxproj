@@ -27,6 +27,7 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		96033DD51210E1DB006F4F11 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 96033DD31210E1DB006F4F11 /* Preferences.xib */; };
 		9626D293111F476000B803AB /* DiskArbitratorAppController+Toolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626D292111F476000B803AB /* DiskArbitratorAppController+Toolbar.m */; };
 		9626D296111F536500B803AB /* ToolbarItem Eject.png in Resources */ = {isa = PBXBuildFile; fileRef = 9626D294111F536500B803AB /* ToolbarItem Eject.png */; };
 		9626D297111F536500B803AB /* ToolbarItem Mount.png in Resources */ = {isa = PBXBuildFile; fileRef = 9626D295111F536500B803AB /* ToolbarItem Mount.png */; };
@@ -94,6 +95,7 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* DiskArbitrator-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "DiskArbitrator-Info.plist"; path = "Resources/DiskArbitrator-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Disk Arbitrator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Disk Arbitrator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		96033DD41210E1DB006F4F11 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Preferences.xib; sourceTree = "<group>"; };
 		9626D291111F476000B803AB /* DiskArbitratorAppController+Toolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DiskArbitratorAppController+Toolbar.h"; sourceTree = "<group>"; };
 		9626D292111F476000B803AB /* DiskArbitratorAppController+Toolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DiskArbitratorAppController+Toolbar.m"; sourceTree = "<group>"; };
 		9626D294111F536500B803AB /* ToolbarItem Eject.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolbarItem Eject.png"; path = "Resources/ToolbarItem Eject.png"; sourceTree = "<group>"; };
@@ -246,6 +248,7 @@
 				9626E44A1123779C00B803AB /* MountOptions.xib */,
 				9626E50A1124DC6900B803AB /* DiskInfo.xib */,
 				9626E813113149D000B803AB /* AttachDiskImageAccessory.xib */,
+				96033DD31210E1DB006F4F11 /* Preferences.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -337,6 +340,7 @@
 				9626E50C1124DC6900B803AB /* DiskInfo.xib in Resources */,
 				9626E815113149D000B803AB /* AttachDiskImageAccessory.xib in Resources */,
 				96FCCE46114491E700E5554C /* ToolbarItem Attach Disk Image.png in Resources */,
+				96033DD51210E1DB006F4F11 /* Preferences.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,6 +406,14 @@
 				1DDD58150DA1D0A300B32029 /* English */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		96033DD31210E1DB006F4F11 /* Preferences.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				96033DD41210E1DB006F4F11 /* English */,
+			);
+			name = Preferences.xib;
 			sourceTree = "<group>";
 		};
 		9626E44A1123779C00B803AB /* MountOptions.xib */ = {

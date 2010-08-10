@@ -34,6 +34,7 @@
 @property (retain) Arbitrator *arbitrator;
 
 - (IBAction)showMainWindow:(id)sender;
+- (IBAction)showPreferences:(id)sender;
 - (IBAction)performActivation:(id)sender;
 - (IBAction)performDeactivation:(id)sender;
 - (IBAction)toggleActivation:(id)sender;

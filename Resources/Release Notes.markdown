@@ -1,4 +1,8 @@
-#### 0.3.0 pending
+#### 0.3.1 8/9/2010
+
+* Added Preferences window and an option to show the main window at launch.
+
+#### 0.3.0 3/29/2010
 
 * Added Attach Disk Image feature.
 * Added check for encrypted disk image.

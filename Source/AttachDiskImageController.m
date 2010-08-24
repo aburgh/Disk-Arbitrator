@@ -498,7 +498,7 @@
 //	NSData *data = [stdoutHandle availableData];
 	NSData *data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
 	
-	while (mymessage = [self _parseNextMessage:&stdoutBuffer newData:data])
+	while ((mymessage = [self _parseNextMessage:&stdoutBuffer newData:data]))
 	{
 		data = nil;
 		
@@ -555,7 +555,7 @@
 
 	NSData *data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
 	
-	while (mymessage = [self _parseNextMessage:&stderrBuffer newData:data])
+	while ((mymessage = [self _parseNextMessage:&stderrBuffer newData:data]))
 	{
 		data = nil;
 		

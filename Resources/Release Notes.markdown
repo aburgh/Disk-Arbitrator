@@ -1,3 +1,8 @@
+#### 0.3.2 8/23/2010
+
+* Fixed use of Snow Leopard API to retrieve disk icons.
+* Minor code cleanup.
+
 #### 0.3.1 8/9/2010
 
 * Added Preferences window and an option to show the main window at launch.

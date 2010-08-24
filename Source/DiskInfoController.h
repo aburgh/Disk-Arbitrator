@@ -19,7 +19,7 @@
 }
 
 @property (retain) IBOutlet NSTextView *textView;
-@property (retain) Disk *disk;
+@property (retain, nonatomic) Disk *disk;
 @property (copy) NSDictionary *diskDescription;
 @property (copy) NSAttributedString *diskInfo;
 

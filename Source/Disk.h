@@ -55,7 +55,7 @@ enum {
 @property (readonly) BOOL isWholeDisk;
 @property (readonly) BOOL isLeaf;
 @property (readonly) BOOL isNetworkVolume;
-@property (retain) NSImage *icon;
+@property (readonly, retain) NSImage *icon;
 @property (assign) Disk *parent;
 @property (retain) NSMutableSet *children;
 

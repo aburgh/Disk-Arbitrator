@@ -129,7 +129,8 @@
 	
 	isOK = [self getDiskImagePropertyList:&plist atPath:path command:@"isencrypted" password:nil error:outError];
 	if (isOK) {
-		if (value = [plist objectForKey:@"encrypted"]) {
+		value = [plist objectForKey:@"encrypted"];
+		if (value) {
 			*outFlag = [value boolValue];
 		}
 		else {

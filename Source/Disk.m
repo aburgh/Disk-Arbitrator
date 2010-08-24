@@ -263,19 +263,31 @@
 				CFStringRef identifier = CFDictionaryGetValue(iconRef, CFSTR("CFBundleIdentifier"));
 				CFURLRef url = KextManagerCreateURLForBundleIdentifier(kCFAllocatorDefault, identifier);
 				if (url) {
-					NSBundle *bundle = [NSBundle bundleWithURL:(NSURL *)url];
+					NSString *bundlePath = [(NSURL *)url path];
 					CFRelease(url);
 
-					NSString *filename = (NSString *) CFDictionaryGetValue(iconRef, CFSTR("IOBundleResourceFile"));
-					NSString *basename = [filename stringByDeletingPathExtension];
-					NSString *fileext =  [filename pathExtension];
-					NSString *path = [bundle pathForResource:basename ofType:fileext];
+					NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
+					if (bundle) {
+						NSString *filename = (NSString *) CFDictionaryGetValue(iconRef, CFSTR("IOBundleResourceFile"));
+						NSString *basename = [filename stringByDeletingPathExtension];
+						NSString *fileext =  [filename pathExtension];
 
-					icon = [[NSImage alloc] initWithContentsOfFile:path];
+						NSString *path = [bundle pathForResource:basename ofType:fileext];
+						if (path) {
+							icon = [[NSImage alloc] initWithContentsOfFile:path];
+						}
+					}
+					else {
+						Log(LOG_WARNING, @"Failed to load bundle with URL: %@", [(NSURL *) url absoluteString]);
+						CFShow(diskDescription);
+					}
 				}
-				
+				else {
+					Log(LOG_WARNING, @"Failed to create URL for bundle identifier: %@", (NSString *)identifier);
+					CFShow(diskDescription);
+				}
 			}
-		}	
+		}
 	}
 	
 	return icon;

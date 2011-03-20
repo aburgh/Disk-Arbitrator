@@ -232,18 +232,19 @@ DADissenterRef DiskMountApprovalCallback(DADiskRef diskRef, void *arbitrator)
 	}
 	else {
 		 dissenter = DADissenterCreate(kCFAllocatorDefault,
-												 kDAReturnNotPermitted, 
-												 CFSTR("Disk Arbitrator is in charge"));
+									   kDAReturnNotPermitted, 
+									   CFSTR("Disk Arbitrator is in charge"));
 	}
 	[disk release];
 
+	Log(LOG_DEBUG, @"Mount allowed: %s", dissenter ? "No" : "Yes");
 	return dissenter;
 }
 
 void DiskClaimCallback(DADiskRef disk, DADissenterRef dissenter, void *arbitrator)
 {
 	Log(LOG_DEBUG, @"%s called: %p %s", __FUNCTION__, disk, DADiskGetBSDName(disk));
-	Log(LOG_DEBUG, @"\t claimed: %s\n", DADiskIsClaimed(disk) ? "Yes" : "No");
+	Log(LOG_DEBUG, @"\t claimed: %s", DADiskIsClaimed(disk) ? "Yes" : "No");
 	
 	if (dissenter)
 		CFShow(dissenter);

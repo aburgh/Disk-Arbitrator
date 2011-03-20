@@ -108,9 +108,16 @@
 			[self refreshStatusItemIcon];
 }
 
+- (IBAction)showAboutPanel:(id)sender
+{
+	[NSApp orderFrontStandardAboutPanel:sender];
+	[NSApp activateIgnoringOtherApps:YES];
+}
+
 - (IBAction)showMainWindow:(id)sender
 {
-	[window orderFront:sender];
+	[window makeKeyAndOrderFront:sender];
+	[NSApp activateIgnoringOtherApps:YES];
 }
 
 - (IBAction)showPreferences:(id)sender
@@ -121,6 +128,7 @@
 		controller = [[NSWindowController alloc] initWithWindowNibName:@"Preferences"];
 
 	[[controller window] makeKeyAndOrderFront:self];
+	[NSApp activateIgnoringOtherApps:YES];
 }
 
 - (IBAction)performActivation:(id)sender
@@ -441,6 +449,13 @@
 			[self performSelector:@selector(doAttachDiskImageAtPath:) withObject:file afterDelay:0.01];
 	}
 	return YES;
+}
+
+#pragma mark Window Delegates
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+	[NSApp deactivate];
 }
 
 #pragma mark Disk Notifications

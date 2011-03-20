@@ -32,7 +32,8 @@
 
 - (id)init
 {
-	if (self = [super init]) 
+	self = [super init];
+	if (self)
 	{
 		disks = [NSMutableSet new];
 		[self registerSession];

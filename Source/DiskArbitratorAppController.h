@@ -11,7 +11,7 @@
 @class Arbitrator;
 @class Disk;
 
-@interface AppController : NSObject <NSApplicationDelegate> 
+@interface AppController : NSObject // <NSApplicationDelegate> 
 {
     NSPanel *window;
 	NSStatusItem *statusItem;
@@ -33,6 +33,7 @@
 @property (retain) NSStatusItem *statusItem;
 @property (retain) Arbitrator *arbitrator;
 
+- (IBAction)showAboutPanel:(id)sender;
 - (IBAction)showMainWindow:(id)sender;
 - (IBAction)showPreferences:(id)sender;
 - (IBAction)performActivation:(id)sender;

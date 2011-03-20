@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "SheetController.h"
 
-@interface AttachDiskImageController : SheetController <NSOpenSavePanelDelegate>
+@interface AttachDiskImageController : SheetController // <NSOpenSavePanelDelegate>
 {
 	NSView *view;
 	NSTask *task;

@@ -68,7 +68,8 @@
 		}
 	}
 	
-	if (self = [super init]) 
+	self = [super init];
+	if (self) 
 	{
 		BSDName = [[NSString alloc] initWithUTF8String:DADiskGetBSDName(diskRef)];
 		CFRetain(diskRef);
@@ -161,7 +162,7 @@
 
 - (void)eject
 {
-	NSAssert(self.isEjectable, @"Disk is not ejectable: %@", self);
+	NSAssert1(self.isEjectable, @"Disk is not ejectable: %@", self);
 	
 	DADiskEject((DADiskRef) disk, kDADiskEjectOptionDefault, DiskEjectCallback, self);
 }

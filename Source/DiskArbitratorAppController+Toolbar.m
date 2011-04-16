@@ -12,6 +12,25 @@
 
 @implementation AppController (AppControllerToolbar)
 
+- (NSImage *)attachDiskImageIcon
+{
+	NSImage *dmgIcon = [[NSWorkspace sharedWorkspace] iconForFileType:@"dmg"];
+	NSImage *plugImage = [NSImage imageNamed:@"ToolbarItem Attach Disk Plug"];
+	
+	NSBitmapImageRep *compositedImage = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:32 pixelsHigh:32 bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO colorSpaceName:NSCalibratedRGBColorSpace bytesPerRow:0 bitsPerPixel:0];
+
+	[NSGraphicsContext saveGraphicsState];
+	[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:compositedImage]];
+	[[NSGraphicsContext currentContext] setShouldAntialias:NO];
+	
+	[dmgIcon drawInRect:NSMakeRect(0, 0, 32, 32) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
+	[plugImage drawInRect:NSMakeRect(2, 16, 16, 16) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+	
+	[NSGraphicsContext restoreGraphicsState];
+
+	return [[[NSImage alloc] initWithData:[compositedImage TIFFRepresentation]] autorelease];
+}
+
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
 {
 	NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
@@ -43,7 +62,8 @@
 	else if ([itemIdentifier isEqual:ToolbarItemAttachDiskImageIdentifier]) {			// Attach Disk Image
 		[item setLabel:NSLocalizedString(@"Attach", nil)];
 		[item setPaletteLabel:NSLocalizedString(@"Attach Disk Image", nil)];
-		[item setImage:[NSImage imageNamed:@"ToolbarItem Attach Disk Image"]];
+//		[item setImage:[NSImage imageNamed:@"ToolbarItem Attach Disk Image"]];
+		[item setImage:[self attachDiskImageIcon]];
 		[item setTarget:self];
 		[item setAction:@selector(performAttachDiskImage:)];
 		[item setToolTip:NSLocalizedString(@"Attach Disk Image", nil)];

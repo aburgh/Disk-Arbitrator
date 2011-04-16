@@ -53,6 +53,7 @@
 		9654A46D11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A46C11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m */; };
 		9654B787111DEBBB00E9B0C4 /* Release Notes.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 9654B6D8111C2C7D00E9B0C4 /* Release Notes.markdown */; };
 		9654B788111DEBBF00E9B0C4 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 9654B742111DE2EF00E9B0C4 /* README.markdown */; };
+		96647D82133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png in Resources */ = {isa = PBXBuildFile; fileRef = 96647D81133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png */; };
 		96FCBC761140C2E700E5554C /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCBC751140C2E700E5554C /* SecurityFoundation.framework */; };
 		96FCBC871140CBF400E5554C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCBC861140CBF400E5554C /* Security.framework */; };
 		96FCCE46114491E700E5554C /* ToolbarItem Attach Disk Image.png in Resources */ = {isa = PBXBuildFile; fileRef = 96FCCE45114491E700E5554C /* ToolbarItem Attach Disk Image.png */; };
@@ -132,6 +133,7 @@
 		9654B6D8111C2C7D00E9B0C4 /* Release Notes.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "Release Notes.markdown"; path = "Resources/Release Notes.markdown"; sourceTree = "<group>"; };
 		9654B742111DE2EF00E9B0C4 /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.markdown; sourceTree = "<group>"; };
 		9654B7A9111E473200E9B0C4 /* build_dmg.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = build_dmg.sh; sourceTree = "<group>"; };
+		96647D81133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolbarItem Attach Disk Plug.png"; path = "Resources/ToolbarItem Attach Disk Plug.png"; sourceTree = "<group>"; };
 		96FCBC751140C2E700E5554C /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = System/Library/Frameworks/SecurityFoundation.framework; sourceTree = SDKROOT; };
 		96FCBC861140CBF400E5554C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		96FCCE45114491E700E5554C /* ToolbarItem Attach Disk Image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolbarItem Attach Disk Image.png"; path = "Resources/ToolbarItem Attach Disk Image.png"; sourceTree = "<group>"; };
@@ -265,6 +267,7 @@
 		9654A1D8110C760300E9B0C4 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				96647D81133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png */,
 				9626E4E611244EAF00B803AB /* App Icon.icns */,
 				9654A1DC110C761B00E9B0C4 /* StatusItem Disabled 1.png */,
 				9654A1DD110C761B00E9B0C4 /* StatusItem Disabled 2.png */,
@@ -345,6 +348,7 @@
 				9626E815113149D000B803AB /* AttachDiskImageAccessory.xib in Resources */,
 				96FCCE46114491E700E5554C /* ToolbarItem Attach Disk Image.png in Resources */,
 				96033DD51210E1DB006F4F11 /* Preferences.xib in Resources */,
+				96647D82133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -511,7 +515,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 				VALID_ARCHS = "ppc i386 x86_64";
 			};
 			name = Debug;
@@ -530,7 +534,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 				VALID_ARCHS = "ppc i386 x86_64";
 			};
 			name = Release;

@@ -1,3 +1,12 @@
+## Disk Arbitrator Release Notes <br/> v0.3.3
+
+#### 0.3.3
+
+* Fixed overwriting AppLogLevel preference at startup.
+* Added log message for mount approval callback.
+* Activate application when showing the main window, Preferences, or About panel.
+* Changed Attach Disk Image icon.
+
 #### 0.3.2 8/23/2010
 
 * Fixed use of Snow Leopard API to retrieve disk icons.

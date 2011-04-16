@@ -220,10 +220,11 @@
 DADissenterRef DiskMountApprovalCallback(DADiskRef diskRef, void *arbitrator)
 {
 	Log(LOG_DEBUG, @"%s called: %p %s", __FUNCTION__, diskRef, DADiskGetBSDName(diskRef));
-	Log(LOG_DEBUG, @"\t claimed: %s\n", DADiskIsClaimed(diskRef) ? "Yes" : "No");
+	Log(LOG_DEBUG, @"\t claimed: %s", DADiskIsClaimed(diskRef) ? "Yes" : "No");
 
 	Disk *disk = [[Disk alloc] initWithDiskRef:diskRef];
-	
+	Log(LOG_DEBUG, @"%@", disk.diskDescription);
+
 	DADissenterRef dissenter;
 
 	if (disk.isMounting) {

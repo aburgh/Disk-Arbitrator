@@ -15,11 +15,15 @@
 @implementation Arbitrator
 
 @synthesize disks;
-@synthesize mountMode;
 
 + (void)initialize
 {
 	InitializeDiskArbitration();
+	
+	NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
+	[defaults setObject:[NSNumber numberWithBool:YES] forKey:ArbitratorIsEnabled];
+	[defaults setObject:[NSNumber numberWithInteger:0] forKey:ArbitratorMountMode];
+	[[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
 }
 
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key
@@ -37,6 +41,13 @@
 	{
 		disks = [NSMutableSet new];
 		[self registerSession];
+
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:ArbitratorIsEnabled]) {
+			if ([self activate] == NO) {
+				[self dealloc];
+				return nil;
+			}
+		}
 	}
 	return self;
 }
@@ -76,10 +87,10 @@
 
 	[[self mutableSetValueForKey:@"disks"] addObject:disk];
 
-	if (self.isActivated && mountMode == MM_READONLY && disk.isMountable && !disk.isMounted) {
+	if (self.isActivated && self.mountMode == MM_READONLY && disk.isMountable && !disk.isMounted) {
 
 		CFDictionaryRef desc = disk.diskDescription;
-		CFStringRef volumeKindRef = CFDictionaryGetValue(desc, kDADiskDescriptionVolumeKindKey);
+		NSString *volumeKindRef = (NSString *)CFDictionaryGetValue(desc, kDADiskDescriptionVolumeKindKey);
 
 		// Arguments will be passed via the -o flag of mount. If the file system specific mount, e.g. mount_hfs,
 		// supports additional flags that mount(8) doesn't, they can be passed to -o.  That feature is used to
@@ -88,7 +99,7 @@
 		// a work-around.
 
 		NSArray *args;
-		if ([@"hfs" isEqual:(NSString *)volumeKindRef])
+		if ([volumeKindRef isEqual:@"hfs"])
 			args = [NSArray arrayWithObjects:@"-j", @"rdonly", nil];
 		else
 			args = [NSArray arrayWithObjects:@"rdonly", nil];
@@ -139,6 +150,7 @@
 	
 	[self willChangeValueForKey:@"isActivated"];
 	success = [self registerApprovalSession];
+	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:ArbitratorIsEnabled];
 	[self didChangeValueForKey:@"isActivated"];	
 	
 	return success;
@@ -147,7 +159,8 @@
 - (void)deactivate
 {
 	[self willChangeValueForKey:@"isActivated"];
-	[self unregisterApprovalSession];	
+	[self unregisterApprovalSession];
+	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:ArbitratorIsEnabled];
 	[self didChangeValueForKey:@"isActivated"];	
 }
 
@@ -163,6 +176,19 @@
 
 	else if (!shouldActivate && self.isActivated)
 		[self deactivate];
+}
+
+- (NSInteger)mountMode {
+	return [[NSUserDefaults standardUserDefaults] integerForKey:ArbitratorMountMode];
+}
+
+- (void)setMountMode:(NSInteger)mountMode {
+	NSInteger currentMode = [[NSUserDefaults standardUserDefaults] integerForKey:ArbitratorMountMode];
+	if (currentMode != mountMode) {
+		[self willChangeValueForKey:@"mountMode"];
+		[[NSUserDefaults standardUserDefaults] setInteger:mountMode forKey:ArbitratorMountMode];
+		[self didChangeValueForKey:@"mountMode"];
+	}
 }
 
 - (NSSet *)wholeDisks
@@ -264,4 +290,7 @@ DADissenterRef DiskClaimReleaseCallback(DADiskRef disk, void *arbitrator)
 	
 	return dissenter;
 }
+
+NSString * const ArbitratorIsEnabled = @"ArbitratorIsEnabled";
+NSString * const ArbitratorMountMode = @"ArbitratorMountMode";
 

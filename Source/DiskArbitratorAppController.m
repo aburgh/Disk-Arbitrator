@@ -84,7 +84,7 @@
 	self.arbitrator = [Arbitrator new];
 	[arbitrator addObserver:self forKeyPath:@"isActivated" options:0 context:NULL];
 	[arbitrator addObserver:self forKeyPath:@"mountMode" options:0 context:NULL];
-	arbitrator.isActivated = YES;
+	[self refreshStatusItemIcon];  // arbitrator status initial state is taken from user defaults, which was initialized before KVO initialized
 	[arbitrator release];
 	
 	self.sortDescriptors = [NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"BSDName" ascending:YES] autorelease]];

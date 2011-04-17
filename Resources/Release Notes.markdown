@@ -6,6 +6,7 @@
 * Added log message for mount approval callback.
 * Activate application when showing the main window, Preferences, or About panel.
 * Changed Attach Disk Image icon.
+* Changed mode and activation state to persist across application restart.
 
 #### 0.3.2 8/23/2010
 

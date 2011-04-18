@@ -1,6 +1,6 @@
-## Disk Arbitrator Release Notes <br/> v0.3.3
+## Disk Arbitrator Release Notes <br/> v0.4.0
 
-#### 0.3.3
+#### 0.4.0
 
 * Fixed overwriting AppLogLevel preference at startup.
 * Added log message for mount approval callback.

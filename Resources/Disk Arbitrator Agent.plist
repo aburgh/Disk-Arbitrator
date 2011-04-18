@@ -8,6 +8,8 @@
 	<false/>
 	<key>KeepAlive</key>
 	<true/>
+	<key>EnableTransactions</key>
+	<true/>
 	<key>ProgramArguments</key>
 	<array>
 		<string>/Applications/Utilities/Disk Arbitrator.app/Contents/MacOS/Disk Arbitrator</string>

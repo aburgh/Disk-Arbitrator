@@ -7,6 +7,7 @@
 * Activate application when showing the main window, Preferences, or About panel.
 * Changed Attach Disk Image icon.
 * Changed mode and activation state to persist across application restart.
+* Enabled Sudden Termination (new in Snow Leopard for faster shutdowns).
 
 #### 0.3.2 8/23/2010
 

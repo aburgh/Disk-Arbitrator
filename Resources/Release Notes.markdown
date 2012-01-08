@@ -1,5 +1,9 @@
 ## Disk Arbitrator Release Notes <br/> v0.4.0
 
+#### 0.4.1
+
+* Added labels and tool tips to make mount options easier to understand.
+
 #### 0.4.0
 
 * Fixed overwriting AppLogLevel preference at startup.

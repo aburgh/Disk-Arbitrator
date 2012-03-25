@@ -25,7 +25,9 @@
 @synthesize sortDescriptors;
 @synthesize statusItem;
 @synthesize arbitrator;
-
+@synthesize hasUserLaunchAgent;
+@synthesize hasSystemLaunchAgent;
+@synthesize installUserLaunchAgentMenuTitle;
 
 - (void)dealloc
 {
@@ -63,6 +65,8 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
+	[self refreshLaunchAgentStatus];
+	
 	NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
 	[defaults setObject:[NSNumber numberWithInt:LOG_INFO] forKey:AppLogLevelDefaultsKey];
 	[defaults setObject:[NSNumber numberWithBool:YES]     forKey:@"ShowMainWindowAtStartup"];
@@ -317,7 +321,85 @@
 	[controller window];
 	[controller performAttachDiskImage:sender];
 }
-	 
+
+#pragma mark Launch Agent
+
+- (NSString *)systemLaunchAgentPath {
+
+	NSString *path = nil;
+
+	CFStringRef identifier = CFBundleGetIdentifier(CFBundleGetMainBundle());
+	if (identifier) {
+		path = [NSString stringWithFormat:@"%@/%@/%@.plist", @"/", @"Library/LaunchAgents", identifier];
+	}
+
+	return path;	
+}
+
+- (NSString *)userLaunchAgentPath {
+
+	NSString *path = nil;
+	
+	CFStringRef identifier = CFBundleGetIdentifier(CFBundleGetMainBundle());
+	if (identifier) {
+		path = [NSString stringWithFormat:@"%@/%@/%@.plist", NSHomeDirectory(), @"Library/LaunchAgents", identifier];
+	}
+
+	return  path;
+}
+
+- (void)refreshLaunchAgentStatus {
+	NSFileManager *fm = [NSFileManager defaultManager];
+	
+	self.hasSystemLaunchAgent = [fm fileExistsAtPath:[self systemLaunchAgentPath]];
+
+	self.hasUserLaunchAgent = [fm fileExistsAtPath:[self userLaunchAgentPath]];
+	if (self.hasUserLaunchAgent)
+		self.installUserLaunchAgentMenuTitle = @"Uninstall User Launch Agent...";
+	else
+		self.installUserLaunchAgentMenuTitle = @"Install User Launch Agent...";
+}
+
+- (BOOL)canInstallLaunchAgent {
+	return (self.hasUserLaunchAgent == NO || self.hasSystemLaunchAgent);
+}
+
+- (IBAction)installUserLaunchAgent:(id)sender {
+	NSError *error;
+	NSAlert *alert = nil;
+	NSString *srcPath, *dstPath;
+	NSFileManager *fm = [NSFileManager defaultManager];
+
+	if (self.hasUserLaunchAgent) {
+
+		dstPath = [self userLaunchAgentPath];
+		
+		if ([fm removeItemAtPath:dstPath error:&error] == YES) {
+			alert = [NSAlert alertWithMessageText:@"Launch Agent file successfully removed"
+									defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@""];
+		}
+		else {
+			alert = [NSAlert alertWithError:error];
+		}
+	}
+	else {
+		srcPath = [[NSBundle mainBundle] pathForResource:@"Disk Arbitrator Agent" ofType:@"plist"];
+		dstPath = [self userLaunchAgentPath];
+
+		if ([fm copyItemAtPath:srcPath toPath:dstPath error:&error] == YES) {
+			alert = [NSAlert alertWithMessageText:@"Launch Agent file successfully installed"
+									defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@""];
+		}
+		else {
+			alert = [NSAlert alertWithError:error];
+		}
+	}
+	if (alert)
+		[alert runModal];
+	
+	[self refreshLaunchAgentStatus];
+}
+
 #pragma mark Selected Disk
 
 - (Disk *)selectedDisk

@@ -1303,7 +1303,7 @@
 				<string key="NSName">_NSMainMenu</string>
 			</object>
 			<object class="NSWindowTemplate" id="972006081">
-				<int key="NSWindowStyleMask">159</int>
+				<int key="NSWindowStyleMask">31</int>
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{159, 453}, {466, 631}}</string>
 				<int key="NSWTFlags">1954021376</int>
@@ -1328,15 +1328,13 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrameSize">{466, 560}</string>
 											<reference key="NSSuperview" ref="385315458"/>
-											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="677523983"/>
+											<reference key="NSNextKeyView" ref="655641141"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTableHeaderView" key="NSHeaderView" id="851431564">
 												<reference key="NSNextResponder" ref="625916963"/>
 												<int key="NSvFlags">256</int>
 												<string key="NSFrameSize">{466, 17}</string>
 												<reference key="NSSuperview" ref="625916963"/>
-												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="385315458"/>
 												<reference key="NSTableView" ref="475433248"/>
 											</object>
@@ -1466,7 +1464,6 @@
 									</array>
 									<string key="NSFrame">{{1, 17}, {466, 560}}</string>
 									<reference key="NSSuperview" ref="569266854"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="475433248"/>
 									<reference key="NSDocView" ref="475433248"/>
 									<reference key="NSBGColor" ref="764974144"/>
@@ -1477,7 +1474,6 @@
 									<int key="NSvFlags">-2147483392</int>
 									<string key="NSFrame">{{224, 17}, {15, 102}}</string>
 									<reference key="NSSuperview" ref="569266854"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="60027807"/>
 									<reference key="NSTarget" ref="569266854"/>
 									<string key="NSAction">_doScroller:</string>
@@ -1488,7 +1484,6 @@
 									<int key="NSvFlags">-2147483392</int>
 									<string key="NSFrame">{{-100, -100}, {223, 15}}</string>
 									<reference key="NSSuperview" ref="569266854"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="625916963"/>
 									<int key="NSsFlags">1</int>
 									<reference key="NSTarget" ref="569266854"/>
@@ -1504,7 +1499,6 @@
 									</array>
 									<string key="NSFrame">{{1, 0}, {466, 17}}</string>
 									<reference key="NSSuperview" ref="569266854"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="851431564"/>
 									<reference key="NSDocView" ref="851431564"/>
 									<reference key="NSBGColor" ref="764974144"/>
@@ -1513,8 +1507,7 @@
 							</array>
 							<string key="NSFrame">{{-1, 53}, {468, 578}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="385315458"/>
+							<reference key="NSNextKeyView" ref="677523983"/>
 							<int key="NSsFlags">133650</int>
 							<reference key="NSVScroller" ref="655641141"/>
 							<reference key="NSHScroller" ref="677523983"/>
@@ -1527,7 +1520,7 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{319, 16}, {130, 26}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
-							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSPopUpButtonCell" key="NSCell" id="847970789">
 								<int key="NSCellFlags">-2076049856</int>
@@ -1582,7 +1575,6 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{260, 22}, {43, 17}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1069864929"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="763866323">
@@ -1605,7 +1597,6 @@
 							<int key="NSvFlags">292</int>
 							<string key="NSFrame">{{18, 18}, {81, 18}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="937796907"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="931206427">
@@ -1632,10 +1623,9 @@
 					</array>
 					<string key="NSFrameSize">{466, 631}</string>
 					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="569266854"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<string key="NSFrameAutosaveName">DiskArbitratorPanel</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -1776,6 +1766,24 @@
 						<reference key="NSMixedImage" ref="502551668"/>
 					</object>
 					<object class="NSMenuItem" id="803318449">
+						<reference key="NSMenu" ref="834044689"/>
+						<bool key="NSIsDisabled">YES</bool>
+						<bool key="NSIsSeparator">YES</bool>
+						<string key="NSTitle"/>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="35465992"/>
+						<reference key="NSMixedImage" ref="502551668"/>
+					</object>
+					<object class="NSMenuItem" id="614228496">
+						<reference key="NSMenu" ref="834044689"/>
+						<string key="NSTitle">Install User Launch Agent...</string>
+						<string key="NSKeyEquiv"/>
+						<int key="NSMnemonicLoc">2147483647</int>
+						<reference key="NSOnImage" ref="35465992"/>
+						<reference key="NSMixedImage" ref="502551668"/>
+					</object>
+					<object class="NSMenuItem" id="411944980">
 						<reference key="NSMenu" ref="834044689"/>
 						<bool key="NSIsDisabled">YES</bool>
 						<bool key="NSIsSeparator">YES</bool>
@@ -2630,6 +2638,14 @@
 					<int key="connectionID">686</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">installUserLaunchAgent:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="614228496"/>
+					</object>
+					<int key="connectionID">696</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: selection.isActivated</string>
 						<reference key="source" ref="75597474"/>
@@ -2898,6 +2914,22 @@
 						</object>
 					</object>
 					<int key="connectionID">678</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">title: installUserLaunchAgentMenuTitle</string>
+						<reference key="source" ref="614228496"/>
+						<reference key="destination" ref="976324537"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="614228496"/>
+							<reference key="NSDestination" ref="976324537"/>
+							<string key="NSLabel">title: installUserLaunchAgentMenuTitle</string>
+							<string key="NSBinding">title</string>
+							<string key="NSKeyPath">installUserLaunchAgentMenuTitle</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">697</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -3919,6 +3951,8 @@
 							<reference ref="514235583"/>
 							<reference ref="337070102"/>
 							<reference ref="51219100"/>
+							<reference ref="411944980"/>
+							<reference ref="614228496"/>
 						</array>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">Status Menu</string>
@@ -4162,6 +4196,16 @@
 						<reference key="object" ref="51219100"/>
 						<reference key="parent" ref="834044689"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">689</int>
+						<reference key="object" ref="411944980"/>
+						<reference key="parent" ref="834044689"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">690</int>
+						<reference key="object" ref="614228496"/>
+						<reference key="parent" ref="834044689"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -4347,6 +4391,8 @@
 				<string key="669.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="681.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="683.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="689.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="690.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="72.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="73.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="74.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -4364,7 +4410,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">686</int>
+			<int key="maxID">697</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -4372,6 +4418,7 @@
 					<string key="className">AppController</string>
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="installUserLaunchAgent:">id</string>
 						<string key="performActivation:">id</string>
 						<string key="performAttachDiskImage:">id</string>
 						<string key="performDeactivation:">id</string>
@@ -4388,6 +4435,10 @@
 						<string key="toggleActivation:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="installUserLaunchAgent:">
+							<string key="name">installUserLaunchAgent:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="performActivation:">
 							<string key="name">performActivation:</string>
 							<string key="candidateClassName">id</string>

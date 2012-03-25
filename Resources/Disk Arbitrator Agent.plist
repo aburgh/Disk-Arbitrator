@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>Disk Arbitrator</string>
+	<string>us.burghardt.Disk-Arbitrator</string>
 	<key>Disabled</key>
 	<false/>
 	<key>KeepAlive</key>

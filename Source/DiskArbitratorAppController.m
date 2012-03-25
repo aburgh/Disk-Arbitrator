@@ -60,7 +60,7 @@
 		[self setStatusItemIconWithName:@"StatusItem Orange"];
 	
 	else
-		NSAssert1(NO, @"Invalid mount mode: %d\n", arbitrator.mountMode);
+		NSAssert1(NO, @"Invalid mount mode: %ld\n", arbitrator.mountMode);
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification

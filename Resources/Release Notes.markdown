@@ -1,7 +1,8 @@
-## Disk Arbitrator Release Notes <br/> v0.4.0
+## Disk Arbitrator Release Notes <br/> v0.4.1
 
 #### 0.4.1
 
+* Added feature to install/uninstall a launchd agent plist.
 * Added labels and tool tips to make mount options easier to understand.
 
 #### 0.4.0

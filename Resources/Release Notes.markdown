@@ -1,4 +1,10 @@
-## Disk Arbitrator Release Notes <br/> v0.4.1
+## Disk Arbitrator Release Notes <br/> v0.4.2
+
+#### 0.4.2 11/23/2012
+
+* Added Developer ID signature for Gatekeeper.
+* Updated for Xcode 4.5 (should have no affect on behavior).
+* Removed PPC architecture.
 
 #### 0.4.1
 

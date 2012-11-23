@@ -9,7 +9,7 @@ It is important to note that Disk Arbitrator is *not* a software write blocker--
 ## System Requirements
 
 * Intel Mac
-* Mac OS X 10.5 (Leopard) or later (tested through Lion 10.7.3)
+* Mac OS X 10.5 (Leopard) or later (verified compatible with Mountain Lion 10.8.2)
 
 ## Quick Start
 

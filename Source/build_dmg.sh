@@ -23,11 +23,12 @@ if [ -e "$DMG_DST_PATH" ] ; then
 fi
 
 mkdir -p "${DMG_SRC_DIR}"
-cp -R "${SRC_PRODUCT_PATH}" "${DMG_SRC_DIR}"
+cp -LR "${SRC_PRODUCT_PATH}" "${DMG_SRC_DIR}"
 cp "${SRC_PRODUCT_PATH}/Contents/Resources/README.html" "${DMG_SRC_DIR}"
 cp "${SRC_PRODUCT_PATH}/Contents/Resources/Release Notes.html" "${DMG_SRC_DIR}"
 cp "${SRCROOT}/Resources/Disk Arbitrator Agent.plist" "${DMG_SRC_DIR}"
 
 hdiutil create -layout NONE -srcfolder "${DMG_SRC_DIR}" "$DMG_DST_PATH"
+hdiutil verify "$DMG_DST_PATH" || exit 1
 
 rm -r "${DMG_SRC_DIR}"

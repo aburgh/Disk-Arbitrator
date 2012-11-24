@@ -268,7 +268,7 @@
 		NSString *string;
 		NSAttributedString *attrString;
 
-		string = [NSString stringWithFormat:@"\t%@:\t", [self localizedStringForDADiskKey:key]];
+		string = [NSString stringWithFormat:@"\t%@\t", [self localizedStringForDADiskKey:key]];
 		attrString = [[NSAttributedString alloc] initWithString:string attributes:attrs];
 		[text appendAttributedString:attrString];
 		[attrString release];

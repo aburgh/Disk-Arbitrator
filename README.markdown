@@ -13,7 +13,7 @@ It is important to note that Disk Arbitrator is *not* a software write blocker--
 
 ## Downloads
 
-You can find links to compiled executables on the Downloads wiki page: [Downloads](https://github.com/aburgh/Disk-Arbitrator/wiki/Downloads).
+You can find links to compiled executables on the [Downloads](https://github.com/aburgh/Disk-Arbitrator/wiki/Downloads) wiki page.
 
 ## Quick Start
 

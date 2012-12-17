@@ -11,6 +11,10 @@ It is important to note that Disk Arbitrator is *not* a software write blocker--
 * Intel Mac
 * Mac OS X 10.5 (Leopard) or later (verified compatible with Mountain Lion 10.8.2)
 
+## Downloads
+
+You can find links to compiled executables on the Downloads wiki page: [Downloads](https://github.com/aburgh/Disk-Arbitrator/wiki/Downloads).
+
 ## Quick Start
 
 ### Installation

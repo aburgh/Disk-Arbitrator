@@ -41,7 +41,6 @@ enum {
 	NSImage *icon;
 	Disk *parent;
 	NSMutableSet *children;
-	NSUInteger hash;
 }
 
 @property (copy) NSString *BSDName;

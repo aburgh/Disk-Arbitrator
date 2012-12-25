@@ -59,10 +59,8 @@
 	NSAssert(diskRef, @"No Disk Arbitration disk provided to initializer.");
 	
 	// Return unique instance
-	hash = DADiskHash(diskRef);
-	
 	for (Disk *uniqueDisk in uniqueDisks) {
-		if ([uniqueDisk hash] == hash) {
+		if (uniqueDisk.hash == CFHash(diskRef)) {
 			[super dealloc];
 			return [uniqueDisk retain];
 		}
@@ -109,15 +107,12 @@
 
 - (NSUInteger)hash
 {
-	if (!hash) 
-		hash = DADiskHash((DADiskRef) disk);
-	
-	return hash;
+	return CFHash(disk);
 }
 
 - (BOOL)isEqual:(id)object
 {
-	return ([BSDName hash] == [object hash]);
+	return (CFHash(disk) == [object hash]);
 }
 
 - (NSString *)description

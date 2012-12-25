@@ -73,26 +73,6 @@ BOOL DADiskValidate(DADiskRef diskRef)
 	return isOK;
 }
 
-NSUInteger DADiskHash(DADiskRef disk)
-{
-	NSInteger hash;
-	const char *bsdname;
-	NSString *BSDName;
-	
-	bsdname = DADiskGetBSDName(disk);
-	if (bsdname) {
-		BSDName = [[NSString alloc] initWithUTF8String:bsdname];
-		hash = [BSDName hash];
-		[BSDName release];
-	}
-	return hash;
-}
-
-BOOL DADiskEqual(DADiskRef disk1, DADiskRef disk2)
-{
-	return DADiskHash(disk1) == DADiskHash(disk2);	
-}
-
 void DiskAppearedCallback(DADiskRef diskRef, void *context)
 {
 	if (context != [Disk class]) return;
@@ -129,7 +109,7 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 	Log(LOG_DEBUG, @"%@", keys);
 	
 	for (Disk *disk in uniqueDisks) {
-		if (DADiskHash(diskRef)	== [disk hash]) {
+		if (CFHash(diskRef)	== disk.hash) {
 			CFDictionaryRef desc = DADiskCopyDescription(diskRef);
 			disk.diskDescription = desc;
 			CFRelease(desc);

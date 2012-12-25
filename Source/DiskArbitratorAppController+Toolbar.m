@@ -36,37 +36,37 @@
 	NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
 	
 	if ([itemIdentifier isEqual:ToolbarItemInfoIdentifier]) {				// Info/Inspect
-		[item setLabel:NSLocalizedString(@"Info", nil)];
-		[item setPaletteLabel:NSLocalizedString(@"Info", nil)];
-		[item setImage:[NSImage imageNamed:@"ToolbarItem Info"]]; // NSImageNameInfo]];
-		[item setTarget:self];
-		[item setAction:@selector(performGetInfo:)];
-		[item setToolTip:NSLocalizedString(@"Show detailed disk info", nil)];
+		item.label = NSLocalizedString(@"Info", nil);
+		item.paletteLabel = NSLocalizedString(@"Info", nil);
+		item.image = [NSImage imageNamed:@"ToolbarItem Info"]; // NSImageNameInfo]];
+		item.target = self;
+		item.action = @selector(performGetInfo:);
+		item.toolTip = NSLocalizedString(@"Show detailed disk info", nil);
 	} 
 	else if ([itemIdentifier isEqual:ToolbarItemEjectIdentifier]) {		// Eject
-		[item setLabel:NSLocalizedString(@"Eject", nil)];
-		[item setPaletteLabel:NSLocalizedString(@"Eject", nil)];
-		[item setImage:[NSImage imageNamed:@"ToolbarItem Eject"]];
-		[item setTarget:self];
-		[item setAction:@selector(performEject:)];
-		[item setToolTip:NSLocalizedString(@"Eject removable media.", nil)];
+		item.label = NSLocalizedString(@"Eject", nil);
+		item.paletteLabel = NSLocalizedString(@"Eject", nil);
+		item.image = [NSImage imageNamed:@"ToolbarItem Eject"];
+		item.target = self;
+		item.action = @selector(performEject:);
+		item.toolTip = NSLocalizedString(@"Eject removable media.", nil);
 	}
 	else if ([itemIdentifier isEqual:ToolbarItemMountIdentifier]) {			// Mount
-		[item setLabel:NSLocalizedString(@"Mount", nil)];
-		[item setPaletteLabel:NSLocalizedString(@"Mount/Unmount", nil)];
-		[item setImage:[NSImage imageNamed:@"ToolbarItem Mount"]];
-		[item setTarget:self];
-		[item setAction:@selector(performMountOrUnmount:)];
-		[item setToolTip:NSLocalizedString(@"Select a volume, then click to mount or unmount.", nil)];
+		item.label = NSLocalizedString(@"Mount", nil);
+		item.paletteLabel = NSLocalizedString(@"Mount/Unmount", nil);
+		item.image = [NSImage imageNamed:@"ToolbarItem Mount"];
+		item.target = self;
+		item.action = @selector(performMountOrUnmount:);
+		item.toolTip = NSLocalizedString(@"Select a volume, then click to mount or unmount.", nil);
 	}
 	else if ([itemIdentifier isEqual:ToolbarItemAttachDiskImageIdentifier]) {			// Attach Disk Image
-		[item setLabel:NSLocalizedString(@"Attach", nil)];
-		[item setPaletteLabel:NSLocalizedString(@"Attach Disk Image", nil)];
-//		[item setImage:[NSImage imageNamed:@"ToolbarItem Attach Disk Image"]];
-		[item setImage:[self attachDiskImageIcon]];
-		[item setTarget:self];
-		[item setAction:@selector(performAttachDiskImage:)];
-		[item setToolTip:NSLocalizedString(@"Attach Disk Image", nil)];
+		item.label = NSLocalizedString(@"Attach", nil);
+		item.paletteLabel = NSLocalizedString(@"Attach Disk Image", nil);
+//		item.image = [NSImage imageNamed:@"ToolbarItem Attach Disk Image"];
+		item.image = self.attachDiskImageIcon;
+		item.target = self;
+		item.action = @selector(performAttachDiskImage:);
+		item.toolTip = NSLocalizedString(@"Attach Disk Image", nil);
 	}
 	return [item autorelease];
 }
@@ -113,21 +113,21 @@
 		// Enable the item if the disk is mountable
 		// Set the label "Unmount" if mounted, otherwise to "Mount"
 		
-		if ([self canUnmountSelectedDisk]) {
+		if (self.canUnmountSelectedDisk) {
 			[toolbarItem setLabel:NSLocalizedString(@"Unmount", nil)];
 			enabled	= YES;
 		}
 		else {
 			[toolbarItem setLabel:NSLocalizedString(@"Mount", nil)];
 
-			if (![self canMountSelectedDisk])
+			if (!self.canMountSelectedDisk)
 				enabled = NO;
 		}
 	}
 	
 	else if ([[toolbarItem itemIdentifier] isEqual:ToolbarItemEjectIdentifier]) {
 		
-		enabled = [self canEjectSelectedDisk];
+		enabled = self.canEjectSelectedDisk;
 	}
 	
 	return enabled;

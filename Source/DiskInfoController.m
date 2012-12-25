@@ -284,8 +284,8 @@
 	NSMutableArray *tabStops = [NSMutableArray array];
 	[tabStops addObject:[[[NSTextTab alloc] initWithType:NSRightTabStopType location:2.0 * 72.0] autorelease]];
 	[tabStops addObject:[[[NSTextTab alloc] initWithType:NSLeftTabStopType location:2.125 * 72.0] autorelease]];
-	[style setTabStops:tabStops];
-	[style setHeadIndent:2.125 * 72.0];
+	style.tabStops = tabStops;
+	style.headIndent = (2.125 * 72.0);
 	
 	attrs = [NSDictionary dictionaryWithObjectsAndKeys:style, NSParagraphStyleAttributeName, nil];
 	[text addAttributes:attrs range:NSMakeRange(0, [text length])];

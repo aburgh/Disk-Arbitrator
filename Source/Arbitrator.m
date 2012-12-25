@@ -81,7 +81,7 @@
 
 - (void)diskDidAppear:(NSNotification *)notif
 {
-	Disk *disk = [notif object];
+	Disk *disk = notif.object;
 
 	Log(LOG_DEBUG, @"%s disk: %@", __FUNCTION__, disk.BSDName);
 
@@ -110,7 +110,7 @@
 
 - (void)diskDidDisappear:(NSNotification *)notif
 {
-	[[self mutableSetValueForKey:@"disks"] removeObject:[notif object]];
+	[[self mutableSetValueForKey:@"disks"] removeObject:notif.object];
 }
 
 - (void)diskDidChange:(NSNotification *)notif
@@ -196,7 +196,7 @@
 	NSMutableSet *wholeDisks = [NSMutableSet new];
 
 	for (Disk *disk in disks)
-		if ([disk isWholeDisk])
+		if (disk.isWholeDisk)
 			[wholeDisks addObject:disk];
 	
 	return [wholeDisks autorelease];

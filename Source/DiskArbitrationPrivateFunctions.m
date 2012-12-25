@@ -118,7 +118,6 @@ void DiskDisappearedCallback(DADiskRef diskRef, void *context)
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidDisappearNotification object:tmpDisk];
 	
 	[tmpDisk diskDidDisappear];
-	[uniqueDisks removeObject:tmpDisk];
 	[tmpDisk release];
 }
 

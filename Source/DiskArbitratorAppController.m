@@ -44,7 +44,7 @@
 {
 	NSString *iconPath = [[NSBundle mainBundle] pathForResource:name ofType:@"png"];
 	NSImage *statusIcon = [[NSImage alloc] initWithContentsOfFile:iconPath];
-	[statusItem setImage:statusIcon];
+	statusItem.image = statusIcon;
 	[statusIcon release];
 }
 
@@ -77,7 +77,7 @@
 	NSStatusBar *bar = [NSStatusBar systemStatusBar];
 	self.statusItem = [bar statusItemWithLength:NSSquareStatusItemLength];
 	[self setStatusItemIconWithName:@"StatusItem Disabled 1"];
-	[statusItem setMenu:statusMenu];
+	statusItem.menu = statusMenu;
 	
 	NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 	[center addObserver:self selector:@selector(diskDidChange:) name:DADiskDidChangeNotification object:nil];
@@ -94,8 +94,8 @@
 	self.sortDescriptors = [NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"BSDName" ascending:YES] autorelease]];
 	
 	SetupToolbar(window, self);
-	[window setCollectionBehavior:NSWindowCollectionBehaviorCanJoinAllSpaces];
-	[window setWorksWhenModal:YES];
+	window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces;
+	window.worksWhenModal = YES;
 	
 	[tableView registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
 	
@@ -129,7 +129,7 @@
 	if (!controller)
 		controller = [[NSWindowController alloc] initWithWindowNibName:@"Preferences"];
 
-	[[controller window] makeKeyAndOrderFront:self];
+	[controller.window makeKeyAndOrderFront:self];
 	[NSApp activateIgnoringOtherApps:YES];
 }
 
@@ -166,7 +166,7 @@
 	SheetController *controller = (SheetController *)contextInfo;
 	[sheet orderOut:self];
 	
-	Disk *selectedDisk = [self selectedDisk];
+	Disk *selectedDisk = self.selectedDisk;
 	NSMutableArray *arguments = [NSMutableArray array];
 	
 	if (returnCode == NSOKButton) {
@@ -193,7 +193,7 @@
 
 - (IBAction)performMount:(id)sender
 {
-	Disk *selectedDisk = [self selectedDisk];
+	Disk *selectedDisk = self.selectedDisk;
 
 	NSAssert(selectedDisk, @"No disk selected.");
 	NSAssert(selectedDisk.isMounted == NO, @"Disk is already mounted.");
@@ -206,7 +206,7 @@
 	
 	[window makeKeyAndOrderFront:self];
 	
-	[NSApp beginSheet:[controller window]
+	[NSApp beginSheet:controller.window
 	   modalForWindow:window
 		modalDelegate:self
 	   didEndSelector:@selector(performMountSheetDidEnd:returnCode:contextInfo:)
@@ -215,7 +215,7 @@
 
 - (IBAction)performUnmount:(id)sender
 {
-	Disk *theDisk = [self selectedDisk];
+	Disk *theDisk = self.selectedDisk;
 	
 	if (!theDisk) return;
 	
@@ -224,7 +224,7 @@
 
 - (IBAction)performMountOrUnmount:(id)sender
 {
-	Disk *theDisk = [self selectedDisk];
+	Disk *theDisk = self.selectedDisk;
 	
 	if (theDisk.isMounted)
 		[self performUnmount:sender];
@@ -234,11 +234,11 @@
 
 - (void)_childDidAttemptUnmountBeforeEject:(NSNotification *)notif
 {
-	Disk *disk = [notif object];
+	Disk *disk = notif.object;
 
 	// Disk may be a mountable whole disk that we were waiting on, so the parent may be the disk itself
 	
-	Disk *parent = disk.isWholeDisk ? disk : [disk parent];
+	Disk *parent = disk.isWholeDisk ? disk : disk.parent;
 	
 	Log(LOG_DEBUG, @"%s disk: %@ child: %@", __FUNCTION__, parent, disk);
 	
@@ -279,7 +279,7 @@
 
 - (IBAction)performEject:(id)sender
 {
-	Disk *selectedDisk = [self selectedDisk];
+	Disk *selectedDisk = self.selectedDisk;
 	BOOL waitForChildren = NO;
 	
 	NSSet *disks;
@@ -308,7 +308,7 @@
 - (IBAction)performGetInfo:(id)sender
 {
 	DiskInfoController *controller = [[DiskInfoController alloc] initWithWindowNibName:@"DiskInfo"];
-	controller.disk = [self selectedDisk];
+	controller.disk = self.selectedDisk;
 	[controller showWindow:self];
 	[controller refreshDiskInfo];
 	
@@ -351,9 +351,9 @@
 - (void)refreshLaunchAgentStatus {
 	NSFileManager *fm = [NSFileManager defaultManager];
 	
-	self.hasSystemLaunchAgent = [fm fileExistsAtPath:[self systemLaunchAgentPath]];
+	self.hasSystemLaunchAgent = [fm fileExistsAtPath:self.systemLaunchAgentPath];
 
-	self.hasUserLaunchAgent = [fm fileExistsAtPath:[self userLaunchAgentPath]];
+	self.hasUserLaunchAgent = [fm fileExistsAtPath:self.userLaunchAgentPath];
 	if (self.hasUserLaunchAgent)
 		self.installUserLaunchAgentMenuTitle = @"Uninstall User Launch Agent...";
 	else
@@ -372,7 +372,7 @@
 
 	if (self.hasUserLaunchAgent) {
 
-		dstPath = [self userLaunchAgentPath];
+		dstPath = self.userLaunchAgentPath;
 		
 		if ([fm removeItemAtPath:dstPath error:&error] == YES) {
 			alert = [NSAlert alertWithMessageText:@"Launch Agent file successfully removed"
@@ -418,7 +418,7 @@
 	 * To the Disk class, "ejectable" means the media object is ejectable.
 	 */
 
-	Disk *selectedDisk = [self selectedDisk];
+	Disk *selectedDisk = self.selectedDisk;
 	BOOL canEject = [selectedDisk isEjectable];
 
 	if (!canEject) {
@@ -432,7 +432,7 @@
 
 - (BOOL)canMountSelectedDisk
 {
-	Disk *disk = [self selectedDisk];
+	Disk *disk = self.selectedDisk;
 	
 	if (disk.isMountable && !disk.isMounted)
 		return YES;
@@ -442,7 +442,7 @@
 
 - (BOOL)canUnmountSelectedDisk
 {
-	Disk *disk = [self selectedDisk];
+	Disk *disk = self.selectedDisk;
 
 	return (disk.isMountable && disk.isMounted);
 	
@@ -575,7 +575,7 @@
 
 - (void)didAttemptMount:(NSNotification *)notif
 {
-	Disk *disk = [notif object];
+	Disk *disk = notif.object;
 	NSMutableDictionary *info;
 	
 	if (disk.isMounted) {
@@ -613,7 +613,7 @@
 
 - (void)didAttemptUnmount:(NSNotification *)notif
 {
-	Disk *disk = [notif object];
+	Disk *disk = notif.object;
 	NSMutableDictionary *info;
 
 	Log(LOG_DEBUG, @"%s: Unmount %@: %@", __FUNCTION__, (disk.isMounted ? @"failed" : @"succeeded"), disk.BSDName);
@@ -650,7 +650,7 @@
 
 - (void)didAttemptEject:(NSNotification *)notif
 {
-	Disk *disk = [notif object];
+	Disk *disk = notif.object;
 	
 	if ([notif userInfo]) {
 		

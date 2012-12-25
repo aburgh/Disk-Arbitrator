@@ -26,19 +26,19 @@
 
 - (IBAction)alternate:(id)sender
 {
-	[[self window] endEditingFor:nil];
-	[NSApp endSheet:[self window] returnCode:-1];
+	[self.window endEditingFor:nil];
+	[NSApp endSheet:self.window returnCode:-1];
 }
 
 - (IBAction)cancel:(id)sender
 {
-	[NSApp endSheet:[self window] returnCode:NSCancelButton];
+	[NSApp endSheet:self.window returnCode:NSCancelButton];
 }
 
 - (IBAction)ok:(id)sener
 {
-	[[self window] endEditingFor:nil];
-	[NSApp endSheet:[self window] returnCode:NSOKButton];
+	[self.window endEditingFor:nil];
+	[NSApp endSheet:self.window returnCode:NSOKButton];
 }
 
 @end

@@ -60,15 +60,15 @@
 	CGFloat minwh = MIN(frame.size.width - indentation, frame.size.height);
 	iconFrame = NSMakeRect(frame.origin.x + indentation + ICONPADDING, frame.origin.y, minwh, minwh);
 
-	[iconCell setEnabled: (mountable && !mounted) ? NO : YES];  // gray out if a volume but not mounted
-	[iconCell setHighlighted:[self isHighlighted]];
+	iconCell.enabled = (mountable && !mounted) ? NO : YES;  // gray out if a volume but not mounted
+	iconCell.highlighted = self.isHighlighted;
 	[iconCell drawWithFrame:iconFrame inView:controlView];
 
 	textFrame = NSMakeRect(NSMaxX(iconFrame) + ICONPADDING, frame.origin.y, 
 								  MAX(NSWidth(frame) - NSWidth(iconFrame) - ICONPADDING, 0.0),  NSHeight(frame));
 
-	[textCell setEnabled: (mountable && !mounted) ? NO : YES];  // gray out if a volume but not mounted
-	[textCell setHighlighted:[self isHighlighted]];
+	textCell.enabled = (mountable && !mounted) ? NO : YES;  // gray out if a volume but not mounted
+	textCell.highlighted = self.isHighlighted;
 	[textCell drawWithFrame:textFrame inView:controlView];
 }
 
@@ -116,8 +116,8 @@
 		// Create Icon cell
 		
 		self.iconCell = [[[NSImageCell alloc] initImageCell:disk.icon] autorelease];
-		[iconCell setImageScaling:NSImageScaleProportionallyDown];
-		[iconCell setAlignment:NSLeftTextAlignment];
+		iconCell.imageScaling = NSImageScaleProportionallyDown;
+		iconCell.alignment = NSLeftTextAlignment;
 	}
 	else {
 		self.textCell = nil;

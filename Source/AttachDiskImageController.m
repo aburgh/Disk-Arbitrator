@@ -53,25 +53,25 @@
 	NSFileHandle *stdinHandle;
 	
 	newTask = [[NSTask new] autorelease];
-	[newTask setLaunchPath:@"/usr/bin/hdiutil"];
+	newTask.launchPath = @"/usr/bin/hdiutil";
 	
 	NSMutableArray *arguments = [NSMutableArray arrayWithObject:command];
 	[arguments addObject:path];
 	[arguments addObjectsFromArray:options];
 	
-	[newTask setStandardOutput:[NSPipe pipe]];
-	[newTask setStandardError:[NSPipe pipe]];
-	[newTask setStandardInput:[NSPipe pipe]];
+	newTask.standardOutput = NSPipe.pipe;
+	newTask.standardError = NSPipe.pipe;
+	newTask.standardInput = NSPipe.pipe;
 	
 	if (password) {
-		stdinHandle = [[newTask standardInput] fileHandleForWriting];
+		stdinHandle = [newTask.standardInput fileHandleForWriting];
 		[stdinHandle writeData:[password dataUsingEncoding:NSUTF8StringEncoding]];
 		[stdinHandle writeData:[NSData dataWithBytes:"" length:1]];
 		
 		[arguments addObject:@"-stdinpass"];
 	}
 	
-	[newTask setArguments:arguments];
+	newTask.arguments = arguments;
 
 	return newTask;
 }
@@ -89,9 +89,9 @@
 	[newTask launch];
 	[newTask waitUntilExit];
 
-	outputData = [[[newTask standardOutput] fileHandleForReading] readDataToEndOfFile];
+	outputData = [[newTask.standardOutput fileHandleForReading] readDataToEndOfFile];
 
-	if ([newTask terminationStatus] == 0) {
+	if (newTask.terminationStatus == 0) {
 		*outPlist = [NSPropertyListSerialization propertyListFromData:outputData
 													 mutabilityOption:NSPropertyListImmutable
 															   format:NULL
@@ -104,7 +104,7 @@
 		}
 	}
 	else {
-		Log(LOG_ERR, @"hdiutil termination status: %d", [newTask terminationStatus]);
+		Log(LOG_ERR, @"hdiutil termination status: %d", newTask.terminationStatus);
 		failureReason = NSLocalizedString(@"hdiutil ended abnormally.", nil); 
 		retval = NO;
 	}
@@ -175,11 +175,11 @@
 
 - (void)hdiutilAttachDidTerminate:(NSNotification *)notif
 {
-	[[self window] orderOut:self];
+	[self.window orderOut:self];
 	
-	NSTask *theTask = [notif object];
+	NSTask *theTask = notif.object;
 	
-	if (!canceled && [theTask terminationStatus] != 0) {
+	if (!canceled && theTask.terminationStatus != 0) {
 		
 		NSMutableDictionary *info = [NSMutableDictionary dictionary];
 
@@ -192,9 +192,9 @@
 		[info setObject:NSLocalizedString(@"Check the system log for details.", nil)
 				 forKey:NSLocalizedRecoverySuggestionErrorKey];
 
-		Log(LOG_ERR, @"%s termination status: (%d) %@", __FUNCTION__, [theTask terminationStatus], self.errorMessage);
+		Log(LOG_ERR, @"%s termination status: (%d) %@", __FUNCTION__, theTask.terminationStatus, self.errorMessage);
 
-		NSError *error = [NSError errorWithDomain:AppErrorDomain code:[theTask terminationStatus] userInfo:info];
+		NSError *error = [NSError errorWithDomain:AppErrorDomain code:theTask.terminationStatus userInfo:info];
 		[NSApp presentError:error];
 	}
 	self.task = nil;
@@ -211,7 +211,7 @@
 	OSStatus status;
 	NSString *password;
 	
-	NSString *fileName = [path lastPathComponent];
+	NSString *fileName = path.lastPathComponent;
 	NSString *prompt = [NSString stringWithFormat:NSLocalizedString(@"Enter password to access %@", nil), fileName];
 	
 	AuthorizationItem rightsItems[1] = { { "com.apple.builtin.generic-unlock", 0, NULL, 0 } };
@@ -281,7 +281,7 @@
 	if ([self getDiskImageSLAStatus:&hasSLA atPath:path password:password error:outError] == NO)
 		return NO;
 	
-	self.title = [NSString stringWithFormat:@"Attaching \"%@\" ...", [path lastPathComponent]];
+	self.title = [NSString stringWithFormat:@"Attaching \"%@\" ...", path.lastPathComponent];
 	
 	NSMutableArray *arguments = [NSMutableArray array];
 	[arguments addObject:@"-plist"];
@@ -291,20 +291,20 @@
 	newTask = [self hdiutilTaskWithCommand:@"attach" path:path options:arguments password:password];
 
 	if (hasSLA) {
-		[[[newTask standardInput] fileHandleForWriting] writeData:[NSData dataWithBytes:"Y\n" length:3]];
+		[[newTask.standardInput fileHandleForWriting] writeData:[NSData dataWithBytes:"Y\n" length:3]];
 	}
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(processStandardOutput:)
 												 name:NSFileHandleReadCompletionNotification
-											   object:[[newTask standardOutput] fileHandleForReading]];
-	[[[newTask standardOutput] fileHandleForReading] readInBackgroundAndNotify];
+											   object:[newTask.standardOutput fileHandleForReading]];
+	[[newTask.standardOutput fileHandleForReading] readInBackgroundAndNotify];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(processStandardError:)
 												 name:NSFileHandleReadCompletionNotification
-											   object:[[newTask standardError] fileHandleForReading]];
-	[[[newTask standardError] fileHandleForReading] readInBackgroundAndNotify];
+											   object:[newTask.standardError fileHandleForReading]];
+	[[newTask.standardError fileHandleForReading] readInBackgroundAndNotify];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hdiutilAttachDidTerminate:) name:NSTaskDidTerminateNotification object:newTask];
 	[newTask launch];
@@ -315,7 +315,7 @@
 
 - (void)attachDiskImageOptionsSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
 {
-	if ([sheet isSheet])
+	if (sheet.isSheet)
 		[sheet orderOut:self];
 	
 	NSString *password = nil;
@@ -369,26 +369,26 @@
 - (void)performAttachDiskImageWithPath:(NSString *)path
 {
 	NSOpenPanel *panel = [NSOpenPanel openPanel];
-	[panel setCanChooseFiles:YES];
-	[panel setCanChooseDirectories:NO];
-	[panel setAllowsMultipleSelection:NO];
-	[panel setMessage:NSLocalizedString(@"Select a disk image to attach:", nil)];
+	panel.canChooseFiles = YES;
+	panel.canChooseDirectories = NO;
+	panel.allowsMultipleSelection = NO;
+	panel.message = NSLocalizedString(@"Select a disk image to attach:", nil);
 	
-	[panel setAllowedFileTypes:[[self class] diskImageFileExtensions]];
+	panel.allowedFileTypes = [self.class diskImageFileExtensions];
 	
 	[self.userInfo setObject:[NSNumber numberWithBool:YES] forKey:@"readOnly"];
 	
-	[panel setAccessoryView:self.view];
-	[panel setDelegate:self];
+	panel.accessoryView = self.view;
+	panel.delegate = self;
 	
-	NSString *directory = path ? [path stringByDeletingLastPathComponent] : nil;
-	NSString *filename = path ? [path lastPathComponent] : nil;
+	NSString *directory = path ? path.stringByDeletingLastPathComponent : nil;
+	NSString *filename = path ? path.lastPathComponent : nil;
 
 	// This is a little strange, but left over from an initial implementation which used cascading sheets on
 	// the main window.  The code sheetDidEnd code is usable for this variation, though
 		 
 	if ([panel runModalForDirectory:directory file:filename] == NSOKButton) {
-		[self.userInfo setObject:[panel filename] forKey:@"filePath"];
+		[self.userInfo setObject:panel.filename forKey:@"filePath"];
 		[self attachDiskImageOptionsSheetDidEnd:panel returnCode:NSOKButton contextInfo:self];
 	}
 }
@@ -492,7 +492,7 @@
 	Log(LOG_DEBUG, @"%s", __FUNCTION__);
 
 	NSString *mymessage;
-	NSFileHandle *stdoutHandle = [notif object];
+	NSFileHandle *stdoutHandle = notif.object;
 	double percentage;
 	
 //	NSData *data = [stdoutHandle availableData];
@@ -540,7 +540,7 @@
 		}
 	}
 	
-	if (self.task && [self.task isRunning])
+	if (self.task && self.task.isRunning)
 		[stdoutHandle readInBackgroundAndNotify];
 }
 
@@ -549,7 +549,7 @@
 	Log(LOG_DEBUG, @"%s", __FUNCTION__);
 	
 	NSString *mymessage;
-	NSFileHandle *stderrHandle = [notif object];
+	NSFileHandle *stderrHandle = notif.object;
 	
 //	NSData *data = [stderrHandle availableData];
 
@@ -566,7 +566,7 @@
 		self.errorMessage = mymessage;
 	}
 	
-	if (self.task && [self.task isRunning])
+	if (self.task && self.task.isRunning)
 		[stderrHandle readInBackgroundAndNotify];
 }
 

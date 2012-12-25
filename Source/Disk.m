@@ -51,7 +51,7 @@
 
 + (id)diskWithDiskRef:(DADiskRef)diskRef
 {
-	return [[[[self class] alloc] initWithDiskRef:diskRef] autorelease];
+	return [[[self.class alloc] initWithDiskRef:diskRef] autorelease];
 }
 
 - (id)initWithDiskRef:(DADiskRef)diskRef
@@ -81,7 +81,7 @@
 		
 		[uniqueDisks addObject:self];
 		
-		if ([self isWholeDisk] == NO) 
+		if (self.isWholeDisk == NO)
 		{
 			DADiskRef parentRef = DADiskCopyWholeDisk(diskRef);
 			if (parentRef && parentRef != diskRef) {
@@ -122,7 +122,7 @@
 
 - (NSString *)description
 {
-	return [NSString stringWithFormat:@"<%@ 0x%p %@>", [self class], self, BSDName];
+	return [NSString stringWithFormat:@"<%@ 0x%p %@>", self.class, self, BSDName];
 }
 
 - (void)mount

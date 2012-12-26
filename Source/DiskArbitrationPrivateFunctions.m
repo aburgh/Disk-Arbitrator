@@ -77,7 +77,7 @@ void DiskAppearedCallback(DADiskRef diskRef, void *context)
 {
 	if (context != [Disk class]) return;
 	
-	Log(LOG_DEBUG, @"%s <%p> %s", __FUNCTION__, diskRef, DADiskGetBSDName(diskRef));
+	Log(LOG_DEBUG, @"%s <%p> %s", __func__, diskRef, DADiskGetBSDName(diskRef));
 	
 	if (DADiskValidate(diskRef)) 
 	{
@@ -91,7 +91,7 @@ void DiskDisappearedCallback(DADiskRef diskRef, void *context)
 {
 	if (context != [Disk class]) return;
 	
-	Log(LOG_DEBUG, @"%s <%p> %s", __FUNCTION__, diskRef, DADiskGetBSDName(diskRef));
+	Log(LOG_DEBUG, @"%s <%p> %s", __func__, diskRef, DADiskGetBSDName(diskRef));
 	
 	Disk *tmpDisk = [[Disk alloc] initWithDiskRef:diskRef];
 	
@@ -105,7 +105,7 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 {
 	if (context != [Disk class]) return;
 	
-	Log(LOG_DEBUG, @"%s <%p> %s, keys changed:", __FUNCTION__, diskRef, DADiskGetBSDName(diskRef));
+	Log(LOG_DEBUG, @"%s <%p> %s, keys changed:", __func__, diskRef, DADiskGetBSDName(diskRef));
 	Log(LOG_DEBUG, @"%@", keys);
 	
 	for (Disk *disk in uniqueDisks) {
@@ -124,7 +124,7 @@ void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 //	Disk *disk = (Disk *)context;
 	NSMutableDictionary *info = nil;
 
-	Log(LOG_DEBUG, @"%s %@ dissenter: %p", __FUNCTION__, context, dissenter);
+	Log(LOG_DEBUG, @"%s %@ dissenter: %p", __func__, context, dissenter);
 	
 	if (dissenter) {
 		DAReturn status = DADissenterGetStatus(dissenter);
@@ -133,14 +133,14 @@ void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 		if (!statusString)
 			statusString = [NSString stringWithFormat:@"%@: %d", NSLocalizedString(@"Dissenter status code", nil), status];
 
-		Log(LOG_INFO, @"%s %@ dissenter: (%d) %@", __FUNCTION__, context, status, statusString);
+		Log(LOG_INFO, @"%s %@ dissenter: (%d) %@", __func__, context, status, statusString);
 
 		info = [NSMutableDictionary dictionary];
 		[info setObject:statusString forKey:NSLocalizedFailureReasonErrorKey];
 		[info setObject:[NSNumber numberWithInt:status] forKey:DAStatusErrorKey];
 	}
 	else {
-		Log(LOG_DEBUG, @"%s disk %@ mounted", __FUNCTION__, context);
+		Log(LOG_DEBUG, @"%s disk %@ mounted", __func__, context);
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidAttemptMountNotification object:context userInfo:info];
@@ -157,7 +157,7 @@ void DiskUnmountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *cont
 		if (!statusString)
 			statusString = [NSString stringWithFormat:@"Error code: %d", status];
 
-		Log(LOG_DEBUG, @"%s disk %@ dissenter: (%d) %@", __FUNCTION__, context, status, statusString);
+		Log(LOG_DEBUG, @"%s disk %@ dissenter: (%d) %@", __func__, context, status, statusString);
 
 		info = [NSDictionary dictionaryWithObjectsAndKeys:
 				[NSNumber numberWithInt:status], DAStatusErrorKey,
@@ -166,7 +166,7 @@ void DiskUnmountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *cont
 				nil];
 	}
 	else {
-		Log(LOG_DEBUG, @"%s disk %@ unmounted", __FUNCTION__, context);
+		Log(LOG_DEBUG, @"%s disk %@ unmounted", __func__, context);
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidAttemptUnmountNotification object:context userInfo:info];
@@ -183,7 +183,7 @@ void DiskEjectCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 		if (!statusString)
 			statusString = [NSString stringWithFormat:@"Error code: %d", status];
 		
-		Log(LOG_INFO, @"%s disk: %@ dissenter: (%d) %@", __FUNCTION__, context, status, statusString);
+		Log(LOG_INFO, @"%s disk: %@ dissenter: (%d) %@", __func__, context, status, statusString);
 		
 		info = [NSDictionary dictionaryWithObjectsAndKeys:
 				[NSNumber numberWithInt:status], DAStatusErrorKey,
@@ -192,7 +192,7 @@ void DiskEjectCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 				nil];
 	}
 	else {
-		Log(LOG_DEBUG, @"%s disk ejected: %@ ", __FUNCTION__, context);
+		Log(LOG_DEBUG, @"%s disk ejected: %@ ", __func__, context);
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidAttemptEjectNotification object:context userInfo:info];

@@ -78,7 +78,7 @@
 	Disk *disk = (Disk *)value;
 	
 	if (disk) {
-//		Log(LOG_DEBUG, @"%s self: %p disk: %p", __FUNCTION__, self, disk);
+//		Log(LOG_DEBUG, @"%s self: %p disk: %p", __func__, self, disk);
 
 		self.indentation = disk.isWholeDisk ? 0.0 : 17.0;
 		self.mounted = disk.isMounted;

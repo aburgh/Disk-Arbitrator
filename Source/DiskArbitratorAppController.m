@@ -240,7 +240,7 @@
 	
 	Disk *parent = disk.isWholeDisk ? disk : disk.parent;
 	
-	Log(LOG_DEBUG, @"%s disk: %@ child: %@", __FUNCTION__, parent, disk);
+	Log(LOG_DEBUG, @"%s disk: %@ child: %@", __func__, parent, disk);
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:DADiskDidAttemptUnmountNotification object:disk];
 	
@@ -251,7 +251,7 @@
 		
 		NSMutableDictionary *info = [[notif userInfo] mutableCopy];
 		
-		Log(LOG_INFO, @"%s eject disk: %@ canceled due to mounted child: %@", __FUNCTION__, disk, info);
+		Log(LOG_INFO, @"%s eject disk: %@ canceled due to mounted child: %@", __func__, disk, info);
 		
 		NSString *statusString = [NSString stringWithFormat:@"%@:\n\n%@",
 								  NSLocalizedString(@"Failed to unmount child", nil),
@@ -476,7 +476,7 @@
 
 - (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op
 {
-    Log(LOG_DEBUG, @"%s op: %ld info: %@", __FUNCTION__, op, info);
+    Log(LOG_DEBUG, @"%s op: %ld info: %@", __func__, op, info);
 
     NSPasteboard* pboard = [info draggingPasteboard];
 
@@ -518,7 +518,7 @@
 {
     NSPasteboard* pboard = [info draggingPasteboard];
 	
-	Log(LOG_DEBUG, @"%s", __FUNCTION__);
+	Log(LOG_DEBUG, @"%s", __func__);
 
 	if (operation == NSDragOperationCopy && [[pboard types] containsObject:NSFilenamesPboardType] ) {
 		NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
@@ -579,7 +579,7 @@
 	NSMutableDictionary *info;
 	
 	if (disk.isMounted) {
-		Log(LOG_DEBUG, @"%s: Mounted: %@", __FUNCTION__, disk.BSDName);
+		Log(LOG_DEBUG, @"%s: Mounted: %@", __func__, disk.BSDName);
 	}
 	else {
 		// If the mount failed, the notification userInfo will have keys/values that correspond to an NSError
@@ -616,7 +616,7 @@
 	Disk *disk = notif.object;
 	NSMutableDictionary *info;
 
-	Log(LOG_DEBUG, @"%s: Unmount %@: %@", __FUNCTION__, (disk.isMounted ? @"failed" : @"succeeded"), disk.BSDName);
+	Log(LOG_DEBUG, @"%s: Unmount %@: %@", __func__, (disk.isMounted ? @"failed" : @"succeeded"), disk.BSDName);
 
 	if (disk.isMounted) {
 		// If the unmount failed, the notification userInfo will have keys/values that correspond to an NSError
@@ -681,7 +681,7 @@
 		}
 	}
 	else {
-		Log(LOG_DEBUG, @"%s: Ejected: %@", __FUNCTION__, disk);
+		Log(LOG_DEBUG, @"%s: Ejected: %@", __func__, disk);
 	}
 	[[window toolbar] validateVisibleItems];
 }

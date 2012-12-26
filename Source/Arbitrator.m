@@ -83,7 +83,7 @@
 {
 	Disk *disk = notif.object;
 
-	Log(LOG_DEBUG, @"%s disk: %@", __FUNCTION__, disk.BSDName);
+	Log(LOG_DEBUG, @"%s disk: %@", __func__, disk.BSDName);
 
 	[[self mutableSetValueForKey:@"disks"] addObject:disk];
 
@@ -245,7 +245,7 @@
 
 DADissenterRef DiskMountApprovalCallback(DADiskRef diskRef, void *arbitrator)
 {
-	Log(LOG_DEBUG, @"%s called: %p %s", __FUNCTION__, diskRef, DADiskGetBSDName(diskRef));
+	Log(LOG_DEBUG, @"%s called: %p %s", __func__, diskRef, DADiskGetBSDName(diskRef));
 	Log(LOG_DEBUG, @"\t claimed: %s", DADiskIsClaimed(diskRef) ? "Yes" : "No");
 
 	Disk *disk = [[Disk alloc] initWithDiskRef:diskRef];
@@ -270,7 +270,7 @@ DADissenterRef DiskMountApprovalCallback(DADiskRef diskRef, void *arbitrator)
 
 void DiskClaimCallback(DADiskRef disk, DADissenterRef dissenter, void *arbitrator)
 {
-	Log(LOG_DEBUG, @"%s called: %p %s", __FUNCTION__, disk, DADiskGetBSDName(disk));
+	Log(LOG_DEBUG, @"%s called: %p %s", __func__, disk, DADiskGetBSDName(disk));
 	Log(LOG_DEBUG, @"\t claimed: %s", DADiskIsClaimed(disk) ? "Yes" : "No");
 	
 	if (dissenter)
@@ -279,7 +279,7 @@ void DiskClaimCallback(DADiskRef disk, DADissenterRef dissenter, void *arbitrato
 
 DADissenterRef DiskClaimReleaseCallback(DADiskRef disk, void *arbitrator)
 {
-	Log(LOG_DEBUG, @"%s called: %p %s", __FUNCTION__, disk, DADiskGetBSDName(disk));
+	Log(LOG_DEBUG, @"%s called: %p %s", __func__, disk, DADiskGetBSDName(disk));
 	Log(LOG_DEBUG, @"\t claimed: %s\n", DADiskIsClaimed(disk) ? "Yes" : "No");
 
 	return NULL;

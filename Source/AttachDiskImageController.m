@@ -47,7 +47,7 @@
 
 - (NSTask *)hdiutilTaskWithCommand:(NSString *)command path:(NSString *)path options:(NSArray *)options password:(NSString *)password
 {
-	Log(LOG_DEBUG, @"%s command: %@ path: %@ options: %@", __FUNCTION__, command, path, options);
+	Log(LOG_DEBUG, @"%s command: %@ path: %@ options: %@", __func__, command, path, options);
 	
 	NSTask *newTask;
 	NSFileHandle *stdinHandle;
@@ -192,7 +192,7 @@
 		[info setObject:NSLocalizedString(@"Check the system log for details.", nil)
 				 forKey:NSLocalizedRecoverySuggestionErrorKey];
 
-		Log(LOG_ERR, @"%s termination status: (%d) %@", __FUNCTION__, theTask.terminationStatus, self.errorMessage);
+		Log(LOG_ERR, @"%s termination status: (%d) %@", __func__, theTask.terminationStatus, self.errorMessage);
 
 		NSError *error = [NSError errorWithDomain:AppErrorDomain code:theTask.terminationStatus userInfo:info];
 		[NSApp presentError:error];
@@ -260,7 +260,7 @@
 
 - (BOOL)attachDiskImageAtPath:(NSString *)path options:(NSArray *)options password:(NSString *)password error:(NSError **)outError
 {
-	Log(LOG_DEBUG, @"%s path: %@ options: %@", __FUNCTION__, path, options);
+	Log(LOG_DEBUG, @"%s path: %@ options: %@", __func__, path, options);
 	
 	BOOL isEncrypted, hasSLA;
 	NSTask *newTask;
@@ -416,7 +416,7 @@
 	NSFileHandle *handle;
 	NSData *header;
 	
-	Log(LOG_DEBUG, @"%s ", __FUNCTION__);
+	Log(LOG_DEBUG, @"%s ", __func__);
 	
 	filename = [sender filename];
 	
@@ -489,7 +489,7 @@
 
 - (void)processStandardOutput:(NSNotification *)notif
 {
-	Log(LOG_DEBUG, @"%s", __FUNCTION__);
+	Log(LOG_DEBUG, @"%s", __func__);
 
 	NSString *mymessage;
 	NSFileHandle *stdoutHandle = notif.object;
@@ -546,7 +546,7 @@
 
 - (void)processStandardError:(NSNotification *)notif
 {
-	Log(LOG_DEBUG, @"%s", __FUNCTION__);
+	Log(LOG_DEBUG, @"%s", __func__);
 	
 	NSString *mymessage;
 	NSFileHandle *stderrHandle = notif.object;

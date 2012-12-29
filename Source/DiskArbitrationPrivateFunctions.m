@@ -33,13 +33,14 @@ void InitializeDiskArbitration(void)
 	
 	DASessionScheduleWithRunLoop(session, CFRunLoopGetMain(), kCFRunLoopCommonModes);
 	
-	NSMutableDictionary *matching = [NSMutableDictionary dictionary];
-	[matching setObject:[NSNumber numberWithBool:NO] 
-				 forKey:(NSString *) kDADiskDescriptionVolumeNetworkKey];
-	
-	DARegisterDiskAppearedCallback(session, (CFDictionaryRef) matching, DiskAppearedCallback, [Disk class]);
-	DARegisterDiskDisappearedCallback(session, (CFDictionaryRef) matching, DiskDisappearedCallback, [Disk class]);
-	DARegisterDiskDescriptionChangedCallback(session, (CFDictionaryRef) matching, NULL, DiskDescriptionChangedCallback, [Disk class]);
+	CFMutableDictionaryRef matching = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+	CFDictionaryAddValue(matching, kDADiskDescriptionVolumeNetworkKey, kCFBooleanFalse);
+
+	DARegisterDiskAppearedCallback(session, matching, DiskAppearedCallback, [Disk class]);
+	DARegisterDiskDisappearedCallback(session, matching, DiskDisappearedCallback, [Disk class]);
+	DARegisterDiskDescriptionChangedCallback(session, matching, NULL, DiskDescriptionChangedCallback, [Disk class]);
+
+	CFRelease(matching);
 }
 
 BOOL DADiskValidate(DADiskRef diskRef)
@@ -81,9 +82,8 @@ void DiskAppearedCallback(DADiskRef diskRef, void *context)
 	
 	if (DADiskValidate(diskRef)) 
 	{
-		Disk *disk = [[Disk alloc] initWithDiskRef:diskRef];
+		Disk *disk = [Disk uniqueDiskForDADisk:diskRef create:YES];
 		[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidAppearNotification object:disk];
-		[disk release];
 	}
 }
 
@@ -93,12 +93,11 @@ void DiskDisappearedCallback(DADiskRef diskRef, void *context)
 	
 	Log(LOG_DEBUG, @"%s <%p> %s", __func__, diskRef, DADiskGetBSDName(diskRef));
 	
-	Disk *tmpDisk = [[Disk alloc] initWithDiskRef:diskRef];
+	Disk *tmpDisk = [Disk uniqueDiskForDADisk:diskRef create:NO];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidDisappearNotification object:tmpDisk];
 	
 	[tmpDisk diskDidDisappear];
-	[tmpDisk release];
 }
 
 void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *context)

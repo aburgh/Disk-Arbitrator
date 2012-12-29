@@ -49,46 +49,49 @@
 	return [super keyPathsForValuesAffectingValueForKey:key];
 }
 
-+ (id)diskWithDiskRef:(DADiskRef)diskRef
++ (id)uniqueDiskForDADisk:(DADiskRef)diskRef create:(BOOL)create
 {
-	return [[[self.class alloc] initWithDiskRef:diskRef] autorelease];
+	for (Disk *disk in uniqueDisks) {
+		if (disk.hash == CFHash(diskRef))
+			return disk;
+	}
+
+	return create ? [[[self.class alloc] initWithDADisk:diskRef shouldCreateParent:YES] autorelease] : nil;
 }
 
-- (id)initWithDiskRef:(DADiskRef)diskRef
+- (id)initWithDADisk:(DADiskRef)diskRef shouldCreateParent:(BOOL)shouldCreateParent
 {
 	NSAssert(diskRef, @"No Disk Arbitration disk provided to initializer.");
 	
 	// Return unique instance
-	for (Disk *uniqueDisk in uniqueDisks) {
-		if (uniqueDisk.hash == CFHash(diskRef)) {
-			[super dealloc];
-			return [uniqueDisk retain];
-		}
+	Disk *uniqueDisk = [Disk uniqueDiskForDADisk:diskRef create:NO];
+	if (uniqueDisk) {
+		[super dealloc];
+		return [uniqueDisk retain];
 	}
 	
 	self = [super init];
-	if (self) 
-	{
+	if (self) {
+		disk = CFRetain(diskRef);
 		BSDName = [[NSString alloc] initWithUTF8String:DADiskGetBSDName(diskRef)];
-		CFRetain(diskRef);
-		disk = diskRef;
 		children = [NSMutableSet new];
 		diskDescription = DADiskCopyDescription(diskRef);
 		
 //		CFShow(description);
-		
-		[uniqueDisks addObject:self];
-		
-		if (self.isWholeDisk == NO)
-		{
+
+		if (self.isWholeDisk == NO) {
+			
 			DADiskRef parentRef = DADiskCopyWholeDisk(diskRef);
-			if (parentRef && parentRef != diskRef) {
-				Disk *parentDisk = [Disk diskWithDiskRef:parentRef];
-				parent = parentDisk; // weak reference
-				[[parent mutableSetValueForKey:@"children"] addObject:self];
+			if (parentRef) {
+				Disk *parentDisk = [Disk uniqueDiskForDADisk:parentRef create:shouldCreateParent];
+				if (parentDisk) {
+					parent = parentDisk; // weak reference
+					[[parent mutableSetValueForKey:@"children"] addObject:self];
+				}
 				CFRelease(parentRef);
 			}
 		}
+		[uniqueDisks addObject:self];
 	}
 
 	return self;

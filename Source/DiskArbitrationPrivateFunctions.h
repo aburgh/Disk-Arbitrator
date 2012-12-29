@@ -12,7 +12,6 @@
 
 void InitializeDiskArbitration(void);
 BOOL DADiskValidate(DADiskRef diskRef);
-NSUInteger DADiskHash(DADiskRef disk);
 void DiskAppearedCallback(DADiskRef diskRef, void *context);
 void DiskDisappearedCallback(DADiskRef diskRef, void *context);
 void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *context);
@@ -22,7 +21,10 @@ void DiskEjectCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 
 
 @interface Disk (DiskPrivate)
-- (id)initWithDiskRef:(DADiskRef)diskRef;
+
++ (id)uniqueDiskForDADisk:(DADiskRef)diskRef create:(BOOL)create;
+
+- (id)initWithDADisk:(DADiskRef)diskRef shouldCreateParent:(BOOL)shouldCreateParent;
 - (void)refreshFromDescription;
 - (void)diskDidDisappear;
 @end

@@ -248,7 +248,8 @@ DADissenterRef DiskMountApprovalCallback(DADiskRef diskRef, void *arbitrator)
 	Log(LOG_DEBUG, @"%s called: %p %s", __func__, diskRef, DADiskGetBSDName(diskRef));
 	Log(LOG_DEBUG, @"\t claimed: %s", DADiskIsClaimed(diskRef) ? "Yes" : "No");
 
-	Disk *disk = [[Disk alloc] initWithDiskRef:diskRef];
+	Disk *disk = [Disk uniqueDiskForDADisk:diskRef create:NO];
+	
 	Log(LOG_DEBUG, @"%@", disk.diskDescription);
 
 	DADissenterRef dissenter;

@@ -115,7 +115,7 @@
 
 - (void)diskDidChange:(NSNotification *)notif
 {
-	Log(LOG_DEBUG, @"Changed disk notification: %@", [notif description]);
+	Log(LOG_DEBUG, @"Changed disk notification: %@", notif.description);
 }
 
 - (BOOL)registerApprovalSession
@@ -206,7 +206,7 @@
 
 - (NSUInteger)countOfDisks
 {
-	return [disks count];
+	return disks.count;
 }
 
 - (NSEnumerator *)enumeratorOfDisks

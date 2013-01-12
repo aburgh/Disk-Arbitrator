@@ -406,8 +406,8 @@
 {
 	NSIndexSet *indexes = [disksArrayController selectionIndexes];
 	
-	if ([indexes count] == 1)
-		return [[disksArrayController arrangedObjects] objectAtIndex:[indexes lastIndex]];
+	if (indexes.count == 1)
+		return [disksArrayController.arrangedObjects objectAtIndex:indexes.lastIndex];
 	else
 		return nil;
 }
@@ -422,7 +422,7 @@
 	BOOL canEject = [selectedDisk isEjectable];
 
 	if (!canEject) {
-		for (Disk *child in [selectedDisk children]) {
+		for (Disk *child in selectedDisk.children) {
 			if (child.isMountable && child.isMounted)
 				canEject = YES;
 		}
@@ -450,7 +450,7 @@
 //	
 //	if (disk.mountable && disk.mounted) return YES;
 //	
-//	for (Disk *child in [disk children])
+//	for (Disk *child in disk.children)
 //		if (child.mountable && child.mounted)
 //			return YES;
 }
@@ -464,13 +464,13 @@
 {
     Disk *disk;
 	
-    NSParameterAssert(rowIndex >= 0 && rowIndex < [arbitrator.disks count]);
-    disk = [[disksArrayController arrangedObjects] objectAtIndex:rowIndex];
+    NSParameterAssert(rowIndex >= 0 && rowIndex < arbitrator.disks.count);
+    disk = [disksArrayController.arrangedObjects objectAtIndex:rowIndex];
 
-	if ([[column identifier] isEqual:@"BSDName"])
+	if ([column.identifier isEqual:@"BSDName"])
 		return disk.BSDName;
 
-	//	fprintf(stdout, "getting value: %s\n", [disk.BSDName UTF8String]);
+	//	fprintf(stdout, "getting value: %s\n", disk.BSDName.UTF8String);
 	return disk;
 }
 
@@ -480,7 +480,7 @@
 
     NSPasteboard* pboard = [info draggingPasteboard];
 
-	if (op == NSDragOperationCopy && [[pboard types] containsObject:NSFilenamesPboardType]) {
+	if (op == NSDragOperationCopy && [pboard.types containsObject:NSFilenamesPboardType]) {
 		
 		NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
 		NSArray *extensions = [AttachDiskImageController diskImageFileExtensions];
@@ -520,7 +520,7 @@
 	
 	Log(LOG_DEBUG, @"%s", __func__);
 
-	if (operation == NSDragOperationCopy && [[pboard types] containsObject:NSFilenamesPboardType] ) {
+	if (operation == NSDragOperationCopy && [pboard.types containsObject:NSFilenamesPboardType] ) {
 		NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
 
 		Log(LOG_DEBUG, @"files: %@", files);
@@ -544,13 +544,13 @@
 {
 	// If another sheet has unexpected been displayed, recover gracefully
 	
-	if ([window attachedSheet]) {
+	if (window.attachedSheet) {
 		Log(LOG_INFO, @"Discarding pending errors: %@", displayErrorQueue);
 		[displayErrorQueue removeAllObjects];
 		return;
 	}
 	
-	if ([displayErrorQueue count] > 0)
+	if (displayErrorQueue.count > 0)
 	{
 		NSError *nextError = [displayErrorQueue objectAtIndex:0];
 	
@@ -567,10 +567,10 @@
 
 - (void)diskDidChange:(NSNotification *)notif
 {
-	NSUInteger row = [[disksArrayController arrangedObjects] indexOfObject:[notif object]];
+	NSUInteger row = [disksArrayController.arrangedObjects indexOfObject:notif.object];
 	
 	[tableView setNeedsDisplayInRect:[tableView rectOfRow:row]];
-	[[window toolbar] validateVisibleItems];
+	[window.toolbar validateVisibleItems];
 }
 
 - (void)didAttemptMount:(NSNotification *)notif
@@ -596,7 +596,7 @@
 										 userInfo:info];
 		[info release];
 		
-		if ([window attachedSheet]) {
+		if (window.attachedSheet) {
 			[displayErrorQueue addObject:error];
 		}
 		else {
@@ -608,7 +608,7 @@
 					contextInfo:NULL];
 		}
 	}
-	[[window toolbar] validateVisibleItems];
+	[window.toolbar validateVisibleItems];
 }
 
 - (void)didAttemptUnmount:(NSNotification *)notif
@@ -632,7 +632,7 @@
 										 userInfo:info];
 		[info release];
 		
-		if ([window attachedSheet]) {
+		if (window.attachedSheet) {
 			[displayErrorQueue addObject:error];
 		}
 		else {
@@ -645,7 +645,7 @@
 					contextInfo:NULL];
 		}
 	}
-	[[window toolbar] validateVisibleItems];
+	[window.toolbar validateVisibleItems];
 }
 
 - (void)didAttemptEject:(NSNotification *)notif
@@ -667,7 +667,7 @@
 										 userInfo:info];
 		[info release];
 		
-		if ([window attachedSheet]) {
+		if (window.attachedSheet) {
 			[displayErrorQueue addObject:error];
 		}
 		else {
@@ -683,7 +683,7 @@
 	else {
 		Log(LOG_DEBUG, @"%s: Ejected: %@", __func__, disk);
 	}
-	[[window toolbar] validateVisibleItems];
+	[window.toolbar validateVisibleItems];
 }
 
 @end

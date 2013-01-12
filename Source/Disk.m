@@ -140,14 +140,14 @@
 
 	self.isMounting = YES;
 
-	Log(LOG_DEBUG, @"%s mount %@ at mountpoint: %@ arguments: %@", __func__, BSDName, path, [args description]);
+	Log(LOG_DEBUG, @"%s mount %@ at mountpoint: %@ arguments: %@", __func__, BSDName, path, args.description);
 
 	// ensure arg list is NULL terminated
-	id *argv = calloc([args count] + 1, sizeof(id));
+	id *argv = calloc(args.count + 1, sizeof(id));
 
-	[args getObjects:argv range:NSMakeRange(0, [args count])];
+	[args getObjects:argv range:NSMakeRange(0, args.count)];
 
-	NSURL *url = path ? [NSURL fileURLWithPath:[path stringByExpandingTildeInPath]] : NULL;
+	NSURL *url = path ? [NSURL fileURLWithPath:path.stringByExpandingTildeInPath] : NULL;
 	
 	DADiskMountWithArguments((DADiskRef) disk, (CFURLRef) url, kDADiskMountOptionDefault,
 							 DiskMountCallback, self, (CFStringRef *)argv);

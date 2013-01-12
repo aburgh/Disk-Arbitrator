@@ -131,7 +131,7 @@
 	else if (size > 999999999999.0)
 		formattedValue = [NSString stringWithFormat:@"%03.02f TB (%@ bytes)", (size / 1000000000000.0), sizeValue];
 	else
-		formattedValue = [sizeValue stringValue];
+		formattedValue = sizeValue.stringValue;
 
 	return formattedValue;
 }

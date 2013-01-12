@@ -85,7 +85,7 @@
 
 	Log(LOG_DEBUG, @"%s disk: %@", __func__, disk.BSDName);
 
-	[[self mutableSetValueForKey:@"disks"] addObject:disk];
+	[self addDisksObject:disk];
 
 	if (self.isActivated && self.mountMode == MM_READONLY && disk.isMountable && !disk.isMounted) {
 
@@ -110,7 +110,7 @@
 
 - (void)diskDidDisappear:(NSNotification *)notif
 {
-	[[self mutableSetValueForKey:@"disks"] removeObject:notif.object];
+	[self removeDisksObject:notif.object];
 }
 
 - (void)diskDidChange:(NSNotification *)notif
@@ -248,7 +248,7 @@ DADissenterRef DiskMountApprovalCallback(DADiskRef diskRef, void *arbitrator)
 	Log(LOG_DEBUG, @"%s called: %p %s", __func__, diskRef, DADiskGetBSDName(diskRef));
 	Log(LOG_DEBUG, @"\t claimed: %s", DADiskIsClaimed(diskRef) ? "Yes" : "No");
 
-	Disk *disk = [Disk uniqueDiskForDADisk:diskRef create:NO];
+	Disk *disk = [Disk uniqueDiskForDADisk:diskRef create:YES];
 	
 	Log(LOG_DEBUG, @"%@", disk.diskDescription);
 
@@ -263,7 +263,6 @@ DADissenterRef DiskMountApprovalCallback(DADiskRef diskRef, void *arbitrator)
 									   kDAReturnNotPermitted, 
 									   CFSTR("Disk Arbitrator is in charge"));
 	}
-	[disk release];
 
 	Log(LOG_DEBUG, @"Mount allowed: %s", dissenter ? "No" : "Yes");
 	return dissenter;

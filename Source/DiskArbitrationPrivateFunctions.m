@@ -130,9 +130,9 @@ void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 
 		NSString *statusString = (NSString *) DADissenterGetStatusString(dissenter);
 		if (!statusString)
-			statusString = [NSString stringWithFormat:@"%@: %d", NSLocalizedString(@"Dissenter status code", nil), status];
+			statusString = [NSString stringWithFormat:@"%@: %#x", NSLocalizedString(@"Dissenter status code", nil), status];
 
-		Log(LOG_INFO, @"%s %@ dissenter: (%d) %@", __func__, context, status, statusString);
+		Log(LOG_INFO, @"%s %@ dissenter: (%#x) %@", __func__, context, status, statusString);
 
 		info = [NSMutableDictionary dictionary];
 		[info setObject:statusString forKey:NSLocalizedFailureReasonErrorKey];

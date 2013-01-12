@@ -49,6 +49,7 @@ enum {
 @property (readonly) BOOL isMounted;
 @property (readwrite) BOOL isMounting;
 @property (readonly) BOOL isWritable;
+@property (readonly) BOOL isFileSystemWritable;
 @property (readonly) BOOL isEjectable;
 @property (readonly) BOOL isRemovable;
 @property (readonly) BOOL isWholeDisk;

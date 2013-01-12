@@ -26,6 +26,8 @@
 @property CGFloat indentation;
 @property BOOL mountable;
 @property BOOL mounted;
+@property BOOL isDiskWritable;
+@property BOOL isFileSystemWritable;
 @property (copy) NSString *BSDName;
 @property (copy) NSString *mediaName;
 @property (copy) NSNumber *mediaSize;

@@ -11,6 +11,8 @@
 #import <DiskArbitration/DiskArbitration.h>
 #import "DiskArbitrationPrivateFunctions.h"
 #import <IOKit/kext/KextManager.h>
+#include <sys/param.h>
+#include <sys/mount.h>
 
 
 @implementation Disk
@@ -42,7 +44,10 @@
 
 	if ([key isEqual:@"isRemovable"])
 		return [NSSet setWithObject:@"diskDescription"];
-	
+
+	if ([key isEqual:@"isFileSystemWritable"])
+		return [NSSet setWithObject:@"diskDescription"];
+
 	if ([key isEqual:@"icon"])
 		return [NSSet setWithObject:@"diskDescription"];
 
@@ -233,6 +238,30 @@
 	return value ? CFBooleanGetValue(value) : NO;
 }
 
+- (BOOL)isFileSystemWritable
+{
+	BOOL retval = NO;
+	struct statfs fsstat;
+	CFURLRef mountPath;
+	UInt8 fsrep[MAXPATHLEN];
+
+	// if the media is not writable, the file system cannot be either
+	if (self.isWritable == NO)
+		return NO;
+
+	mountPath = CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumePathKey);
+	if (mountPath) {
+
+		if (CFURLGetFileSystemRepresentation(mountPath, true, fsrep, sizeof(fsrep))) {
+
+			if (statfs((char *)fsrep, &fsstat) == 0)
+				retval = (fsstat.f_flags & MNT_RDONLY) ? NO : YES;
+		}
+	}
+
+	return retval;
+}
+
 - (void)setDiskDescription:(CFDictionaryRef)desc
 {
 	NSAssert(desc, @"A NULL disk description is not allowed.");
@@ -258,7 +287,7 @@
 		if (diskDescription) {
 			CFDictionaryRef iconRef = CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaIconKey);
 			if (iconRef) {
-				
+
 				CFStringRef identifier = CFDictionaryGetValue(iconRef, CFSTR("CFBundleIdentifier"));
 				CFURLRef url = KextManagerCreateURLForBundleIdentifier(kCFAllocatorDefault, identifier);
 				if (url) {

@@ -20,6 +20,8 @@
 @synthesize indentation;
 @synthesize mountable;
 @synthesize mounted;
+@synthesize isDiskWritable;
+@synthesize isFileSystemWritable;
 @synthesize mediaName;
 @synthesize mediaSize;
 @synthesize BSDName;
@@ -60,14 +62,48 @@
 	CGFloat minwh = MIN(frame.size.width - indentation, frame.size.height);
 	iconFrame = NSMakeRect(frame.origin.x + indentation + ICONPADDING, frame.origin.y, minwh, minwh);
 
-	iconCell.enabled = (mountable && !mounted) ? NO : YES;  // gray out if a volume but not mounted
+	iconCell.enabled = (mountable && !mounted) ? NO : YES;  // dimmed if a volume but not mounted
 	iconCell.highlighted = self.isHighlighted;
 	[iconCell drawWithFrame:iconFrame inView:controlView];
+
+	// A disk may be mounted R/O even though the underlying disk is R/W. To avoid giving the false
+	// impression that a disk is completely protected, display a transparent, faint lock when the
+	// disk is R/W, and display a solid black lock when the disk and the FS are both R/O.
+
+	if (mountable && mounted && !isFileSystemWritable) {
+
+		NSImage *lockImage = [NSImage imageNamed:NSImageNameLockLockedTemplate];
+		lockImage.flipped = controlView.isFlipped;
+
+		CGFloat scale;
+		if (frame.size.height <= 16.0)
+			scale = 0.5;
+		else if (frame.size.height <= 32.0)
+			scale = 0.75;
+		else if (frame.size.height <= 64.0)
+			scale = 2.0;
+		else if (frame.size.height <= 128.0)
+			scale = 4.0;
+		else if (frame.size.height <= 256.0)
+			scale = 8.0;
+		else if (frame.size.height <= 512.0)
+			scale = 16.0;
+		else if (frame.size.height <= 1024.0)
+			scale = 32.0;
+
+		CGFloat opacity = isDiskWritable ? 0.40 : 1.0;
+
+		CGFloat scaledWidth  = lockImage.size.width * scale;
+		CGFloat scaledHeight = lockImage.size.height * scale;
+		NSRect rect = NSMakeRect(NSMaxX(iconFrame) - scaledWidth, NSMaxY(iconFrame) - scaledHeight, scaledWidth, scaledHeight);
+
+		[lockImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:opacity];
+	}
 
 	textFrame = NSMakeRect(NSMaxX(iconFrame) + ICONPADDING, frame.origin.y, 
 								  MAX(NSWidth(frame) - NSWidth(iconFrame) - ICONPADDING, 0.0),  NSHeight(frame));
 
-	textCell.enabled = (mountable && !mounted) ? NO : YES;  // gray out if a volume but not mounted
+	textCell.enabled = (mountable && !mounted) ? NO : YES;  // dimmed if a volume but not mounted
 	textCell.highlighted = self.isHighlighted;
 	[textCell drawWithFrame:textFrame inView:controlView];
 }
@@ -80,9 +116,12 @@
 	if (disk) {
 //		Log(LOG_DEBUG, @"%s self: %p disk: %p", __func__, self, disk);
 
+		self.BSDName = disk.BSDName;
 		self.indentation = disk.isWholeDisk ? 0.0 : 17.0;
 		self.mounted = disk.isMounted;
 		self.mountable = disk.isMountable;
+		self.isDiskWritable = disk.isWritable;
+		self.isFileSystemWritable = disk.isFileSystemWritable;
 		
 		CFDictionaryRef descRef = disk.diskDescription;
 		self.mediaName = (NSString *) CFDictionaryGetValue(descRef, kDADiskDescriptionMediaNameKey);

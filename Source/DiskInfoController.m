@@ -138,102 +138,104 @@
 
 - (NSString *)localizedValueStringForDADiskKey:(NSString *)key value:(id)value
 {
-	if ([key isEqual: (NSString *)kDADiskDescriptionVolumeKindKey])      /* ( CFString     ) */
+	CFStringRef keyRef = (CFStringRef) key;
+
+	if (CFEqual(keyRef, kDADiskDescriptionVolumeKindKey))      /* ( CFString     ) */
 		return value;
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionVolumeMountableKey] || /* ( CFBoolean    ) */
-		[key isEqual: (NSString *)kDADiskDescriptionVolumeNetworkKey] ||
-		[key isEqual: (NSString *)kDADiskDescriptionMediaLeafKey] ||
-		[key isEqual: (NSString *)kDADiskDescriptionMediaEjectableKey] ||
-		[key isEqual: (NSString *)kDADiskDescriptionMediaRemovableKey] ||
-		[key isEqual: (NSString *)kDADiskDescriptionMediaWholeKey] ||
-		[key isEqual: (NSString *)kDADiskDescriptionMediaWritableKey] ||
-		[key isEqual: (NSString *)kDADiskDescriptionDeviceInternalKey]
+	if (CFEqual(keyRef, kDADiskDescriptionVolumeMountableKey) || /* ( CFBoolean    ) */
+		CFEqual(keyRef, kDADiskDescriptionVolumeNetworkKey)   ||
+		CFEqual(keyRef, kDADiskDescriptionMediaLeafKey)       ||
+		CFEqual(keyRef, kDADiskDescriptionMediaEjectableKey)  ||
+		CFEqual(keyRef, kDADiskDescriptionMediaRemovableKey)  ||
+		CFEqual(keyRef, kDADiskDescriptionMediaWholeKey)      ||
+		CFEqual(keyRef, kDADiskDescriptionMediaWritableKey)   ||
+		CFEqual(keyRef, kDADiskDescriptionDeviceInternalKey)
 		)
 		return [value boolValue] ? @"Yes" : @"No";
 	
 	
-	if ([key isEqual: (NSString *)kDADiskDescriptionVolumeNameKey])      /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionVolumeNameKey))      /* ( CFString     ) */
 		return value;
 	
-	if ([key isEqual: (NSString *)kDADiskDescriptionVolumePathKey])      /* ( CFURL        ) */
+	if (CFEqual(keyRef, kDADiskDescriptionVolumePathKey))      /* ( CFURL        ) */
 		return [(NSURL *)value path];
 	
-	if ([key isEqual: (NSString *)kDADiskDescriptionVolumeUUIDKey] || 	 /* ( CFUUID       ) */
-		[key isEqual: (NSString *)kDADiskDescriptionMediaUUIDKey]) 
+	if (CFEqual(keyRef, kDADiskDescriptionVolumeUUIDKey) || 	 /* ( CFUUID       ) */
+		CFEqual(keyRef, kDADiskDescriptionMediaUUIDKey))
 	{
 		NSString *uuidString = (NSString *) CFUUIDCreateString(kCFAllocatorDefault, (CFUUIDRef)value);
 
 		return [uuidString autorelease];
 	}
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaBlockSizeKey])  /* ( CFNumber     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionMediaBlockSizeKey))  /* ( CFNumber     ) */
 		return [value stringValue];
 	
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaBSDMajorKey])   /* ( CFNumber     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionMediaBSDMajorKey))   /* ( CFNumber     ) */
 		return [value stringValue];
 	
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaBSDMinorKey])   /* ( CFNumber     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionMediaBSDMinorKey))   /* ( CFNumber     ) */
 		return [value stringValue];
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaBSDNameKey])    /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionMediaBSDNameKey))    /* ( CFString     ) */
 		return value;
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaBSDUnitKey])    /* ( CFNumber     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionMediaBSDUnitKey))    /* ( CFNumber     ) */
 		return [value stringValue];
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaContentKey])    /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionMediaContentKey))    /* ( CFString     ) */
 		return value;
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaIconKey])       /* ( CFDictionary ) */
+	if (CFEqual(keyRef, kDADiskDescriptionMediaIconKey))       /* ( CFDictionary ) */
 		return [value description];
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaKindKey])       /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionMediaKindKey))       /* ( CFString     ) */
 		return value;
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaNameKey])       /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionMediaNameKey))       /* ( CFString     ) */
 		return value;
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaPathKey])       /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionMediaPathKey))       /* ( CFString     ) */
 		return value;
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaSizeKey])       /* ( CFNumber     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionMediaSizeKey))       /* ( CFNumber     ) */
 		return [self formattedSizeDescriptionFromNumber:(NSNumber *)value];
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaTypeKey])       /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionMediaTypeKey))       /* ( CFString     ) */
 		return value;
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceGUIDKey])      /* ( CFData       ) */
+	if (CFEqual(keyRef, kDADiskDescriptionDeviceGUIDKey))      /* ( CFData       ) */
 		return [value description];
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceModelKey])     /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionDeviceModelKey))     /* ( CFString     ) */
 		return value;
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionDevicePathKey])      /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionDevicePathKey))      /* ( CFString     ) */
 		return value;
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceProtocolKey])  /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionDeviceProtocolKey))  /* ( CFString     ) */
 		return value;
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceRevisionKey])  /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionDeviceRevisionKey))  /* ( CFString     ) */
 		return value;
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceUnitKey])      /* ( CFNumber     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionDeviceUnitKey))      /* ( CFNumber     ) */
 		return [value stringValue];
 	
-	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceVendorKey])    /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionDeviceVendorKey))    /* ( CFString     ) */
 		return value;
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionBusNameKey])         /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionBusNameKey))         /* ( CFString     ) */
 		return value;
 
-	if ([key isEqual: (NSString *)kDADiskDescriptionBusPathKey])         /* ( CFString     ) */
+	if (CFEqual(keyRef, kDADiskDescriptionBusPathKey))         /* ( CFString     ) */
 		return value;
 	
-	if ([key isEqual: @"DAAppearanceTime"])
+	if (CFEqual(keyRef, CFSTR("DAAppearanceTime")))
 		return [[NSDate dateWithTimeIntervalSinceReferenceDate:[value doubleValue]] description];
 
-	Log(LOG_INFO, @"Unknown disk description key: %@", key);
+	Log(LOG_INFO, @"Unknown disk description key: %@", keyRef);
 	
 	return @"N/A";
 }

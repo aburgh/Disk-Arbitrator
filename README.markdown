@@ -9,7 +9,9 @@ It is important to note that Disk Arbitrator is *not* a software write blocker--
 ## System Requirements
 
 * Intel Mac
-* Mac OS X 10.5 (Leopard) or later (verified compatible with Mountain Lion 10.8.2)
+* Mac OS X 10.5 (Leopard) or later (verified compatible with Mountain Lion 10.8.4)
+
+Note: To use on Leopard, select the app in the Finder, select File -> Get Info, then enable the checkbox for 32-bit.
 
 ## Downloads
 
@@ -31,7 +33,7 @@ You may optionally want to have Disk Arbitrator automatically running every time
 
 ### Usage
 
-When launched, it adds it's icon to the status bar on the right side of the menu bar. The status bar icon indictates one of three states:
+When launched, it adds its icon to the status bar on the right side of the menu bar. The status bar icon indictates one of three states:
 
 * Green: the utility is activated and in Block Mounts mode.
 
@@ -45,9 +47,9 @@ Disk Arbitrator continuously monitors for disks to appear and disappear and trac
 
 * When activated and in Block Mounts mode, it simply rejects every new system attempt to mount a volume.
 
-* When activated and in Read-only mode, it rejects the original mount action and automatically sends it's own request to mount the volume, but it ensures the mount includes the option to make the file system read-only.  It also checks the file system type and, if it is HFS, it includes the flag to ignore the journal. 
+* When activated and in Read-only mode, it rejects the original mount action and automatically sends its own request to mount the volume, but it ensures the mount includes the option to make the file system read-only.  It also checks the file system type and, if it is HFS, it includes the flag to ignore the journal.
 
-**Reminder:** Disk Arbitrator does it's work by actively participating in the mounting process. If the utility is deactived or is quit and not running, there is no protection from auto-mounting attached disks.  However, once a disk appears and the process of either mounting or rejecting the mount is finished, then Disk Arbitrator may be quit without affecting the state of the disk.
+**Reminder:** Disk Arbitrator does its work by actively participating in the mounting process. If the utility is deactived or is quit and not running, there is no protection from auto-mounting attached disks.  However, once a disk appears and the process of either mounting or rejecting the mount is finished, then Disk Arbitrator may be quit without affecting the state of the disk.
 
 ### Working With Disk Images
 

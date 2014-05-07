@@ -76,6 +76,10 @@
 	
 	NSStatusBar *bar = [NSStatusBar systemStatusBar];
 	self.statusItem = [bar statusItemWithLength:NSSquareStatusItemLength];
+    NSImage *altImage = [[[NSImage imageNamed:@"StatusItem Disabled 1.png"] copy] autorelease];
+    [altImage setTemplate:YES];
+    self.statusItem.alternateImage = altImage;
+    [self.statusItem setHighlightMode:YES];
 	[self setStatusItemIconWithName:@"StatusItem Disabled 1"];
 	statusItem.menu = statusMenu;
 	

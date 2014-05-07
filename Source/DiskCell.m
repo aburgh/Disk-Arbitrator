@@ -90,6 +90,8 @@
 			scale = 16.0;
 		else if (frame.size.height <= 1024.0)
 			scale = 32.0;
+		else
+			scale = 2.0;
 
 		CGFloat opacity = isDiskWritable ? 0.40 : 1.0;
 

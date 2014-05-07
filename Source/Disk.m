@@ -160,7 +160,7 @@
 	NSAssert(self.isMountable, @"Disk isn't mountable.");
 	NSAssert(self.isMounted, @"Disk isn't mounted.");
 	
-	DADiskUnmount((DADiskRef) disk, options, DiskUnmountCallback, self);
+	DADiskUnmount((DADiskRef) disk, (DADiskUnmountOptions)options, DiskUnmountCallback, self);
 }
 
 - (void)eject

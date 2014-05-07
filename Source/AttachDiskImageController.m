@@ -109,7 +109,7 @@
 		retval = NO;
 	}
 	
-	if (retval == NO && *outError) {
+	if (retval == NO && outError) {
 		info = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 				NSLocalizedString(@"Error executing hdiutil command", nil), NSLocalizedDescriptionKey,
 				failureReason, NSLocalizedFailureReasonErrorKey,
@@ -139,7 +139,9 @@
 										 NSLocalizedString(@"Check that \"/usr/bin/hdiutil isencrypted\" is functioning correctly.", nil), 
 										 NSLocalizedRecoverySuggestionErrorKey,
 										 nil];
-			*outError = [NSError errorWithDomain:AppErrorDomain code:-1 userInfo:info];
+			if (outError != nil) {
+				*outError = [NSError errorWithDomain:AppErrorDomain code:-1 userInfo:info];
+			}
 			isOK = NO;
 		}
 	}
@@ -158,13 +160,15 @@
 		if (value) {
 			*outFlag = [value boolValue];
 		}
-		else if (*outError) {
+		else {
 			NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 										 NSLocalizedString(@"Failed to get SLA property", nil), NSLocalizedDescriptionKey,
 										 NSLocalizedString(@"Check that \"/usr/bin/hdiutil imageinfo\" is functioning correctly.", nil),
 										 NSLocalizedRecoverySuggestionErrorKey,
 										 nil];
-			*outError = [NSError errorWithDomain:AppErrorDomain code:-1 userInfo:info];
+			if (outError != nil) {
+				*outError = [NSError errorWithDomain:AppErrorDomain code:-1 userInfo:info];
+			}
 			isOK = NO;
 		}
 	}
@@ -262,7 +266,7 @@
 {
 	Log(LOG_DEBUG, @"%s path: %@ options: %@", __func__, path, options);
 	
-	BOOL isEncrypted, hasSLA;
+	BOOL isEncrypted = NO, hasSLA = NO;
 	NSTask *newTask;
 
 	if (!password) {

@@ -289,10 +289,9 @@
 			if (iconRef) {
 
 				CFStringRef identifier = CFDictionaryGetValue(iconRef, CFSTR("CFBundleIdentifier"));
-				CFURLRef url = KextManagerCreateURLForBundleIdentifier(kCFAllocatorDefault, identifier);
+				NSURL *url = [(NSURL *)KextManagerCreateURLForBundleIdentifier(kCFAllocatorDefault, identifier) autorelease];
 				if (url) {
-					NSString *bundlePath = [(NSURL *)url path];
-					CFRelease(url);
+					NSString *bundlePath = [url path];
 
 					NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
 					if (bundle) {
@@ -306,7 +305,7 @@
 						}
 					}
 					else {
-						Log(LOG_WARNING, @"Failed to load bundle with URL: %@", [(NSURL *) url absoluteString]);
+						Log(LOG_WARNING, @"Failed to load bundle with URL: %@", [url absoluteString]);
 						CFShow(diskDescription);
 					}
 				}

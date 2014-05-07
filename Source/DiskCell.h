@@ -19,6 +19,8 @@
 	NSString *mediaName;
 	NSNumber *mediaSize;
 	NSString *volumeName;
+	BOOL isDiskWritable;
+	BOOL isFileSystemWritable;
 }
 
 @property (retain) NSImageCell *iconCell;

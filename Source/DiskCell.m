@@ -90,6 +90,8 @@
 			scale = 16.0;
 		else if (frame.size.height <= 1024.0)
 			scale = 32.0;
+		else
+			scale = 2.0;
 
 		CGFloat opacity = isDiskWritable ? 0.40 : 1.0;
 
@@ -101,7 +103,9 @@
 	}
 
 	textFrame = NSMakeRect(NSMaxX(iconFrame) + ICONPADDING, frame.origin.y, 
-								  MAX(NSWidth(frame) - NSWidth(iconFrame) - ICONPADDING, 0.0),  NSHeight(frame));
+								  MAX(NSWidth(frame) - (NSMaxX(iconFrame) + ICONPADDING), 0.0),  NSHeight(frame));
+	NSSize textCellSize = textCell.cellSize;
+	textFrame.origin.y = frame.origin.y + floor((frame.size.height - textCellSize.height) / 2);
 
 	textCell.enabled = (mountable && !mounted) ? NO : YES;  // dimmed if a volume but not mounted
 	textCell.highlighted = self.isHighlighted;
@@ -150,6 +154,7 @@
 			[desc appendString:mediaName];
 
 		self.textCell = [[[NSCell alloc] initTextCell:desc] autorelease];
+		self.textCell.lineBreakMode = NSLineBreakByTruncatingTail;
 		[desc release];
 		
 		// Create Icon cell

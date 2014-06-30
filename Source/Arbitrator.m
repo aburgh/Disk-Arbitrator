@@ -243,7 +243,7 @@
 
 #pragma mark Callbacks
 
-DADissenterRef DiskMountApprovalCallback(DADiskRef diskRef, void *arbitrator)
+DADissenterRef __attribute__((cf_returns_retained)) DiskMountApprovalCallback(DADiskRef diskRef, void *arbitrator)
 {
 	Log(LOG_DEBUG, @"%s called: %p %s", __func__, diskRef, DADiskGetBSDName(diskRef));
 	Log(LOG_DEBUG, @"\t claimed: %s", DADiskIsClaimed(diskRef) ? "Yes" : "No");

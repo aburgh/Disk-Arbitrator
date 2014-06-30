@@ -47,8 +47,6 @@
 
 - (void)attachDiskImageOptionsSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
 
-- (void)attachDiskImageOptionsSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
-
 - (void)performAttachDiskImageWithPath:(NSString *)path;
 
 - (IBAction)performAttachDiskImage:(id)sender;

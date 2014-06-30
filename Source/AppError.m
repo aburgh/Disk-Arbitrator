@@ -30,7 +30,7 @@ void Log(NSInteger level, NSString *format, ...)
 	BOOL shouldUseSyslog = [[NSUserDefaults standardUserDefaults] boolForKey:AppShouldEnableSyslogDefaultsKey];
 	
 	if (shouldUseSyslog) 
-		syslog(level, "%s\n", utfFormattedError);
+		syslog((int)level, "%s\n", utfFormattedError);
 	
 	fprintf(stderr, "%s\n", utfFormattedError);
 	

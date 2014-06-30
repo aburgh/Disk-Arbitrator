@@ -60,7 +60,7 @@
 		[self setStatusItemIconWithName:@"StatusItem Orange"];
 	
 	else
-		NSAssert1(NO, @"Invalid mount mode: %ld\n", arbitrator.mountMode);
+		NSAssert1(NO, @"Invalid mount mode: %ld\n", (long)arbitrator.mountMode);
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
@@ -76,6 +76,10 @@
 	
 	NSStatusBar *bar = [NSStatusBar systemStatusBar];
 	self.statusItem = [bar statusItemWithLength:NSSquareStatusItemLength];
+    NSImage *altImage = [[[NSImage imageNamed:@"StatusItem Disabled 1.png"] copy] autorelease];
+    [altImage setTemplate:YES];
+    self.statusItem.alternateImage = altImage;
+    [self.statusItem setHighlightMode:YES];
 	[self setStatusItemIconWithName:@"StatusItem Disabled 1"];
 	statusItem.menu = statusMenu;
 	
@@ -85,7 +89,7 @@
 	[center addObserver:self selector:@selector(didAttemptMount:) name:DADiskDidAttemptMountNotification object:nil];
 	[center addObserver:self selector:@selector(didAttemptUnmount:) name:DADiskDidAttemptUnmountNotification object:nil];
 	
-	self.arbitrator = [Arbitrator new];
+	self.arbitrator = [[Arbitrator new] autorelease];
 	[arbitrator addObserver:self forKeyPath:@"isActivated" options:0 context:NULL];
 	[arbitrator addObserver:self forKeyPath:@"mountMode" options:0 context:NULL];
 	[self refreshStatusItemIcon];  // arbitrator status initial state is taken from user defaults, which was initialized before KVO initialized
@@ -249,7 +253,7 @@
 	if (disk.isMounted) {
 		// Unmount of child failed
 		
-		NSMutableDictionary *info = [[notif userInfo] mutableCopy];
+		NSMutableDictionary *info = [[[notif userInfo] mutableCopy] autorelease];
 		
 		Log(LOG_INFO, @"%s eject disk: %@ canceled due to mounted child: %@", __func__, disk, info);
 		

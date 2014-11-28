@@ -73,7 +73,6 @@
 	if (mountable && mounted && !isFileSystemWritable) {
 
 		NSImage *lockImage = [NSImage imageNamed:NSImageNameLockLockedTemplate];
-		lockImage.flipped = controlView.isFlipped;
 
 		CGFloat scale;
 		if (frame.size.height <= 16.0)
@@ -98,8 +97,19 @@
 		CGFloat scaledWidth  = lockImage.size.width * scale;
 		CGFloat scaledHeight = lockImage.size.height * scale;
 		NSRect rect = NSMakeRect(NSMaxX(iconFrame) - scaledWidth, NSMaxY(iconFrame) - scaledHeight, scaledWidth, scaledHeight);
+        
+        [NSGraphicsContext saveGraphicsState];
+        if ([controlView isFlipped]) {
+            NSAffineTransform *transform = [NSAffineTransform transform];
+            [transform translateXBy:NSMidX(rect) yBy:NSMidY(rect)];
+            [transform rotateByDegrees:180];
+            [transform translateXBy:-NSMidX(rect) yBy:-NSMidY(rect)];
+            [transform concat];
+        }
 
 		[lockImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:opacity];
+        
+        [NSGraphicsContext restoreGraphicsState];
 	}
 
 	textFrame = NSMakeRect(NSMaxX(iconFrame) + ICONPADDING, frame.origin.y, 

@@ -370,7 +370,7 @@
 
 #pragma mark Actions
 
-- (void)performAttachDiskImageWithPath:(NSString *)path
+- (void)performAttachDiskImage
 {
 	NSOpenPanel *panel = [NSOpenPanel openPanel];
 	panel.canChooseFiles = YES;
@@ -385,21 +385,18 @@
 	panel.accessoryView = self.view;
 	panel.delegate = self;
 	
-	NSString *directory = path ? path.stringByDeletingLastPathComponent : nil;
-	NSString *filename = path ? path.lastPathComponent : nil;
-
 	// This is a little strange, but left over from an initial implementation which used cascading sheets on
 	// the main window.  The code sheetDidEnd code is usable for this variation, though
 		 
-	if ([panel runModalForDirectory:directory file:filename] == NSOKButton) {
-		[self.userInfo setObject:panel.filename forKey:@"filePath"];
+	if ([panel runModal] == NSOKButton) {
+		[self.userInfo setObject:panel.URL.path forKey:@"filePath"];
 		[self attachDiskImageOptionsSheetDidEnd:panel returnCode:NSOKButton contextInfo:self];
 	}
 }
 
 - (IBAction)performAttachDiskImage:(id)sender
 {
-	[self performAttachDiskImageWithPath:nil];
+	[self performAttachDiskImage];
 }
 
 - (IBAction)cancel:(id)sender

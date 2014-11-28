@@ -268,29 +268,6 @@ DADissenterRef __attribute__((cf_returns_retained)) DiskMountApprovalCallback(DA
 	return dissenter;
 }
 
-void DiskClaimCallback(DADiskRef disk, DADissenterRef dissenter, void *arbitrator)
-{
-	Log(LOG_DEBUG, @"%s called: %p %s", __func__, disk, DADiskGetBSDName(disk));
-	Log(LOG_DEBUG, @"\t claimed: %s", DADiskIsClaimed(disk) ? "Yes" : "No");
-	
-	if (dissenter)
-		CFShow(dissenter);
-}
-
-DADissenterRef DiskClaimReleaseCallback(DADiskRef disk, void *arbitrator)
-{
-	Log(LOG_DEBUG, @"%s called: %p %s", __func__, disk, DADiskGetBSDName(disk));
-	Log(LOG_DEBUG, @"\t claimed: %s\n", DADiskIsClaimed(disk) ? "Yes" : "No");
-
-	return NULL;
-
-	DADissenterRef dissenter = DADissenterCreate(kCFAllocatorDefault,
-												 kDAReturnNotPermitted, 
-												 CFSTR("DiskArbitrator is in charge"));
-	
-	return dissenter;
-}
-
 NSString * const ArbitratorIsEnabled = @"ArbitratorIsEnabled";
 NSString * const ArbitratorMountMode = @"ArbitratorMountMode";
 

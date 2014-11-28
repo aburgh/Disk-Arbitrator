@@ -36,8 +36,6 @@
 @end
 
 DADissenterRef DiskMountApprovalCallback(DADiskRef disk, void *arbitrator);
-void DiskClaimCallback(DADiskRef disk, DADissenterRef dissenter, void *arbitrator);
-DADissenterRef DiskClaimReleaseCallback(DADiskRef disk, void *arbitrator);
 
 extern NSString * const ArbitratorIsEnabled;
 extern NSString * const ArbitratorMountMode;

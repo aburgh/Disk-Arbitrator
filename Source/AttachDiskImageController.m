@@ -92,11 +92,18 @@
 	outputData = [[newTask.standardOutput fileHandleForReading] readDataToEndOfFile];
 
 	if (newTask.terminationStatus == 0) {
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_6
 		*outPlist = [NSPropertyListSerialization propertyListFromData:outputData
 													 mutabilityOption:NSPropertyListImmutable
 															   format:NULL
 													 errorDescription:&failureReason];
-		
+#else
+        NSError *plistErr = nil;
+        *outPlist = [NSPropertyListSerialization propertyListWithData:outputData options:NSPropertyListImmutable format:nil error:&plistErr];
+        if (plistErr) {
+            failureReason = plistErr.localizedDescription;
+        }
+#endif
 		if (!*outPlist) {
 			Log(LOG_ERR, @"Plist deserialization error: %@", failureReason);
 			failureReason = NSLocalizedString(@"hdiutil output is not a property list.", nil);
@@ -327,7 +334,7 @@
 	NSError *error;
 	NSMutableArray *attachOptions = [NSMutableArray array];
 	
-	if (returnCode == NSOKButton) {
+	if (returnCode == NSModalResponseOK) {
 		NSDictionary *options = self.userInfo;
 		
 		if ([[options objectForKey:@"readOnly"] boolValue] == YES)
@@ -388,9 +395,9 @@
 	// This is a little strange, but left over from an initial implementation which used cascading sheets on
 	// the main window.  The code sheetDidEnd code is usable for this variation, though
 		 
-	if ([panel runModal] == NSOKButton) {
+	if ([panel runModal] == NSModalResponseOK) {
 		[self.userInfo setObject:panel.URL.path forKey:@"filePath"];
-		[self attachDiskImageOptionsSheetDidEnd:panel returnCode:NSOKButton contextInfo:self];
+		[self attachDiskImageOptionsSheetDidEnd:panel returnCode:NSModalResponseOK contextInfo:self];
 	}
 }
 

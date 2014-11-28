@@ -32,13 +32,13 @@
 
 - (IBAction)cancel:(id)sender
 {
-	[NSApp endSheet:self.window returnCode:NSCancelButton];
+	[NSApp endSheet:self.window returnCode:NSModalResponseCancel];
 }
 
 - (IBAction)ok:(id)sener
 {
 	[self.window endEditingFor:nil];
-	[NSApp endSheet:self.window returnCode:NSOKButton];
+	[NSApp endSheet:self.window returnCode:NSModalResponseOK];
 }
 
 @end

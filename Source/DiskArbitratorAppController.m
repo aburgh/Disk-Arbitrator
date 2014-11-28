@@ -173,7 +173,7 @@
 	Disk *selectedDisk = self.selectedDisk;
 	NSMutableArray *arguments = [NSMutableArray array];
 	
-	if (returnCode == NSOKButton) {
+	if (returnCode == NSModalResponseOK) {
 		NSDictionary *options = controller.userInfo;
 		
 		if ([[options objectForKey:@"readOnly"] boolValue] == YES)
@@ -379,8 +379,8 @@
 		dstPath = self.userLaunchAgentPath;
 		
 		if ([fm removeItemAtPath:dstPath error:&error] == YES) {
-			alert = [NSAlert alertWithMessageText:@"Launch Agent file successfully removed"
-									defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@""];
+            alert = [[[NSAlert alloc] init] autorelease];
+            alert.messageText = @"Launch Agent file successfully removed";
 		}
 		else {
 			alert = [NSAlert alertWithError:error];
@@ -391,8 +391,8 @@
 		dstPath = [self userLaunchAgentPath];
 
 		if ([fm copyItemAtPath:srcPath toPath:dstPath error:&error] == YES) {
-			alert = [NSAlert alertWithMessageText:@"Launch Agent file successfully installed"
-									defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@""];
+            alert = [[[NSAlert alloc] init] autorelease];
+            alert.messageText = @"Launch Agent file successfully installed";
 		}
 		else {
 			alert = [NSAlert alertWithError:error];

@@ -9,7 +9,7 @@ It is important to note that Disk Arbitrator is *not* a software write blocker--
 ## System Requirements
 
 * Intel Mac
-* Mac OS X 10.5 (Leopard) or later (verified compatible with Mountain Lion 10.8.4)
+* Mac OS X 10.5 (Leopard) or later
 
 Note: To use on Leopard, select the app in the Finder, select File -> Get Info, then enable the checkbox for 32-bit.
 
@@ -21,15 +21,13 @@ You can find links to compiled executables on the [Downloads](https://github.com
 
 ### Installation
 
-Installation is very easy:
+To install, drag the Disk Arbitrator application to the desired location, for example /Applications.
 
-* Drag the Disk Arbitrator application to the desired location, though /Applications/Utilities is recommended.
+You may optionally want to have Disk Arbitrator automatically running every time you log in. There are two ways to do this:
 
-You may optionally want to have Disk Arbitrator automatically running every time you log in.  There are two ways to do this:
+* Add Disk Arbitrator to your Login Items in the User & Groups (or Accounts on older OS X versions) preference panel in System Preferences.
 
-* Add Disk Arbitrator to your Login Items in the Accounts preference panel in System Preferences.
-
-* Use the included Disk Arbitrator Agent.plist. When installed, the system's launchd will automatically launch Disk Arbitrator when you log in, just like a Login Item. In addition, the plist contains a setting which tells launchd to "Keep Alive" the program, which instructs launchd to monitor the application and automatically relaunch it in the event of a crash or if otherwise quit. This offers the most assurance that Disk Arbitrator will be running whenever you are logged in. To install the agent, copy the Disk Arbitrator Agent.plist to /Library/LaunchAgents to install for all users or to /Users/username/Library/LaunchAgents to install for a single user.
+* Use the included "Install User Launch Agent" feature (accessible from the menu). When installed, the system's launchd will automatically launch Disk Arbitrator when you log in, just like a Login Item. In addition, the plist contains a setting which instructs launchd to monitor the application and automatically relaunch it in the event of a crash or if otherwise quit. This offers the most assurance that Disk Arbitrator will be running whenever you are logged in.
 
 ### Usage
 
@@ -73,17 +71,7 @@ When set to Read-only mode, the mount request that Disk Arbitrator sends include
 
 Mounting a disk image with a dirty file system can be achieved by using a shadow file, but this is less than ideal. The shadow file protects the original disk image from changes, but the file system is mounted read-write.  A better option is to execute the two steps manually, using Terminal:
 
-1. hdiutil attach -nomount disk_image.dmg
-2. mount_hfs -j -o rdonly /dev/diskx /mount/path
+1. `hdiutil attach -nomount disk_image.dmg`
+2. `mount_hfs -j -o rdonly /dev/diskx /mount/path`
 
 Disk Arbitrator provides a convenient way to execute the second step, and a future version will perform both steps in one operation.
-
-## Future Features
-
-* Disk imaging.  Provide disk imaging ala dd capturing and hashing of the data. 
-
-* Incorporate libewf and/or libaff to enable imaging to a variety of forensic file formats.
-
-## Support and Feedback
-
-For questions, support, or feedback, contact me at <aburgh@mac.com>.

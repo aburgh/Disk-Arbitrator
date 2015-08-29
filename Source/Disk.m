@@ -78,7 +78,8 @@
 	self = [super init];
 	if (self) {
 		disk = CFRetain(diskRef);
-		BSDName = [[NSString alloc] initWithUTF8String:DADiskGetBSDName(diskRef)];
+		const char *bsdName = DADiskGetBSDName(diskRef);
+		BSDName = [[NSString alloc] initWithUTF8String:bsdName ? bsdName : ""];
 		children = [NSMutableSet new];
 		diskDescription = DADiskCopyDescription(diskRef);
 		

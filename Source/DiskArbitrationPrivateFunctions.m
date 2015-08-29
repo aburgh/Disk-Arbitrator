@@ -40,7 +40,7 @@ void InitializeDiskArbitration(void)
 	DARegisterDiskDisappearedCallback(session, matching, DiskDisappearedCallback, [Disk class]);
 	DARegisterDiskDescriptionChangedCallback(session, matching, NULL, DiskDescriptionChangedCallback, [Disk class]);
 
-	CFRelease(matching);
+	SafeCFRelease(matching);
 }
 
 BOOL DADiskValidate(DADiskRef diskRef)
@@ -69,7 +69,7 @@ BOOL DADiskValidate(DADiskRef diskRef)
 			CFBooleanRef mediaLeafValue = CFDictionaryGetValue(desc, kDADiskDescriptionMediaLeafKey);
 			if (!mediaLeafValue || CFBooleanGetValue(mediaLeafValue) == false) isOK = NO;
 		}
-	CFRelease(desc);
+	SafeCFRelease(desc);
 	
 	return isOK;
 }
@@ -111,7 +111,7 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 		if (CFHash(diskRef)	== disk.hash) {
 			CFDictionaryRef desc = DADiskCopyDescription(diskRef);
 			disk.diskDescription = desc;
-			CFRelease(desc);
+			SafeCFRelease(desc);
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidChangeNotification object:disk];
 		}

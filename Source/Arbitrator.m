@@ -139,7 +139,7 @@
 		DAUnregisterApprovalCallback(approvalSession, DiskMountApprovalCallback, self);
 
 		DAApprovalSessionUnscheduleFromRunLoop(approvalSession, CFRunLoopGetMain(), kCFRunLoopCommonModes);
-		CFRelease(approvalSession);
+		SafeCFRelease(approvalSession);
 		approvalSession = NULL;
 	}
 }

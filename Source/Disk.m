@@ -94,7 +94,7 @@
 					parent = parentDisk; // weak reference
 					[[parent mutableSetValueForKey:@"children"] addObject:self];
 				}
-				CFRelease(parentRef);
+				SafeCFRelease(parentRef);
 			}
 		}
 		[uniqueDisks addObject:self];
@@ -105,8 +105,8 @@
 
 - (void)dealloc
 {
-	if (disk) CFRelease(disk);
-	if (diskDescription) CFRelease(diskDescription);
+	SafeCFRelease(disk);
+	SafeCFRelease(diskDescription);
 	[BSDName release];
 	[icon release];
 	parent = nil;
@@ -176,7 +176,7 @@
 	[uniqueDisks removeObject:self];
 	[[parent mutableSetValueForKey:@"children"] removeObject:self];
 
-	CFRelease(disk);
+	SafeCFRelease(disk);
 	disk = NULL;
 
 	self.parent = nil;
@@ -270,8 +270,8 @@
 	if (desc != diskDescription) {
 		[self willChangeValueForKey:@"diskDescription"];
 
-		CFRelease(diskDescription);
-		diskDescription = CFRetain(desc);
+		SafeCFRelease(diskDescription);
+		diskDescription = desc ? CFRetain(desc) : NULL;
 
 		[self didChangeValueForKey:@"diskDescription"];
 	}

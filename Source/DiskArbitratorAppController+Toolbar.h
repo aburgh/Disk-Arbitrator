@@ -17,8 +17,8 @@
 void SetupToolbar(NSWindow *window, id delegate);
 
 // Toolbar Item Identifier constants
-NSString * const ToolbarItemMainIdentifier;
-NSString * const ToolbarItemInfoIdentifier;
-NSString * const ToolbarItemMountIdentifier;
-NSString * const ToolbarItemEjectIdentifier;
-NSString * const ToolbarItemAttachDiskImageIdentifier;
+extern NSString * const ToolbarItemMainIdentifier;
+extern NSString * const ToolbarItemInfoIdentifier;
+extern NSString * const ToolbarItemMountIdentifier;
+extern NSString * const ToolbarItemEjectIdentifier;
+extern NSString * const ToolbarItemAttachDiskImageIdentifier;

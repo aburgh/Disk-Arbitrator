@@ -110,7 +110,6 @@
 		9626E83011314E7600B803AB /* AttachDiskImageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttachDiskImageController.h; sourceTree = "<group>"; };
 		9626E83111314E7600B803AB /* AttachDiskImageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttachDiskImageController.m; sourceTree = "<group>"; };
 		96446C5E151F4CED00D3C08B /* Disk Arbitrator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Disk Arbitrator.entitlements"; sourceTree = "<group>"; };
-		9646B3E2135EFDC7006AA9E9 /* TODO.markdown */ = {isa = PBXFileReference; lastKnownFileType = text.markdown; name = TODO.markdown; path = Documents/TODO.markdown; sourceTree = "<group>"; };
 		964E4D8B10F9E3C3007B3112 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = System/Library/Frameworks/DiskArbitration.framework; sourceTree = SDKROOT; };
 		964E4DC910F9E874007B3112 /* Arbitrator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Arbitrator.h; sourceTree = "<group>"; };
 		964E4DCA10F9E874007B3112 /* Arbitrator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Arbitrator.m; sourceTree = "<group>"; };
@@ -204,7 +203,6 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
-				9646B3E1135EFDA4006AA9E9 /* Documents */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -250,14 +248,6 @@
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		9646B3E1135EFDA4006AA9E9 /* Documents */ = {
-			isa = PBXGroup;
-			children = (
-				9646B3E2135EFDC7006AA9E9 /* TODO.markdown */,
-			);
-			name = Documents;
 			sourceTree = "<group>";
 		};
 		9654A1D8110C760300E9B0C4 /* Images */ = {

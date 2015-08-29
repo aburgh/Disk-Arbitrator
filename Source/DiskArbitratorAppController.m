@@ -311,12 +311,30 @@
 
 - (IBAction)performGetInfo:(id)sender
 {
-	DiskInfoController *controller = [[DiskInfoController alloc] initWithWindowNibName:@"DiskInfo"];
+	DiskInfoController *controller = [[[DiskInfoController alloc] initWithWindowNibName:@"DiskInfo"] autorelease];
 	controller.disk = self.selectedDisk;
 	[controller showWindow:self];
 	[controller refreshDiskInfo];
-	
-//	[controller autorelease];
+    if (!diskInfoControllers) {
+        diskInfoControllers = [[NSMutableArray alloc] init];
+    }
+    [diskInfoControllers addObject:controller];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(diskInfoWindowDidClose:) name:NSWindowWillCloseNotification object:[controller window]];
+}
+
+- (void)diskInfoWindowDidClose:(NSNotification *)notif
+{
+    DiskInfoController *controllerToRemove = nil;
+    for (DiskInfoController *controller in diskInfoControllers) {
+        if ([controller window] == [notif object]) {
+            controllerToRemove = controller;
+            break;
+        }
+    }
+    if (controllerToRemove) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowWillCloseNotification object:[notif object]];
+        [diskInfoControllers removeObject:controllerToRemove];
+    }
 }
 
 - (IBAction)performAttachDiskImage:(id)sender

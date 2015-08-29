@@ -27,6 +27,7 @@
 	NSString *installUserLaunchAgentMenuTitle;
 	
 	NSMutableArray *displayErrorQueue; // 
+    NSMutableArray *diskInfoControllers;
 }
 
 @property (assign) IBOutlet NSPanel *window;

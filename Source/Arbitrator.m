@@ -44,7 +44,7 @@
 
 		if ([[NSUserDefaults standardUserDefaults] boolForKey:ArbitratorIsEnabled]) {
 			if ([self activate] == NO) {
-				[self dealloc];
+				[self release];
 				return nil;
 			}
 		}

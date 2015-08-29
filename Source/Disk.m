@@ -68,14 +68,15 @@
 {
 	NSAssert(diskRef, @"No Disk Arbitration disk provided to initializer.");
 	
+	self = [super init];
+
 	// Return unique instance
 	Disk *uniqueDisk = [Disk uniqueDiskForDADisk:diskRef create:NO];
 	if (uniqueDisk) {
-		[super dealloc];
+		[self release];
 		return [uniqueDisk retain];
 	}
 	
-	self = [super init];
 	if (self) {
 		disk = CFRetain(diskRef);
 		const char *bsdName = DADiskGetBSDName(diskRef);

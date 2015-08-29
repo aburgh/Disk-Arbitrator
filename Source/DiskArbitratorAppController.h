@@ -23,7 +23,6 @@
 	NSArray *sortDescriptors;
 
 	BOOL hasUserLaunchAgent;
-	BOOL hasSystemLaunchAgent;
 	NSString *installUserLaunchAgentMenuTitle;
 	
 	NSMutableArray *displayErrorQueue; // 
@@ -38,7 +37,6 @@
 @property (retain) NSStatusItem *statusItem;
 @property (retain) Arbitrator *arbitrator;
 @property (readwrite) BOOL hasUserLaunchAgent;
-@property (readwrite) BOOL hasSystemLaunchAgent;
 @property (readonly)  BOOL canInstallLaunchAgent;
 @property (copy) NSString *installUserLaunchAgentMenuTitle;
 

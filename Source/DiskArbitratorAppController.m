@@ -26,7 +26,6 @@
 @synthesize statusItem;
 @synthesize arbitrator;
 @synthesize hasUserLaunchAgent;
-@synthesize hasSystemLaunchAgent;
 @synthesize installUserLaunchAgentMenuTitle;
 
 - (void)dealloc
@@ -346,18 +345,6 @@
 
 #pragma mark Launch Agent
 
-- (NSString *)systemLaunchAgentPath {
-
-	NSString *path = nil;
-
-	CFStringRef identifier = CFBundleGetIdentifier(CFBundleGetMainBundle());
-	if (identifier) {
-		path = [NSString stringWithFormat:@"%@/%@/%@.plist", @"/", @"Library/LaunchAgents", identifier];
-	}
-
-	return path;	
-}
-
 - (NSString *)userLaunchAgentPath {
 
 	NSString *path = nil;
@@ -373,8 +360,6 @@
 - (void)refreshLaunchAgentStatus {
 	NSFileManager *fm = [NSFileManager defaultManager];
 	
-	self.hasSystemLaunchAgent = [fm fileExistsAtPath:self.systemLaunchAgentPath];
-
 	self.hasUserLaunchAgent = [fm fileExistsAtPath:self.userLaunchAgentPath];
 	if (self.hasUserLaunchAgent)
 		self.installUserLaunchAgentMenuTitle = @"Uninstall User Launch Agent...";
@@ -383,14 +368,16 @@
 }
 
 - (BOOL)canInstallLaunchAgent {
-	return (self.hasUserLaunchAgent == NO || self.hasSystemLaunchAgent);
+	return (self.hasUserLaunchAgent == NO);
 }
 
 - (IBAction)installUserLaunchAgent:(id)sender {
 	NSError *error;
 	NSAlert *alert = nil;
-	NSString *srcPath, *dstPath;
+	NSString *dstPath;
 	NSFileManager *fm = [NSFileManager defaultManager];
+
+	[NSApp activateIgnoringOtherApps:YES];
 
 	if (self.hasUserLaunchAgent) {
 
@@ -398,22 +385,34 @@
 		
 		if ([fm removeItemAtPath:dstPath error:&error] == YES) {
             alert = [[[NSAlert alloc] init] autorelease];
-            alert.messageText = @"Launch Agent file successfully removed";
+            alert.messageText = @"Launch Agent removed. Changes will take effect on next login.";
 		}
 		else {
 			alert = [NSAlert alertWithError:error];
 		}
 	}
 	else {
-		srcPath = [[NSBundle mainBundle] pathForResource:@"Disk Arbitrator Agent" ofType:@"plist"];
+		NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+		[dict setObject:@"us.burghardt.Disk-Arbitrator" forKey:@"Label"];
+		[dict setObject:[NSArray arrayWithObject:[[NSBundle mainBundle] executablePath]] forKey:@"ProgramArguments"];
+		[dict setObject:[NSNumber numberWithBool:NO] forKey:@"Disabled"];
+		[dict setObject:[NSNumber numberWithBool:YES] forKey:@"EnableTransactions"];
+		[dict setObject:[NSNumber numberWithBool:YES] forKey:@"KeepAlive"];
+		
 		dstPath = [self userLaunchAgentPath];
-
-		if ([fm copyItemAtPath:srcPath toPath:dstPath error:&error] == YES) {
-            alert = [[[NSAlert alloc] init] autorelease];
-            alert.messageText = @"Launch Agent file successfully installed";
-		}
-		else {
-			alert = [NSAlert alertWithError:error];
+		
+		NSString *errStr = nil;
+		NSData *plistData = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListXMLFormat_v1_0 errorDescription:&errStr];
+		if (!plistData) {
+			alert = [[[NSAlert alloc] init] autorelease];
+			alert.messageText = errStr ? errStr : @"Unknown error.";
+		} else {
+			if (![plistData writeToFile:dstPath options:NSDataWritingAtomic error:&error]) {
+				alert = [NSAlert alertWithError:error];
+			} else {
+				alert = [[[NSAlert alloc] init] autorelease];
+				alert.messageText = @"Launch Agent installed. Changes will take effect on next login.";
+			}
 		}
 	}
 	if (alert)

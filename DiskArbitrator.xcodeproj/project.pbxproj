@@ -43,7 +43,6 @@
 		964E4DCB10F9E874007B3112 /* Arbitrator.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DCA10F9E874007B3112 /* Arbitrator.m */; };
 		964E4DEE10F9F4BD007B3112 /* Disk.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DED10F9F4BD007B3112 /* Disk.m */; };
 		964E4EF210FA8058007B3112 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 964E4EF110FA8058007B3112 /* IOKit.framework */; };
-		964E4F0210FAB2BE007B3112 /* Disk Arbitrator Agent.plist in Resources */ = {isa = PBXBuildFile; fileRef = 964E4F0110FAB2BE007B3112 /* Disk Arbitrator Agent.plist */; };
 		9654A174110B178D00E9B0C4 /* DiskCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A173110B178D00E9B0C4 /* DiskCell.m */; };
 		9654A1E0110C761B00E9B0C4 /* StatusItem Disabled 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9654A1DC110C761B00E9B0C4 /* StatusItem Disabled 1.png */; };
 		9654A1E1110C761B00E9B0C4 /* StatusItem Disabled 2.png in Resources */ = {isa = PBXBuildFile; fileRef = 9654A1DD110C761B00E9B0C4 /* StatusItem Disabled 2.png */; };
@@ -118,7 +117,6 @@
 		964E4DEC10F9F4BD007B3112 /* Disk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Disk.h; sourceTree = "<group>"; };
 		964E4DED10F9F4BD007B3112 /* Disk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Disk.m; sourceTree = "<group>"; };
 		964E4EF110FA8058007B3112 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		964E4F0110FAB2BE007B3112 /* Disk Arbitrator Agent.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Disk Arbitrator Agent.plist"; path = "Resources/Disk Arbitrator Agent.plist"; sourceTree = "<group>"; };
 		9654A172110B178D00E9B0C4 /* DiskCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiskCell.h; sourceTree = "<group>"; };
 		9654A173110B178D00E9B0C4 /* DiskCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiskCell.m; sourceTree = "<group>"; };
 		9654A1DC110C761B00E9B0C4 /* StatusItem Disabled 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "StatusItem Disabled 1.png"; path = "Resources/StatusItem Disabled 1.png"; sourceTree = "<group>"; };
@@ -234,7 +232,6 @@
 				8D1107310486CEB800E47090 /* DiskArbitrator-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
-				964E4F0110FAB2BE007B3112 /* Disk Arbitrator Agent.plist */,
 				9654B6D8111C2C7D00E9B0C4 /* Release Notes.markdown */,
 				9654B742111DE2EF00E9B0C4 /* README.markdown */,
 				9626E44A1123779C00B803AB /* MountOptions.xib */,
@@ -335,7 +332,6 @@
 				9654B787111DEBBB00E9B0C4 /* Release Notes.markdown in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
-				964E4F0210FAB2BE007B3112 /* Disk Arbitrator Agent.plist in Resources */,
 				9654A1E0110C761B00E9B0C4 /* StatusItem Disabled 1.png in Resources */,
 				9654A1E1110C761B00E9B0C4 /* StatusItem Disabled 2.png in Resources */,
 				9654A1E2110C761B00E9B0C4 /* StatusItem Green.png in Resources */,

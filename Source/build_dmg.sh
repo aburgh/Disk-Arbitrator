@@ -6,6 +6,8 @@
 # Created by Aaron Burghardt on 2/6/10.
 # Copyright 2010 . All rights reserved.
 
+set -e # fail on any error
+
 SRC_PRODUCT="$1"
 SRC_PRODUCT_PATH="${BUILT_PRODUCTS_DIR}/${SRC_PRODUCT}.app"
 SRC_PRODUCT_CONTENTS="${SRC_PRODUCT_PATH}/Contents"

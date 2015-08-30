@@ -436,7 +436,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "Disk Arbitrator-0.4.2.dmg";
+				PRODUCT_NAME = "Disk Arbitrator.dmg";
 			};
 			name = Debug;
 		};
@@ -446,7 +446,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				PRODUCT_NAME = "Disk Arbitrator-0.4.2.dmg";
+				PRODUCT_NAME = "Disk Arbitrator.dmg";
 				ZERO_LINK = NO;
 			};
 			name = Release;

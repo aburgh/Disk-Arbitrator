@@ -401,11 +401,20 @@
 		
 		dstPath = [self userLaunchAgentPath];
 		
+		NSData *plistData;
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_6
 		NSString *errStr = nil;
-		NSData *plistData = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListXMLFormat_v1_0 errorDescription:&errStr];
+		plistData = [NSPropertyListSerialization dataFromPropertyList:dict format:NSPropertyListXMLFormat_v1_0 errorDescription:&errStr];
+#else
+		plistData = [NSPropertyListSerialization dataWithPropertyList:dict format:NSPropertyListXMLFormat_v1_0 options:0 error:&error];
+#endif
 		if (!plistData) {
+#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_6
 			alert = [[[NSAlert alloc] init] autorelease];
 			alert.messageText = errStr ? errStr : @"Unknown error.";
+#else
+			alert = [NSAlert alertWithError:error];
+#endif
 		} else {
 			if (![plistData writeToFile:dstPath options:NSDataWritingAtomic error:&error]) {
 				alert = [NSAlert alertWithError:error];

@@ -226,14 +226,10 @@
 			isa = PBXGroup;
 			children = (
 				9654A1D8110C760300E9B0C4 /* Images */,
+				A532F1F31B93C4A0007DC4FD /* Nibs */,
 				8D1107310486CEB800E47090 /* DiskArbitrator-Info.plist */,
-				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
 				9654B6D8111C2C7D00E9B0C4 /* Release Notes.markdown */,
 				9654B742111DE2EF00E9B0C4 /* README.markdown */,
-				9626E44A1123779C00B803AB /* MountOptions.xib */,
-				9626E50A1124DC6900B803AB /* DiskInfo.xib */,
-				9626E813113149D000B803AB /* AttachDiskImageAccessory.xib */,
-				96033DD31210E1DB006F4F11 /* Preferences.xib */,
 				96446C5E151F4CED00D3C08B /* Disk Arbitrator.entitlements */,
 			);
 			name = Resources;
@@ -262,6 +258,18 @@
 				96FCCE45114491E700E5554C /* ToolbarItem Attach Disk Image.png */,
 			);
 			name = Images;
+			sourceTree = "<group>";
+		};
+		A532F1F31B93C4A0007DC4FD /* Nibs */ = {
+			isa = PBXGroup;
+			children = (
+				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
+				9626E44A1123779C00B803AB /* MountOptions.xib */,
+				9626E50A1124DC6900B803AB /* DiskInfo.xib */,
+				9626E813113149D000B803AB /* AttachDiskImageAccessory.xib */,
+				96033DD31210E1DB006F4F11 /* Preferences.xib */,
+			);
+			name = Nibs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

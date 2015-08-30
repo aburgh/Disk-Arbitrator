@@ -78,6 +78,13 @@ Disk Arbitrator provides a convenient way to execute the second step, and a futu
 
 ## Release Notes
 
+#### 0.5 (in development)
+
+* Added lock icon to disks that are read-only
+* Fix launchd plist containing hard coded app path
+* Improved compatibility with 10.10
+* Improve code stability
+
 #### 0.4.2 11/23/2012
 
 * Added Developer ID signature for Gatekeeper.

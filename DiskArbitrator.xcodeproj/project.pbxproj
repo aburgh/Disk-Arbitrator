@@ -49,7 +49,6 @@
 		9654A1E3110C761B00E9B0C4 /* StatusItem Orange.png in Resources */ = {isa = PBXBuildFile; fileRef = 9654A1DF110C761B00E9B0C4 /* StatusItem Orange.png */; };
 		9654A20B110CB55B00E9B0C4 /* AppError.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A20A110CB55B00E9B0C4 /* AppError.m */; };
 		9654A46D11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A46C11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m */; };
-		9654B787111DEBBB00E9B0C4 /* Release Notes.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 9654B6D8111C2C7D00E9B0C4 /* Release Notes.markdown */; };
 		9654B788111DEBBF00E9B0C4 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 9654B742111DE2EF00E9B0C4 /* README.markdown */; };
 		96647D82133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png in Resources */ = {isa = PBXBuildFile; fileRef = 96647D81133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png */; };
 		96FCBC761140C2E700E5554C /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCBC751140C2E700E5554C /* SecurityFoundation.framework */; };
@@ -123,7 +122,6 @@
 		9654A20A110CB55B00E9B0C4 /* AppError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppError.m; sourceTree = "<group>"; };
 		9654A46B11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiskArbitrationPrivateFunctions.h; sourceTree = "<group>"; };
 		9654A46C11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiskArbitrationPrivateFunctions.m; sourceTree = "<group>"; };
-		9654B6D8111C2C7D00E9B0C4 /* Release Notes.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "Release Notes.markdown"; path = "Resources/Release Notes.markdown"; sourceTree = "<group>"; };
 		9654B742111DE2EF00E9B0C4 /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.markdown; sourceTree = "<group>"; };
 		9654B7A9111E473200E9B0C4 /* build_dmg.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = build_dmg.sh; sourceTree = "<group>"; };
 		96647D81133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolbarItem Attach Disk Plug.png"; path = "Resources/ToolbarItem Attach Disk Plug.png"; sourceTree = "<group>"; };
@@ -227,7 +225,6 @@
 				9654A1D8110C760300E9B0C4 /* Images */,
 				A532F1F31B93C4A0007DC4FD /* Nibs */,
 				8D1107310486CEB800E47090 /* DiskArbitrator-Info.plist */,
-				9654B6D8111C2C7D00E9B0C4 /* Release Notes.markdown */,
 				9654B742111DE2EF00E9B0C4 /* README.markdown */,
 			);
 			name = Resources;
@@ -323,7 +320,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9654B788111DEBBF00E9B0C4 /* README.markdown in Resources */,
-				9654B787111DEBBB00E9B0C4 /* Release Notes.markdown in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				9654A1E0110C761B00E9B0C4 /* StatusItem Disabled 1.png in Resources */,
 				9654A1E1110C761B00E9B0C4 /* StatusItem Disabled 2.png in Resources */,

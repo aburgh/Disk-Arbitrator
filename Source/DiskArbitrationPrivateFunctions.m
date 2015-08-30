@@ -94,6 +94,9 @@ void DiskDisappearedCallback(DADiskRef diskRef, void *context)
 	Log(LOG_DEBUG, @"%s <%p> %s", __func__, diskRef, DADiskGetBSDName(diskRef));
 	
 	Disk *tmpDisk = [Disk uniqueDiskForDADisk:diskRef create:NO];
+	if (!tmpDisk) {
+		return;
+	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidDisappearNotification object:tmpDisk];
 	

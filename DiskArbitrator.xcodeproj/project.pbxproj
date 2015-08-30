@@ -107,7 +107,6 @@
 		9626E814113149D000B803AB /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/AttachDiskImageAccessory.xib; sourceTree = "<group>"; };
 		9626E83011314E7600B803AB /* AttachDiskImageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttachDiskImageController.h; sourceTree = "<group>"; };
 		9626E83111314E7600B803AB /* AttachDiskImageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttachDiskImageController.m; sourceTree = "<group>"; };
-		96446C5E151F4CED00D3C08B /* Disk Arbitrator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Disk Arbitrator.entitlements"; sourceTree = "<group>"; };
 		964E4D8B10F9E3C3007B3112 /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = System/Library/Frameworks/DiskArbitration.framework; sourceTree = SDKROOT; };
 		964E4DC910F9E874007B3112 /* Arbitrator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Arbitrator.h; sourceTree = "<group>"; };
 		964E4DCA10F9E874007B3112 /* Arbitrator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Arbitrator.m; sourceTree = "<group>"; };
@@ -230,7 +229,6 @@
 				8D1107310486CEB800E47090 /* DiskArbitrator-Info.plist */,
 				9654B6D8111C2C7D00E9B0C4 /* Release Notes.markdown */,
 				9654B742111DE2EF00E9B0C4 /* README.markdown */,
-				96446C5E151F4CED00D3C08B /* Disk Arbitrator.entitlements */,
 			);
 			name = Resources;
 			sourceTree = "<group>";

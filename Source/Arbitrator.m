@@ -231,7 +231,9 @@
 
 - (void)removeDisksObject:(Disk *)anObject
 {
-    [disks removeObject:anObject];
+	if (anObject) {
+		[disks removeObject:anObject];
+	}
 }
 
 - (void)removeDisks:(NSSet *)objects

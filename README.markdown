@@ -11,8 +11,6 @@ It is important to note that Disk Arbitrator is *not* a software write blocker--
 * Intel Mac
 * Mac OS X 10.5 (Leopard) or later
 
-Note: To use on Leopard, select the app in the Finder, select File -> Get Info, then enable the checkbox for 32-bit.
-
 ## Downloads
 
 You can find links to compiled executables on the [Downloads](https://github.com/aburgh/Disk-Arbitrator/wiki/Downloads) wiki page.

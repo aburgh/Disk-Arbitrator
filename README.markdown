@@ -89,12 +89,12 @@ Disk Arbitrator provides a convenient way to execute the second step, and a futu
 * Updated for Xcode 4.5 (should have no affect on behavior).
 * Removed PPC architecture.
 
-#### 0.4.1
+#### 0.4.1 2012/4/8
 
 * Added feature to install/uninstall a launchd agent plist.
 * Added labels and tool tips to make mount options easier to understand.
 
-#### 0.4.0
+#### 0.4.0 2011/4/20
 
 * Fixed overwriting AppLogLevel preference at startup.
 * Added log message for mount approval callback.

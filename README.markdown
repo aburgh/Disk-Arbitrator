@@ -76,7 +76,7 @@ Disk Arbitrator provides a convenient way to execute the second step, and a futu
 
 ## Release Notes
 
-#### 0.5 (in development)
+#### 0.5 2015/9/9
 
 * Added lock icon to disks that are read-only
 * Fixed launchd plist containing hard coded app path

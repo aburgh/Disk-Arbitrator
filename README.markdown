@@ -83,7 +83,7 @@ Disk Arbitrator provides a convenient way to execute the second step, and a futu
 * Improved compatibility with 10.10
 * Improved code stability
 
-#### 0.4.2 11/23/2012
+#### 0.4.2 2012/11/23
 
 * Added Developer ID signature for Gatekeeper.
 * Updated for Xcode 4.5 (should have no affect on behavior).
@@ -103,16 +103,16 @@ Disk Arbitrator provides a convenient way to execute the second step, and a futu
 * Changed mode and activation state to persist across application restart.
 * Enabled Sudden Termination (new in Snow Leopard for faster shutdowns).
 
-#### 0.3.2 8/23/2010
+#### 0.3.2 2010/8/23
 
 * Fixed use of Snow Leopard API to retrieve disk icons.
 * Minor code cleanup.
 
-#### 0.3.1 8/9/2010
+#### 0.3.1 2010/8/9
 
 * Added Preferences window and an option to show the main window at launch.
 
-#### 0.3.0 3/29/2010
+#### 0.3.0 2010/3/29
 
 * Added Attach Disk Image feature.
 * Added check for encrypted disk image.
@@ -121,7 +121,7 @@ Disk Arbitrator provides a convenient way to execute the second step, and a futu
 * Added disk menu to the status item menu.
 * Improved validation of toolbar items.
 
-#### 0.2.0 2/14/2010
+#### 0.2.0 2010/2/14
 
 * Added Disk Info window.
 * Added mounting feature with dialog for options and mountpoint path.
@@ -129,12 +129,12 @@ Disk Arbitrator provides a convenient way to execute the second step, and a futu
 * Added toolbar and custom icons.
 * Improved logging.
 
-#### 0.1.1 2/7/2010
+#### 0.1.1 2010/2/7
 
 * Added target to build the distribution DMG.
 * Fixed refresh bug when a disk is mounted or unmounted.
 * Added controls to the main window to activate and change mode.
 
-#### 0.1.0 1/31/2010
+#### 0.1.0 2010/1/31
 
 * Initial release

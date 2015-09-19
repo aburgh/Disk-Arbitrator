@@ -208,12 +208,15 @@
 	[[controller userInfo] setObject:[NSNumber numberWithBool:YES] forKey:@"ignoreJournal"];
 	
 	[window makeKeyAndOrderFront:self];
-	
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 	[NSApp beginSheet:controller.window
 	   modalForWindow:window
 		modalDelegate:self
 	   didEndSelector:@selector(performMountSheetDidEnd:returnCode:contextInfo:)
 		  contextInfo:controller];
+#pragma clang diagnostic pop
 }
 
 - (IBAction)performUnmount:(id)sender

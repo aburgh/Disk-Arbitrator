@@ -1,10 +1,10 @@
 ## Introduction
 
-Disk Arbitrator is Mac OS X forensic utility designed to help the user ensure correct forensic procedures are followed during imaging of a disk device. 
+Disk Arbitrator is a Mac OS X forensic utility designed to help the user ensure correct forensic procedures are followed during imaging of a disk device. 
 Disk Arbitrator is essentially a user interface to the Disk Arbitration framework, which enables a program to participate in the management of block 
 storage devices, including the automatic mounting of file systems.  When enabled, Disk Arbitrator will block the mounting of file systems to avoid mounting as read-write and violating the integrity of the evidence.
 
-It is important to note that Disk Arbitrator is *not* a software write blocker---it does not change the state of currently attached devices nor does it affect newly attached devices to force a device to be read-only. The user still must be careful to not accidently write to a disk with a command such as "dd".  Owing to this fact, a hardware or software write-blocker may still be desirable for the most sound procedure.  Disk Arbitrator compliments a write-blocker with additional useful features and eliminates the typical forensic recommendation to "disable disk arbitration."
+It is important to note that Disk Arbitrator is *not* a software write blocker---it does not change the state of currently attached devices nor does it affect newly attached devices to force a device to be read-only. The user still must be careful to not accidentally write to a disk with a command such as "dd".  Owing to this fact, a hardware or software write-blocker may still be desirable for the most sound procedure.  Disk Arbitrator compliments a write-blocker with additional useful features and eliminates the typical forensic recommendation to "disable disk arbitration."
 
 ## System Requirements
 
@@ -29,7 +29,7 @@ You may optionally want to have Disk Arbitrator automatically running every time
 
 ### Usage
 
-When launched, it adds its icon to the status bar on the right side of the menu bar. The status bar icon indictates one of three states:
+When launched, it adds its icon to the status bar on the right side of the menu bar. The status bar icon indicates one of three states:
 
 * Green: the utility is activated and in Block Mounts mode.
 
@@ -45,7 +45,7 @@ Disk Arbitrator continuously monitors for disks to appear and disappear and trac
 
 * When activated and in Read-only mode, it rejects the original mount action and automatically sends its own request to mount the volume, but it ensures the mount includes the option to make the file system read-only.  It also checks the file system type and, if it is HFS, it includes the flag to ignore the journal.
 
-**Reminder:** Disk Arbitrator does its work by actively participating in the mounting process. If the utility is deactived or is quit and not running, there is no protection from auto-mounting attached disks.  However, once a disk appears and the process of either mounting or rejecting the mount is finished, then Disk Arbitrator may be quit without affecting the state of the disk.
+**Reminder:** Disk Arbitrator does its work by actively participating in the mounting process. If the utility is deactivated or is quit and not running, there is no protection from auto-mounting attached disks.  However, once a disk appears and the process of either mounting or rejecting the mount is finished, then Disk Arbitrator may be quit without affecting the state of the disk.
 
 ### Working With Disk Images
 

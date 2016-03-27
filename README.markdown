@@ -76,6 +76,11 @@ Disk Arbitrator provides a convenient way to execute the second step, and a futu
 
 ## Release Notes
 
+#### 0.6
+
+* Fix read-only automatic mounts not working on OS X 10.11+
+* Disable the "ignore journal" mount option for non-HFS disks
+
 #### 0.5 2015/9/9
 
 * Added lock icon to disks that are read-only

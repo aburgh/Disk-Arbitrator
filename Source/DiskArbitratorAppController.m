@@ -619,7 +619,8 @@
 		
 		info = [[notif userInfo] mutableCopy];
 		
-		Log(LOG_ERR, @"Mount failed: %@ (%@) %@", disk.BSDName, [info objectForKey:DAStatusErrorKey], [info objectForKey:NSLocalizedFailureReasonErrorKey]);
+		NSString *reason = [info objectForKey:NSLocalizedFailureReasonErrorKey];
+		Log(LOG_ERR, @"Mount failed: %@ (%@) %@", disk.BSDName, [info objectForKey:DAStatusErrorKey], reason);
 		
 		[info setObject:[NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"Mount rejected", nil), disk.BSDName]
 				 forKey:NSLocalizedDescriptionKey];
@@ -629,16 +630,19 @@
 										 userInfo:info];
 		[info release];
 		
-		if (window.attachedSheet) {
-			[displayErrorQueue addObject:error];
-		}
-		else {
-			[window makeKeyAndOrderFront:self];
-			[NSApp presentError:error
-				 modalForWindow:window
-					   delegate:self
-			 didPresentSelector:@selector(didPresentErrorWithRecovery:contextInfo:)
-					contextInfo:NULL];
+		// Don't show our internal dissenter error
+		if (![reason isEqualToString:arbitrator.dissenterMessage]) {
+			if (window.attachedSheet) {
+				[displayErrorQueue addObject:error];
+			}
+			else {
+				[window makeKeyAndOrderFront:self];
+				[NSApp presentError:error
+					 modalForWindow:window
+						   delegate:self
+				 didPresentSelector:@selector(didPresentErrorWithRecovery:contextInfo:)
+						contextInfo:NULL];
+			}
 		}
 	}
 	[window.toolbar validateVisibleItems];

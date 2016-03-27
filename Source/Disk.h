@@ -38,9 +38,12 @@ enum {
 	NSString *BSDName;
 	CFDictionaryRef diskDescription;
 	BOOL isMounting;
+	BOOL rejectedMount;
 	NSImage *icon;
 	Disk *parent;
 	NSMutableSet *children;
+	NSArray *mountArgs;
+	NSString *mountPath;
 }
 
 @property (copy) NSString *BSDName;
@@ -48,6 +51,7 @@ enum {
 @property (readonly) BOOL isMountable;
 @property (readonly) BOOL isMounted;
 @property (readwrite) BOOL isMounting;
+@property (readwrite) BOOL rejectedMount;
 @property (readonly) BOOL isWritable;
 @property (readonly) BOOL isFileSystemWritable;
 @property (readonly) BOOL isEjectable;
@@ -58,6 +62,8 @@ enum {
 @property (readonly, retain) NSImage *icon;
 @property (assign) Disk *parent;
 @property (retain) NSMutableSet *children;
+@property (readwrite, retain) NSArray *mountArgs;
+@property (readwrite, retain) NSString *mountPath;
 
 - (void)mount;
 - (void)mountAtPath:(NSString *)path withArguments:(NSArray *)args;

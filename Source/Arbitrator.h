@@ -24,6 +24,7 @@
 @property (readonly) NSSet *wholeDisks;
 @property BOOL isActivated;
 @property NSInteger mountMode;
+@property (readonly) NSString *dissenterMessage;
 
 - (BOOL)registerSession;
 - (void)unregisterSession;

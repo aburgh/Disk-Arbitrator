@@ -86,26 +86,6 @@
 	Log(LOG_DEBUG, @"%s disk: %@", __func__, disk.BSDName);
 
 	[self addDisksObject:disk];
-
-	if (self.isActivated && self.mountMode == MM_READONLY && disk.isMountable && !disk.isMounted) {
-
-		CFDictionaryRef desc = disk.diskDescription;
-		NSString *volumeKindRef = (NSString *)CFDictionaryGetValue(desc, kDADiskDescriptionVolumeKindKey);
-
-		// Arguments will be passed via the -o flag of mount. If the file system specific mount, e.g. mount_hfs,
-		// supports additional flags that mount(8) doesn't, they can be passed to -o.  That feature is used to
-		// pass -j to mount_hfs, which instructs HFS to ignore journal.  Normally, an HFS volume that
-		// has a dirty journal will fail to mount read-only because the file system is inconsistent.  "-j" is
-		// a work-around.
-
-		NSArray *args;
-		if ([volumeKindRef isEqual:@"hfs"])
-			args = [NSArray arrayWithObjects:@"-j", @"rdonly", nil];
-		else
-			args = [NSArray arrayWithObjects:@"rdonly", nil];
-
-		[disk mountAtPath:nil withArguments:args];
-	}
 }
 
 - (void)diskDidDisappear:(NSNotification *)notif
@@ -144,21 +124,70 @@
 	}
 }
 
+- (void)mountApprovedDisk:(Disk *)disk
+{
+	NSAssert(self.isActivated, @"bug");
+	
+	NSArray *args = disk.mountArgs;
+	NSString *path = disk.mountPath;
+	if (!args || !args.count) {
+		NSAssert(self.mountMode == MM_READONLY, @"Unknown mount mode");
+		
+		CFDictionaryRef desc = disk.diskDescription;
+		NSString *volumeKindRef = (NSString *)CFDictionaryGetValue(desc, kDADiskDescriptionVolumeKindKey);
+		
+		// Arguments will be passed via the -o flag of mount. If the file system specific mount, e.g. mount_hfs,
+		// supports additional flags that mount(8) doesn't, they can be passed to -o.  That feature is used to
+		// pass -j to mount_hfs, which instructs HFS to ignore journal.  Normally, an HFS volume that
+		// has a dirty journal will fail to mount read-only because the file system is inconsistent.  "-j" is
+		// a work-around.
+		
+		if ([volumeKindRef isEqual:@"hfs"])
+			args = [NSArray arrayWithObjects:@"-j", @"rdonly", nil];
+		else
+			args = [NSArray arrayWithObjects:@"rdonly", nil];
+		path = nil;
+	}
+	[disk mountAtPath:path withArguments:args];
+}
+
+- (NSString *)dissenterMessage
+{
+	return @"Disk Arbitrator is in charge";
+}
+
+- (DADissenterRef)defaultDissenter
+{
+	return DADissenterCreate(kCFAllocatorDefault, kDAReturnNotPermitted, (CFStringRef)self.dissenterMessage);
+}
+
 - (DADissenterRef)approveMount:(Disk *)disk
 {
-	DADissenterRef dissenter;
-	
-	if (disk.isMounting) {
-		disk.isMounting = NO;
-		dissenter = NULL;
+	if (self.isActivated) {
+		// Block mode prevents everything from mounting, unless this disk is being mounted from our GUI
+		if (self.mountMode == MM_BLOCK && !disk.isMounting) {
+			return [self defaultDissenter];
+		}
+
+		// When an approve mount callback is received, we have no idea if this approval was from
+		// a mount that belongs to us, or someone else. So we track whether we have rejected a
+		// mount request, and only allow mounts after we have rejected the initial request.
+		if (!disk.rejectedMount) {
+			disk.rejectedMount = YES;
+			// Do the mount after a slight delay to allow time for this approval to finish
+			[self performSelector:@selector(mountApprovedDisk:) withObject:disk afterDelay:0.1];
+			return [self defaultDissenter];
+		} else {
+			// Allow the mount since we previously rejected it
+			NSAssert(disk.isMounting == YES, @"invalid state");
+			disk.isMounting = NO;
+			disk.rejectedMount = NO;
+			return NULL;
+		}
 	}
-	else {
-		dissenter = DADissenterCreate(kCFAllocatorDefault,
-									  kDAReturnNotPermitted,
-									  CFSTR("Disk Arbitrator is in charge"));
-	}
-	
-	return dissenter;
+
+	// Not activated, all mounting of everything
+	return NULL;
 }
 
 - (BOOL)activate

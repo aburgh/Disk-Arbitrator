@@ -19,9 +19,12 @@
 
 @synthesize BSDName;
 @synthesize isMounting;
+@synthesize rejectedMount;
 @synthesize icon;
 @synthesize parent;
 @synthesize children;
+@synthesize mountArgs;
+@synthesize mountPath;
 
 + (void)initialize
 {
@@ -141,6 +144,8 @@
 	NSAssert(self.isMounted == NO, @"Disk is already mounted.");
 
 	self.isMounting = YES;
+	self.mountArgs = args;
+	self.mountPath = path;
 
 	Log(LOG_DEBUG, @"%s mount %@ at mountpoint: %@ arguments: %@", __func__, BSDName, path, args.description);
 
@@ -182,6 +187,10 @@
 
 	self.parent = nil;
 	[children removeAllObjects];
+	
+	self.rejectedMount = NO;
+	self.mountArgs = [NSArray array];
+	self.mountPath = nil;
 }
 
 - (BOOL)isMountable
@@ -244,17 +253,17 @@
 {
 	BOOL retval = NO;
 	struct statfs fsstat;
-	CFURLRef mountPath;
+	CFURLRef volumePath;
 	UInt8 fsrep[MAXPATHLEN];
 
 	// if the media is not writable, the file system cannot be either
 	if (self.isWritable == NO)
 		return NO;
 
-	mountPath = CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumePathKey);
-	if (mountPath) {
+	volumePath = CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumePathKey);
+	if (volumePath) {
 
-		if (CFURLGetFileSystemRepresentation(mountPath, true, fsrep, sizeof(fsrep))) {
+		if (CFURLGetFileSystemRepresentation(volumePath, true, fsrep, sizeof(fsrep))) {
 
 			if (statfs((char *)fsrep, &fsstat) == 0)
 				retval = (fsstat.f_flags & MNT_RDONLY) ? NO : YES;

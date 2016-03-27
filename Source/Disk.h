@@ -64,6 +64,7 @@ enum {
 @property (retain) NSMutableSet *children;
 @property (readwrite, retain) NSArray *mountArgs;
 @property (readwrite, retain) NSString *mountPath;
+@property (readonly) BOOL isHFS;
 
 - (void)mount;
 - (void)mountAtPath:(NSString *)path withArguments:(NSArray *)args;

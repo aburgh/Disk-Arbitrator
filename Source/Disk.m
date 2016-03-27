@@ -249,6 +249,12 @@
 	return value ? CFBooleanGetValue(value) : NO;
 }
 
+- (BOOL)isHFS
+{
+	CFStringRef volumeKind = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumeKindKey) : NULL;
+	return volumeKind ? CFEqual(CFSTR("hfs"), volumeKind) : NO;
+}
+
 - (BOOL)isFileSystemWritable
 {
 	BOOL retval = NO;

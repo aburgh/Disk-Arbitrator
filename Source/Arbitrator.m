@@ -133,16 +133,13 @@
 	if (!args || !args.count) {
 		NSAssert(self.mountMode == MM_READONLY, @"Unknown mount mode");
 		
-		CFDictionaryRef desc = disk.diskDescription;
-		NSString *volumeKindRef = (NSString *)CFDictionaryGetValue(desc, kDADiskDescriptionVolumeKindKey);
-		
 		// Arguments will be passed via the -o flag of mount. If the file system specific mount, e.g. mount_hfs,
 		// supports additional flags that mount(8) doesn't, they can be passed to -o.  That feature is used to
 		// pass -j to mount_hfs, which instructs HFS to ignore journal.  Normally, an HFS volume that
 		// has a dirty journal will fail to mount read-only because the file system is inconsistent.  "-j" is
 		// a work-around.
 		
-		if ([volumeKindRef isEqual:@"hfs"])
+		if (disk.isHFS)
 			args = [NSArray arrayWithObjects:@"-j", @"rdonly", nil];
 		else
 			args = [NSArray arrayWithObjects:@"rdonly", nil];

@@ -205,7 +205,8 @@
 	[controller window]; // triggers controller to load the NIB
 	
 	[[controller userInfo] setObject:[NSNumber numberWithBool:YES] forKey:@"readOnly"];
-	[[controller userInfo] setObject:[NSNumber numberWithBool:YES] forKey:@"ignoreJournal"];
+	[[controller userInfo] setObject:[NSNumber numberWithBool:selectedDisk.isHFS] forKey:@"ignoreJournal"];
+	[[controller userInfo] setObject:[NSNumber numberWithBool:selectedDisk.isHFS] forKey:@"isHFS"];
 	
 	[window makeKeyAndOrderFront:self];
 

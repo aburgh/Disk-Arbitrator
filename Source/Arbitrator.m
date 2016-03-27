@@ -144,6 +144,23 @@
 	}
 }
 
+- (DADissenterRef)approveMount:(Disk *)disk
+{
+	DADissenterRef dissenter;
+	
+	if (disk.isMounting) {
+		disk.isMounting = NO;
+		dissenter = NULL;
+	}
+	else {
+		dissenter = DADissenterCreate(kCFAllocatorDefault,
+									  kDAReturnNotPermitted,
+									  CFSTR("Disk Arbitrator is in charge"));
+	}
+	
+	return dissenter;
+}
+
 - (BOOL)activate
 {
 	BOOL success;
@@ -254,17 +271,7 @@ DADissenterRef __attribute__((cf_returns_retained)) DiskMountApprovalCallback(DA
 	
 	Log(LOG_DEBUG, @"%@", disk.diskDescription);
 
-	DADissenterRef dissenter;
-
-	if (disk.isMounting) {
-		disk.isMounting = NO;
-		dissenter = NULL;
-	}
-	else {
-		 dissenter = DADissenterCreate(kCFAllocatorDefault,
-									   kDAReturnNotPermitted, 
-									   CFSTR("Disk Arbitrator is in charge"));
-	}
+	DADissenterRef dissenter = [(Arbitrator*)arbitrator approveMount:disk];
 
 	Log(LOG_DEBUG, @"Mount allowed: %s", dissenter ? "No" : "Yes");
 	return dissenter;

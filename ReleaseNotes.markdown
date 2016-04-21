@@ -1,6 +1,6 @@
 ## Release Notes
 
-#### 0.6
+#### 0.6 2016/4/21
 
 * Fix read-only automatic mounts not working on OS X 10.11+
 * Disable the "ignore journal" mount option for non-HFS disks

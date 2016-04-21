@@ -21,7 +21,7 @@ DMG_DST_PATH="${BUILT_PRODUCTS_DIR}/${SRC_PRODUCT}-${SRC_PRODUCT_VERSION}.dmg"
 DMG_SRC_DIR="${CONFIGURATION_TEMP_DIR}/${SRC_PRODUCT}-${SRC_PRODUCT_VERSION}"
 
 if [ -e "$DMG_DST_PATH" ] ; then
-	rm -rf "$DMG_DST_PATH" || exit 1
+	rm -rf "$DMG_DST_PATH"
 fi
 
 mkdir -p "${DMG_SRC_DIR}"
@@ -29,6 +29,6 @@ cp -LR "${SRC_PRODUCT_PATH}" "${DMG_SRC_DIR}"
 cp "${SRC_PRODUCT_PATH}/Contents/Resources/README.html" "${DMG_SRC_DIR}"
 
 hdiutil create -layout NONE -srcfolder "${DMG_SRC_DIR}" "$DMG_DST_PATH"
-hdiutil verify "$DMG_DST_PATH" || exit 1
+hdiutil verify "$DMG_DST_PATH"
 
 rm -r "${DMG_SRC_DIR}"

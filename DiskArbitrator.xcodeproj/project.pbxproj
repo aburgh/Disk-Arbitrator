@@ -54,6 +54,8 @@
 		96FCBC761140C2E700E5554C /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCBC751140C2E700E5554C /* SecurityFoundation.framework */; };
 		96FCBC871140CBF400E5554C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCBC861140CBF400E5554C /* Security.framework */; };
 		96FCCE46114491E700E5554C /* ToolbarItem Attach Disk Image.png in Resources */ = {isa = PBXBuildFile; fileRef = 96FCCE45114491E700E5554C /* ToolbarItem Attach Disk Image.png */; };
+		A5E4FC5B1CC99C64005B7675 /* ReleaseNotes.markdown in Sources */ = {isa = PBXBuildFile; fileRef = A5E4FC5A1CC99C64005B7675 /* ReleaseNotes.markdown */; };
+		A5E4FC5C1CC99D02005B7675 /* ReleaseNotes.markdown in Resources */ = {isa = PBXBuildFile; fileRef = A5E4FC5A1CC99C64005B7675 /* ReleaseNotes.markdown */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -128,6 +130,7 @@
 		96FCBC751140C2E700E5554C /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = System/Library/Frameworks/SecurityFoundation.framework; sourceTree = SDKROOT; };
 		96FCBC861140CBF400E5554C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		96FCCE45114491E700E5554C /* ToolbarItem Attach Disk Image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolbarItem Attach Disk Image.png"; path = "Resources/ToolbarItem Attach Disk Image.png"; sourceTree = "<group>"; };
+		A5E4FC5A1CC99C64005B7675 /* ReleaseNotes.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = ReleaseNotes.markdown; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -226,6 +229,7 @@
 				A532F1F31B93C4A0007DC4FD /* Nibs */,
 				8D1107310486CEB800E47090 /* DiskArbitrator-Info.plist */,
 				9654B742111DE2EF00E9B0C4 /* README.markdown */,
+				A5E4FC5A1CC99C64005B7675 /* ReleaseNotes.markdown */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -320,6 +324,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9654B788111DEBBF00E9B0C4 /* README.markdown in Resources */,
+				A5E4FC5C1CC99D02005B7675 /* ReleaseNotes.markdown in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				9654A1E0110C761B00E9B0C4 /* StatusItem Disabled 1.png in Resources */,
 				9654A1E1110C761B00E9B0C4 /* StatusItem Disabled 2.png in Resources */,
@@ -361,6 +366,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A5E4FC5B1CC99C64005B7675 /* ReleaseNotes.markdown in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* DiskArbitratorAppController.m in Sources */,
 				964E4DCB10F9E874007B3112 /* Arbitrator.m in Sources */,

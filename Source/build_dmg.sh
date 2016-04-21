@@ -27,6 +27,7 @@ fi
 mkdir -p "${DMG_SRC_DIR}"
 cp -LR "${SRC_PRODUCT_PATH}" "${DMG_SRC_DIR}"
 cp "${SRC_PRODUCT_PATH}/Contents/Resources/README.html" "${DMG_SRC_DIR}"
+cp "${SRC_PRODUCT_PATH}/Contents/Resources/ReleaseNotes.html" "${DMG_SRC_DIR}"
 
 hdiutil create -layout NONE -srcfolder "${DMG_SRC_DIR}" "$DMG_DST_PATH"
 hdiutil verify "$DMG_DST_PATH"

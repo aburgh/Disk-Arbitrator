@@ -33,3 +33,6 @@ hdiutil create -layout NONE -srcfolder "${DMG_SRC_DIR}" "$DMG_DST_PATH"
 hdiutil verify "$DMG_DST_PATH"
 
 rm -r "${DMG_SRC_DIR}"
+
+# Reveal the file in Finder
+open -R "$DMG_DST_PATH"

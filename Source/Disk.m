@@ -174,7 +174,7 @@
 {
 	NSAssert1(self.isEjectable, @"Disk is not ejectable: %@", self);
 	
-	DADiskEject((DADiskRef) disk, kDADiskEjectOptionDefault, DiskEjectCallback, self);
+	DADiskEject((DADiskRef) disk, kDADiskEjectOptionDefault, DiskEjectCallback, [self retain]); // self is released in DiskEjectCallback
 }
 
 - (void)diskDidDisappear

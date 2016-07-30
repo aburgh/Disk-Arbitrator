@@ -176,6 +176,7 @@ void DiskUnmountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *cont
 
 void DiskEjectCallback(DADiskRef diskRef, DADissenterRef dissenter, void *context)
 {
+	[(id)context autorelease]; // got retained when passed in
 	NSDictionary *info = nil;
 	
 	if (dissenter) {

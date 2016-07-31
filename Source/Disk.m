@@ -349,7 +349,7 @@
 	if (found == 0 || device < 0 || slice < 0) {
 		NSLog(@"Invalid BSD Name %@", s);
 	}
-	return device * 1000 + slice;
+	return (device * 1000) + slice;
 }
 
 @end

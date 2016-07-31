@@ -337,4 +337,19 @@
 	return icon;
 }
 
+- (int)BSDNameNumber
+{
+	// Take the BSDName and convert it into a number that can be compared with other disks for sorting.
+	// For example, "disk2s1" would become 2 * 1000 + 1 = 2001.
+	// If we just compare by the string value itself, then disk10 would come after disk1, instead of disk9.
+	NSString *s = self.BSDName;
+	int device = 0;
+	int slice = 0;
+	const int found = sscanf(s.UTF8String, "disk%ds%d", &device, &slice);
+	if (found == 0) {
+		NSLog(@"Invalid BSD Name %@", s);
+	}
+	return device * 1000 + slice;
+}
+
 @end

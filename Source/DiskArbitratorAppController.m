@@ -94,7 +94,7 @@
 	[self refreshStatusItemIcon];  // arbitrator status initial state is taken from user defaults, which was initialized before KVO initialized
 	[arbitrator release];
 	
-	self.sortDescriptors = [NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"BSDName" ascending:YES] autorelease]];
+	self.sortDescriptors = [NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"BSDNameNumber" ascending:YES] autorelease]];
 	
 	SetupToolbar(window, self);
 	window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces;

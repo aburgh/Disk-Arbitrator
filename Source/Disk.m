@@ -346,7 +346,7 @@
 	int device = 0;
 	int slice = 0;
 	const int found = sscanf(s.UTF8String, "disk%ds%d", &device, &slice);
-	if (found == 0) {
+	if (found == 0 || device < 0 || slice < 0) {
 		NSLog(@"Invalid BSD Name %@", s);
 	}
 	return device * 1000 + slice;

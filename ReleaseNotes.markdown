@@ -1,5 +1,10 @@
 ## Release Notes
 
+#### 0.7
+
+* Fix order of disks
+* Fix crash during eject
+
 #### 0.6 2016/4/21
 
 * Fix read-only automatic mounts not working on OS X 10.11+

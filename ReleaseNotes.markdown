@@ -1,6 +1,6 @@
 ## Release Notes
 
-#### 0.7
+#### 0.7 2016/8/3
 
 * Fix order of disks
 * Fix crash during eject

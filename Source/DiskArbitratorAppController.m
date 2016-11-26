@@ -35,6 +35,7 @@
 	[arbitrator release];
 	[sortDescriptors release];
 	[statusItem release];
+	[installUserLaunchAgentMenuTitle release];
 	[displayErrorQueue release];
 	[super dealloc];
 }

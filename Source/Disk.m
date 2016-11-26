@@ -115,6 +115,8 @@
 	[icon release];
 	parent = nil;
 	[children release];
+	[mountArgs release];
+	[mountPath release];
 	[super dealloc];
 }
 

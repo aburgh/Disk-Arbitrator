@@ -80,7 +80,7 @@
 {
 	BOOL retval = YES;
 	NSMutableDictionary *info;
-	NSString *failureReason;
+	NSString *failureReason = nil;
 	NSData *outputData;
 	NSTask *newTask;
 

@@ -153,12 +153,12 @@
 	return @"Disk Arbitrator is in charge";
 }
 
-- (DADissenterRef)defaultDissenter
+- (DADissenterRef)defaultDissenter __attribute__((cf_returns_retained))
 {
 	return DADissenterCreate(kCFAllocatorDefault, kDAReturnNotPermitted, (CFStringRef)self.dissenterMessage);
 }
 
-- (DADissenterRef)approveMount:(Disk *)disk
+- (DADissenterRef)approveMount:(Disk *)disk __attribute__((cf_returns_retained))
 {
 	if (self.isActivated) {
 		// Block mode prevents everything from mounting, unless this disk is being mounted from our GUI

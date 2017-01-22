@@ -1,5 +1,10 @@
 ## Release Notes
 
+#### 0.8
+
+* Added "Show main window at activation" preference (thanks melomac)
+* Fix memory leaks
+
 #### 0.7 2016/8/3
 
 * Fix order of disks

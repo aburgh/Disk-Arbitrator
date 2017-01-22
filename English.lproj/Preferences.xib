@@ -22,13 +22,24 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button id="4">
-                        <rect key="frame" x="58" y="33" width="208" height="18"/>
+                        <rect key="frame" x="58" y="40" width="208" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <buttonCell key="cell" type="check" title="Show main window at startup" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="5">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                             <connections>
                                 <binding destination="6" name="value" keyPath="values.ShowMainWindowAtStartup" id="7"/>
+                            </connections>
+                        </buttonCell>
+                    </button>
+                    <button id="9">
+                        <rect key="frame" x="58" y="20" width="216" height="18"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <buttonCell key="cell" type="check" title="Show main window at activation" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="10">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <connections>
+                                <binding destination="6" name="value" keyPath="values.ShowMainWindowAtActivate" id="11"/>
                             </connections>
                         </buttonCell>
                     </button>

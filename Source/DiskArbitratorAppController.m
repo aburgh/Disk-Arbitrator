@@ -70,6 +70,7 @@
 	NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
 	[defaults setObject:[NSNumber numberWithInt:LOG_INFO] forKey:AppLogLevelDefaultsKey];
 	[defaults setObject:[NSNumber numberWithBool:YES]     forKey:@"ShowMainWindowAtStartup"];
+	[defaults setObject:[NSNumber numberWithBool:NO]     forKey:@"ShowMainWindowAtActivate"];
 	[[NSUserDefaults standardUserDefaults] registerDefaults:defaults];
 	
 	displayErrorQueue = [NSMutableArray new];
@@ -104,6 +105,12 @@
 	[tableView registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ShowMainWindowAtStartup"])
+		[window makeKeyAndOrderFront:self];
+}
+
+- (void)applicationDidBecomeActive:(NSNotification *)notification
+{
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ShowMainWindowAtActivate"])
 		[window makeKeyAndOrderFront:self];
 }
 

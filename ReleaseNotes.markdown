@@ -1,6 +1,6 @@
 ## Release Notes
 
-#### 0.8
+#### 0.8 2017/9/16
 
 * Added "Show main window at activation" preference (thanks melomac)
 * Fix memory leaks

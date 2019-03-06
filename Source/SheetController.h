@@ -18,6 +18,6 @@
 
 - (IBAction)alternate:(id)sender;
 - (IBAction)cancel:(id)sender;
-- (IBAction)ok:(id)sener;
+- (IBAction)ok:(id)sender;
 
 @end

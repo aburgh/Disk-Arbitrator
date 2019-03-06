@@ -878,7 +878,7 @@ sub _DoLists {
 	# same script on the same server ran fine *except* under MT. I've spent
 	# more time trying to figure out why this is happening than I'd like to
 	# admit. My only guess, backed up by the fact that this workaround works,
-	# is that Perl optimizes the substition when it can figure out that the
+	# is that Perl optimizes the substitution when it can figure out that the
 	# pattern will never change, and when this optimization isn't on, we run
 	# afoul of the reaper. Thus, the slightly redundant code that uses two
 	# static s/// patterns rather than one conditional pattern.

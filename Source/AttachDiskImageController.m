@@ -92,18 +92,11 @@
 	outputData = [[newTask.standardOutput fileHandleForReading] readDataToEndOfFile];
 
 	if (newTask.terminationStatus == 0) {
-#if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_6
-		*outPlist = [NSPropertyListSerialization propertyListFromData:outputData
-													 mutabilityOption:NSPropertyListImmutable
-															   format:NULL
-													 errorDescription:&failureReason];
-#else
         NSError *plistErr = nil;
         *outPlist = [NSPropertyListSerialization propertyListWithData:outputData options:NSPropertyListImmutable format:nil error:&plistErr];
         if (plistErr) {
             failureReason = plistErr.localizedDescription;
         }
-#endif
 		if (!*outPlist) {
 			Log(LOG_ERR, @"Plist deserialization error: %@", failureReason);
 			failureReason = NSLocalizedString(@"hdiutil output is not a property list.", nil);

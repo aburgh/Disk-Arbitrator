@@ -218,14 +218,11 @@
 	
 	[window makeKeyAndOrderFront:self];
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-	[NSApp beginSheet:controller.window
-	   modalForWindow:window
-		modalDelegate:self
-	   didEndSelector:@selector(performMountSheetDidEnd:returnCode:contextInfo:)
-		  contextInfo:controller];
-#pragma clang diagnostic pop
+	[window beginSheet:controller.window completionHandler:^(NSModalResponse returnCode)
+		{
+			[self performMountSheetDidEnd:controller.window
+				returnCode:returnCode contextInfo:controller];
+		}];
 }
 
 - (IBAction)performUnmount:(id)sender

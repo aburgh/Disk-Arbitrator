@@ -422,10 +422,7 @@
 	filename = [sender filename];
 	
 	if (!filename) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-		filename = [[sender directory] stringByAppendingPathComponent:@"token"]; // SparseBundle
-#pragma clang diagnostic pop
+		filename = [[[sender directoryURL] path] stringByAppendingPathComponent:@"token"]; // SparseBundle
 	}
 	
 	Log(LOG_DEBUG, @"filename: %@\n", filename);

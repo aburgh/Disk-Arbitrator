@@ -15,10 +15,6 @@
 
 
 @interface Arbitrator : NSObject 
-{
-	DAApprovalSessionRef approvalSession;
-	NSMutableSet *disks;
-}
 
 @property (retain) NSMutableSet *disks;
 @property (readonly) NSSet *wholeDisks;

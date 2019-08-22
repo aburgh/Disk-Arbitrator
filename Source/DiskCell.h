@@ -9,19 +9,6 @@
 #import <Cocoa/Cocoa.h>
 
 @interface DiskCell : NSTextFieldCell 
-{
-	NSImageCell *iconCell;
-	NSCell *textCell;
-	CGFloat indentation;
-	BOOL mountable;
-	BOOL mounted;
-	NSString *BSDName;
-	NSString *mediaName;
-	NSNumber *mediaSize;
-	NSString *volumeName;
-	BOOL isDiskWritable;
-	BOOL isFileSystemWritable;
-}
 
 @property (retain) NSImageCell *iconCell;
 @property (retain) NSCell *textCell;

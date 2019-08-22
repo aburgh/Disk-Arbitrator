@@ -10,9 +10,6 @@
 
 
 @interface SheetController : NSWindowController 
-{
-	NSMutableDictionary *userInfo;
-}
 
 @property (retain) NSMutableDictionary *userInfo;
 

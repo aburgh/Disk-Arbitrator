@@ -33,18 +33,6 @@ enum {
  */
 
 @interface Disk : NSObject 
-{
-	CFTypeRef disk;
-	NSString *BSDName;
-	CFDictionaryRef diskDescription;
-	BOOL isMounting;
-	BOOL rejectedMount;
-	NSImage *icon;
-	Disk *parent;
-	NSMutableSet *children;
-	NSArray *mountArgs;
-	NSString *mountPath;
-}
 
 @property (copy) NSString *BSDName;
 @property (readonly) int BSDNameNumber;

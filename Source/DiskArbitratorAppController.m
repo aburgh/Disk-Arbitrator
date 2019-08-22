@@ -15,6 +15,17 @@
 #import "DiskInfoController.h"
 #import "AttachDiskImageController.h"
 
+////////////////////////////////////////////////////////////////////////////////
+
+@interface AppController ()
+{
+	NSMutableArray *displayErrorQueue; //
+	NSMutableArray *diskInfoControllers;
+}
+
+@end
+
+////////////////////////////////////////////////////////////////////////////////
 
 @implementation AppController
 

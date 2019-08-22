@@ -12,22 +12,6 @@
 @class Disk;
 
 @interface AppController : NSObject // <NSApplicationDelegate> 
-{
-    NSPanel *window;
-	NSStatusItem *statusItem;
-	NSMenu *statusMenu;
-	NSTableView *tableView;
-	
-	NSArrayController *disksArrayController;
-	Arbitrator *arbitrator;
-	NSArray *sortDescriptors;
-
-	BOOL hasUserLaunchAgent;
-	NSString *installUserLaunchAgentMenuTitle;
-	
-	NSMutableArray *displayErrorQueue; // 
-    NSMutableArray *diskInfoControllers;
-}
 
 @property (assign) IBOutlet NSPanel *window;
 @property (assign) IBOutlet NSMenu *statusMenu;

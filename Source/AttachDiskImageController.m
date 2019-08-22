@@ -11,6 +11,18 @@
 #import <SecurityFoundation/SFAuthorization.h>
 #import "AppError.h"
 
+////////////////////////////////////////////////////////////////////////////////
+
+@interface AttachDiskImageController ()
+{
+	NSMutableString *stdoutBuffer;
+	NSMutableString *stderrBuffer;
+}
+
+@end
+
+////////////////////////////////////////////////////////////////////////////////
+
 @implementation AttachDiskImageController
 
 @synthesize view;

@@ -11,12 +11,6 @@
 @class Disk;
 
 @interface DiskInfoController : NSWindowController 
-{
-	NSTextView *textView;
-	Disk *disk;
-	NSDictionary *diskDescription;
-	NSAttributedString *diskInfo;
-}
 
 @property (retain) IBOutlet NSTextView *textView;
 @property (retain, nonatomic) Disk *disk;

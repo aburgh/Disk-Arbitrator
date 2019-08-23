@@ -86,26 +86,30 @@
 
 	// Return unique instance
 	Disk *uniqueDisk = [Disk uniqueDiskForDADisk:diskRef create:NO];
-	if (uniqueDisk) {
+	if (uniqueDisk)
+	{
 		[self release];
 		return [uniqueDisk retain];
 	}
 	
-	if (self) {
+	if (self)
+	{
 		disk = CFRetain(diskRef);
 		const char *bsdName = DADiskGetBSDName(diskRef);
 		BSDName = [[NSString alloc] initWithUTF8String:bsdName ? bsdName : ""];
 		children = [NSMutableSet new];
-		self.diskDescription = (NSDictionary *)DADiskCopyDescription(diskRef);
-		
+		_diskDescription = (NSDictionary *)DADiskCopyDescription(diskRef);
+
 //		CFShow(description);
 
-		if (self.isWholeDisk == NO) {
-			
+		if (self.isWholeDisk == NO)
+		{
 			DADiskRef parentRef = DADiskCopyWholeDisk(diskRef);
-			if (parentRef) {
+			if (parentRef)
+			{
 				Disk *parentDisk = [Disk uniqueDiskForDADisk:parentRef create:shouldCreateParent];
-				if (parentDisk) {
+				if (parentDisk)
+				{
 					parent = parentDisk; // weak reference
 					[[parent mutableSetValueForKey:@"children"] addObject:self];
 				}
@@ -114,7 +118,6 @@
 		}
 		[uniqueDisks addObject:self];
 	}
-
 	return self;
 }
 
@@ -170,7 +173,7 @@
 	NSURL *url = path ? [NSURL fileURLWithPath:path.stringByExpandingTildeInPath] : NULL;
 	
 	DADiskMountWithArguments((DADiskRef) disk, (CFURLRef) url, kDADiskMountOptionDefault,
-							 DiskMountCallback, self, (CFStringRef *)argv);
+		DiskMountCallback, self, (CFStringRef *)argv);
 
 	free(argv);
 }
@@ -298,7 +301,8 @@
 {
 	NSAssert(desc, @"A NULL disk description is not allowed.");
 	
-	if (desc != _diskDescription) {
+	if (desc != _diskDescription)
+	{
 		[self willChangeValueForKey:@"diskDescription"];
 
 		SafeCFRelease(_diskDescription);

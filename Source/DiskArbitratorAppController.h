@@ -18,11 +18,11 @@
 @property (assign) IBOutlet NSTableView *tableView;
 @property (assign) IBOutlet NSArrayController *disksArrayController;
 @property (copy) NSArray *sortDescriptors;
-@property (retain) NSStatusItem *statusItem;
-@property (retain) Arbitrator *arbitrator;
-@property (readwrite) BOOL hasUserLaunchAgent;
+@property (strong) NSStatusItem *statusItem;
+@property (strong) Arbitrator *arbitrator;
+@property (assign) BOOL hasUserLaunchAgent;
 @property (readonly)  BOOL canInstallLaunchAgent;
-@property (copy) NSString *installUserLaunchAgentMenuTitle;
+@property (strong) NSString *installUserLaunchAgentMenuTitle;
 
 - (IBAction)showAboutPanel:(id)sender;
 - (IBAction)showMainWindow:(id)sender;

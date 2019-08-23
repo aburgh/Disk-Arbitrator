@@ -43,12 +43,6 @@
 {
 	if (arbitrator.isActivated)
 		[arbitrator deactivate];
-	[arbitrator release];
-	[sortDescriptors release];
-	[statusItem release];
-	[installUserLaunchAgentMenuTitle release];
-	[displayErrorQueue release];
-	[super dealloc];
 }
 
 - (void)setStatusItemIconWithName:(NSString *)name
@@ -56,7 +50,6 @@
 	NSString *iconPath = [[NSBundle mainBundle] pathForResource:name ofType:@"png"];
 	NSImage *statusIcon = [[NSImage alloc] initWithContentsOfFile:iconPath];
 	statusItem.image = statusIcon;
-	[statusIcon release];
 }
 
 - (void)refreshStatusItemIcon
@@ -88,7 +81,7 @@
 	
 	NSStatusBar *bar = [NSStatusBar systemStatusBar];
 	self.statusItem = [bar statusItemWithLength:NSSquareStatusItemLength];
-    NSImage *altImage = [[[NSImage imageNamed:@"StatusItem Disabled 1.png"] copy] autorelease];
+    NSImage *altImage = [[NSImage imageNamed:@"StatusItem Disabled 1.png"] copy];
     [altImage setTemplate:YES];
     self.statusItem.alternateImage = altImage;
     [self.statusItem setHighlightMode:YES];
@@ -101,13 +94,12 @@
 	[center addObserver:self selector:@selector(didAttemptMount:) name:DADiskDidAttemptMountNotification object:nil];
 	[center addObserver:self selector:@selector(didAttemptUnmount:) name:DADiskDidAttemptUnmountNotification object:nil];
 	
-	self.arbitrator = [[Arbitrator new] autorelease];
+	self.arbitrator = [Arbitrator new];
 	[arbitrator addObserver:self forKeyPath:@"isActivated" options:0 context:NULL];
 	[arbitrator addObserver:self forKeyPath:@"mountMode" options:0 context:NULL];
 	[self refreshStatusItemIcon];  // arbitrator status initial state is taken from user defaults, which was initialized before KVO initialized
-	[arbitrator release];
-	
-	self.sortDescriptors = [NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"BSDNameNumber" ascending:YES] autorelease]];
+
+	self.sortDescriptors = [NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"BSDNameNumber" ascending:YES]];
 	
 	SetupToolbar(window, self);
 	window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces;
@@ -183,9 +175,9 @@
 	arbitrator.mountMode = MM_READONLY;
 }
 
-- (void)performMountSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
+- (void)performMountSheetDidEnd:(NSWindow *)sheet
+	returnCode:(NSInteger)returnCode sheetController:(SheetController *)controller;
 {
-	SheetController *controller = (SheetController *)contextInfo;
 	[sheet orderOut:self];
 	
 	Disk *selectedDisk = self.selectedDisk;
@@ -210,7 +202,6 @@
 		
 		[selectedDisk mountAtPath:path withArguments:arguments];
 	}
-	[controller release];
 }
 
 - (IBAction)performMount:(id)sender
@@ -232,7 +223,7 @@
 	[window beginSheet:controller.window completionHandler:^(NSModalResponse returnCode)
 		{
 			[self performMountSheetDidEnd:controller.window
-				returnCode:returnCode contextInfo:controller];
+				returnCode:returnCode sheetController:controller];
 		}];
 }
 
@@ -272,7 +263,7 @@
 	if (disk.isMounted) {
 		// Unmount of child failed
 		
-		NSMutableDictionary *info = [[[notif userInfo] mutableCopy] autorelease];
+		NSMutableDictionary *info = [[notif userInfo] mutableCopy];
 		
 		Log(LOG_INFO, @"%s eject disk: %@ canceled due to mounted child: %@", __func__, disk, info);
 		
@@ -330,7 +321,7 @@
 
 - (IBAction)performGetInfo:(id)sender
 {
-	DiskInfoController *controller = [[[DiskInfoController alloc] initWithWindowNibName:@"DiskInfo"] autorelease];
+	DiskInfoController *controller = [[DiskInfoController alloc] initWithWindowNibName:@"DiskInfo"];
 	controller.disk = self.selectedDisk;
 	[controller showWindow:self];
 	[controller refreshDiskInfo];
@@ -358,7 +349,7 @@
 
 - (IBAction)performAttachDiskImage:(id)sender
 {
-	AttachDiskImageController *controller = [[[AttachDiskImageController alloc] initWithWindowNibName:@"AttachDiskImageAccessory"] autorelease];
+	AttachDiskImageController *controller = [[AttachDiskImageController alloc] initWithWindowNibName:@"AttachDiskImageAccessory"];
 	[controller window];
 	[controller performAttachDiskImage:sender];
 }
@@ -404,7 +395,7 @@
 		dstPath = self.userLaunchAgentPath;
 		
 		if ([fm removeItemAtPath:dstPath error:&error] == YES) {
-            alert = [[[NSAlert alloc] init] autorelease];
+            alert = [[NSAlert alloc] init];
             alert.messageText = @"Launch Agent removed. Changes will take effect on next login.";
 		}
 		else {
@@ -429,7 +420,7 @@
 			if (![plistData writeToFile:dstPath options:NSDataWritingAtomic error:&error]) {
 				alert = [NSAlert alertWithError:error];
 			} else {
-				alert = [[[NSAlert alloc] init] autorelease];
+				alert = [[NSAlert alloc] init];
 				alert.messageText = @"Launch Agent installed. Changes will take effect on next login.";
 			}
 		}
@@ -538,7 +529,7 @@
 {
 	NSError *error;
 	
-	AttachDiskImageController *controller = [[[AttachDiskImageController alloc] initWithWindowNibName:@"AttachDiskImageAccessory"] autorelease];
+	AttachDiskImageController *controller = [[AttachDiskImageController alloc] initWithWindowNibName:@"AttachDiskImageAccessory"];
 	[controller window];
 
 	NSArray *options;
@@ -635,8 +626,7 @@
 		NSError *error = [NSError errorWithDomain:AppErrorDomain
 											 code:[[info objectForKey:DAStatusErrorKey] intValue]
 										 userInfo:info];
-		[info release];
-		
+
 		// Don't show our internal dissenter error
 		if (![reason isEqualToString:arbitrator.dissenterMessage]) {
 			if (window.attachedSheet) {
@@ -674,8 +664,7 @@
 		NSError *error = [NSError errorWithDomain:AppErrorDomain
 											 code:[[info objectForKey:DAStatusErrorKey] intValue]
 										 userInfo:info];
-		[info release];
-		
+
 		if (window.attachedSheet) {
 			[displayErrorQueue addObject:error];
 		}
@@ -709,8 +698,7 @@
 		NSError *error = [NSError errorWithDomain:AppErrorDomain
 											 code:[[info objectForKey:DAStatusErrorKey] intValue]
 										 userInfo:info];
-		[info release];
-		
+
 		if (window.attachedSheet) {
 			[displayErrorQueue addObject:error];
 		}

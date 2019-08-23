@@ -27,28 +27,28 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		96033DD51210E1DB006F4F11 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 96033DD31210E1DB006F4F11 /* Preferences.xib */; };
-		9626D293111F476000B803AB /* DiskArbitratorAppController+Toolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626D292111F476000B803AB /* DiskArbitratorAppController+Toolbar.m */; };
+		9626D293111F476000B803AB /* DiskArbitratorAppController+Toolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626D292111F476000B803AB /* DiskArbitratorAppController+Toolbar.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9626D296111F536500B803AB /* ToolbarItem Eject.png in Resources */ = {isa = PBXBuildFile; fileRef = 9626D294111F536500B803AB /* ToolbarItem Eject.png */; };
 		9626D297111F536500B803AB /* ToolbarItem Mount.png in Resources */ = {isa = PBXBuildFile; fileRef = 9626D295111F536500B803AB /* ToolbarItem Mount.png */; };
 		9626D2F41120FB7000B803AB /* ToolbarItem Info.png in Resources */ = {isa = PBXBuildFile; fileRef = 9626D2F31120FB7000B803AB /* ToolbarItem Info.png */; };
 		9626E44C1123779C00B803AB /* MountOptions.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9626E44A1123779C00B803AB /* MountOptions.xib */; };
-		9626E46A112395DD00B803AB /* SheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626E469112395DD00B803AB /* SheetController.m */; };
+		9626E46A112395DD00B803AB /* SheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626E469112395DD00B803AB /* SheetController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9626E4E711244EAF00B803AB /* App Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 9626E4E611244EAF00B803AB /* App Icon.icns */; };
-		9626E5091124C63100B803AB /* DiskInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626E5081124C63100B803AB /* DiskInfoController.m */; };
+		9626E5091124C63100B803AB /* DiskInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626E5081124C63100B803AB /* DiskInfoController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9626E50C1124DC6900B803AB /* DiskInfo.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9626E50A1124DC6900B803AB /* DiskInfo.xib */; };
 		9626E815113149D000B803AB /* AttachDiskImageAccessory.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9626E813113149D000B803AB /* AttachDiskImageAccessory.xib */; };
-		9626E83211314E7600B803AB /* AttachDiskImageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626E83111314E7600B803AB /* AttachDiskImageController.m */; };
+		9626E83211314E7600B803AB /* AttachDiskImageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626E83111314E7600B803AB /* AttachDiskImageController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		964E4D8C10F9E3C3007B3112 /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 964E4D8B10F9E3C3007B3112 /* DiskArbitration.framework */; };
-		964E4DCB10F9E874007B3112 /* Arbitrator.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DCA10F9E874007B3112 /* Arbitrator.m */; };
-		964E4DEE10F9F4BD007B3112 /* Disk.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DED10F9F4BD007B3112 /* Disk.m */; };
+		964E4DCB10F9E874007B3112 /* Arbitrator.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DCA10F9E874007B3112 /* Arbitrator.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		964E4DEE10F9F4BD007B3112 /* Disk.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DED10F9F4BD007B3112 /* Disk.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		964E4EF210FA8058007B3112 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 964E4EF110FA8058007B3112 /* IOKit.framework */; };
-		9654A174110B178D00E9B0C4 /* DiskCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A173110B178D00E9B0C4 /* DiskCell.m */; };
+		9654A174110B178D00E9B0C4 /* DiskCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A173110B178D00E9B0C4 /* DiskCell.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9654A1E0110C761B00E9B0C4 /* StatusItem Disabled 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9654A1DC110C761B00E9B0C4 /* StatusItem Disabled 1.png */; };
 		9654A1E1110C761B00E9B0C4 /* StatusItem Disabled 2.png in Resources */ = {isa = PBXBuildFile; fileRef = 9654A1DD110C761B00E9B0C4 /* StatusItem Disabled 2.png */; };
 		9654A1E2110C761B00E9B0C4 /* StatusItem Green.png in Resources */ = {isa = PBXBuildFile; fileRef = 9654A1DE110C761B00E9B0C4 /* StatusItem Green.png */; };
 		9654A1E3110C761B00E9B0C4 /* StatusItem Orange.png in Resources */ = {isa = PBXBuildFile; fileRef = 9654A1DF110C761B00E9B0C4 /* StatusItem Orange.png */; };
-		9654A20B110CB55B00E9B0C4 /* AppError.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A20A110CB55B00E9B0C4 /* AppError.m */; };
-		9654A46D11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A46C11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m */; };
+		9654A20B110CB55B00E9B0C4 /* AppError.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A20A110CB55B00E9B0C4 /* AppError.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		9654A46D11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A46C11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9654B788111DEBBF00E9B0C4 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 9654B742111DE2EF00E9B0C4 /* README.markdown */; };
 		96647D82133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png in Resources */ = {isa = PBXBuildFile; fileRef = 96647D81133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png */; };
 		96FCBC761140C2E700E5554C /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCBC751140C2E700E5554C /* SecurityFoundation.framework */; };
@@ -460,6 +460,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_INTERFACE_IVARS = YES_ERROR;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -479,6 +480,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_INTERFACE_IVARS = YES_ERROR;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";

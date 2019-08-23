@@ -124,7 +124,7 @@
 - (void)dealloc
 {
 	SafeCFRelease(disk);
-	self.diskDescription = nil;
+	[_diskDescription release];
 	[BSDName release];
 	[icon release];
 	parent = nil;

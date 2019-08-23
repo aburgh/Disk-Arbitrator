@@ -33,8 +33,6 @@ void Log(NSInteger level, NSString *format, ...)
 		syslog((int)level, "%s\n", utfFormattedError);
 	
 	fprintf(stderr, "%s\n", utfFormattedError);
-	
-	[formattedError release];
 }
 
 void SetAppLogLevel(NSInteger level)

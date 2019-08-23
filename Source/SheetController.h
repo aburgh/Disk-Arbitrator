@@ -11,7 +11,7 @@
 
 @interface SheetController : NSWindowController 
 
-@property (retain) NSMutableDictionary *userInfo;
+@property (strong) NSMutableDictionary *userInfo;
 
 - (IBAction)alternate:(id)sender;
 - (IBAction)cancel:(id)sender;

@@ -15,7 +15,6 @@
 @implementation DiskInfoController
 
 @synthesize textView;
-@synthesize disk;
 @synthesize diskDescription;
 @synthesize diskInfo;
 
@@ -30,12 +29,6 @@
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-
-	[textView release];
-	[disk release];
-	[diskDescription release];
-	[diskInfo release];
-	[super dealloc];	
 }
 
 - (NSString *)localizedStringForDADiskKey:(NSString *)key
@@ -138,7 +131,7 @@
 
 - (NSString *)localizedValueStringForDADiskKey:(NSString *)key value:(id)value
 {
-	CFStringRef keyRef = (CFStringRef) key;
+	CFStringRef keyRef = (__bridge CFStringRef) key;
 
 	if (CFEqual(keyRef, kDADiskDescriptionVolumeKindKey))      /* ( CFString     ) */
 		return value;
@@ -164,9 +157,9 @@
 	if (CFEqual(keyRef, kDADiskDescriptionVolumeUUIDKey) || 	 /* ( CFUUID       ) */
 		CFEqual(keyRef, kDADiskDescriptionMediaUUIDKey))
 	{
-		NSString *uuidString = (NSString *) CFUUIDCreateString(kCFAllocatorDefault, (CFUUIDRef)value);
+		NSString *uuidString = (NSString *) CFBridgingRelease(CFUUIDCreateString(kCFAllocatorDefault, (CFUUIDRef)value));
 
-		return [uuidString autorelease];
+		return uuidString;
 	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionMediaBlockSizeKey))  /* ( CFNumber     ) */
@@ -249,14 +242,14 @@
 
 - (void)refreshDiskInfo
 {
-	self.diskDescription = (NSDictionary *)disk.diskDescription;
+	self.diskDescription = (NSDictionary *)self.disk.diskDescription;
 	
 	NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:@""];
 
 	NSFont *font = [NSFont fontWithName:@"Helvetica Bold" size:12.0];
 	NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
 	
-	NSArray *keys = [(NSDictionary *)disk.diskDescription allKeys];
+	NSArray *keys = [(NSDictionary *)self.disk.diskDescription allKeys];
 	keys = [keys sortedArrayUsingSelector:@selector(compare:)];
 	
 	for (NSString *key in keys)
@@ -265,7 +258,7 @@
 		if ([key isEqual: (NSString *)kDADiskDescriptionMediaIconKey])
 			continue;
 		
-		id value = [(NSDictionary *)disk.diskDescription objectForKey:key];
+		id value = [(NSDictionary *)self.disk.diskDescription objectForKey:key];
 		
 		NSString *string;
 		NSAttributedString *attrString;
@@ -273,19 +266,17 @@
 		string = [NSString stringWithFormat:@"\t%@\t", [self localizedStringForDADiskKey:key]];
 		attrString = [[NSAttributedString alloc] initWithString:string attributes:attrs];
 		[text appendAttributedString:attrString];
-		[attrString release];
 
 		string = [NSString stringWithFormat:@"%@\n", [self localizedValueStringForDADiskKey:key value:value]];
 		attrString = [[NSAttributedString alloc] initWithString:string];
 		[text appendAttributedString:attrString];
-		[attrString release];
 	}
 
 	
-	NSMutableParagraphStyle *style = [[NSMutableParagraphStyle new] autorelease];
+	NSMutableParagraphStyle *style = [NSMutableParagraphStyle new];
 	NSMutableArray *tabStops = [NSMutableArray array];
-	[tabStops addObject:[[[NSTextTab alloc] initWithType:NSRightTabStopType location:2.0 * 72.0] autorelease]];
-	[tabStops addObject:[[[NSTextTab alloc] initWithType:NSLeftTabStopType location:2.125 * 72.0] autorelease]];
+	[tabStops addObject:[[NSTextTab alloc] initWithType:NSRightTabStopType location:2.0 * 72.0]];
+	[tabStops addObject:[[NSTextTab alloc] initWithType:NSLeftTabStopType location:2.125 * 72.0]];
 	style.tabStops = tabStops;
 	style.headIndent = (2.125 * 72.0);
 	
@@ -293,7 +284,6 @@
 	[text addAttributes:attrs range:NSMakeRange(0, [text length])];
 
 	self.diskInfo = text;
-	[text release];
 }
 
 - (void)diskDidChange:(NSNotification *)notif
@@ -303,11 +293,13 @@
 
 - (void)setDisk:(Disk *)newDisk
 {
-	if (newDisk	!= disk) {
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:DADiskDidChangeNotification object:disk];
-		[disk autorelease];
-		disk = [newDisk retain];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(diskDidChange:) name:DADiskDidChangeNotification object:disk];
+	if (newDisk	!= self.disk) {
+		[[NSNotificationCenter defaultCenter] removeObserver:self
+			name:DADiskDidChangeNotification object:self.disk];
+		self.disk = newDisk;
+		[[NSNotificationCenter defaultCenter] addObserver:self
+			selector:@selector(diskDidChange:) name:DADiskDidChangeNotification
+			object:self.disk];
 	}
 }
 

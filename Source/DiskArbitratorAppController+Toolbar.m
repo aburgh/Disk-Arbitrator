@@ -17,7 +17,7 @@
 	NSImage *dmgIcon = [[NSWorkspace sharedWorkspace] iconForFileType:@"dmg"];
 	NSImage *plugImage = [NSImage imageNamed:@"ToolbarItem Attach Disk Plug"];
 	
-	NSBitmapImageRep *compositedImage = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:32 pixelsHigh:32 bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO colorSpaceName:NSCalibratedRGBColorSpace bytesPerRow:0 bitsPerPixel:0] autorelease];
+	NSBitmapImageRep *compositedImage = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:32 pixelsHigh:32 bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO colorSpaceName:NSCalibratedRGBColorSpace bytesPerRow:0 bitsPerPixel:0];
 
 	[NSGraphicsContext saveGraphicsState];
 	[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:compositedImage]];
@@ -28,7 +28,7 @@
 	
 	[NSGraphicsContext restoreGraphicsState];
 
-	return [[[NSImage alloc] initWithData:[compositedImage TIFFRepresentation]] autorelease];
+	return [[NSImage alloc] initWithData:[compositedImage TIFFRepresentation]];
 }
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
@@ -68,7 +68,7 @@
 		item.action = @selector(performAttachDiskImage:);
 		item.toolTip = NSLocalizedString(@"Attach Disk Image", nil);
 	}
-	return [item autorelease];
+	return item;
 }
 
 
@@ -142,7 +142,7 @@ void SetupToolbar(NSWindow *window, id delegate)
 	[toolbar setDelegate:delegate];
 	[toolbar setAllowsUserCustomization:YES];
 	[toolbar setAutosavesConfiguration:YES];
-	[window setToolbar:[toolbar autorelease]];
+	[window setToolbar:toolbar];
 }
 
 

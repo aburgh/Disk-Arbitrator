@@ -113,7 +113,7 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 	for (Disk *disk in uniqueDisks) {
 		if (CFHash(diskRef)	== disk.hash) {
 			CFDictionaryRef desc = DADiskCopyDescription(diskRef);
-			disk.diskDescription = desc;
+			disk.diskDescription = (NSDictionary *)desc;
 			SafeCFRelease(desc);
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidChangeNotification object:disk];

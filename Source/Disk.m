@@ -19,7 +19,6 @@
 @interface Disk ()
 {
 	CFTypeRef disk;
-	CFDictionaryRef diskDescription;
 }
 
 @end
@@ -28,6 +27,7 @@
 
 @implementation Disk
 
+@synthesize diskDescription = _diskDescription;
 @synthesize BSDName;
 @synthesize isMounting;
 @synthesize rejectedMount;
@@ -96,7 +96,7 @@
 		const char *bsdName = DADiskGetBSDName(diskRef);
 		BSDName = [[NSString alloc] initWithUTF8String:bsdName ? bsdName : ""];
 		children = [NSMutableSet new];
-		diskDescription = DADiskCopyDescription(diskRef);
+		self.diskDescription = (NSDictionary *)DADiskCopyDescription(diskRef);
 		
 //		CFShow(description);
 
@@ -121,7 +121,7 @@
 - (void)dealloc
 {
 	SafeCFRelease(disk);
-	SafeCFRelease(diskDescription);
+	self.diskDescription = nil;
 	[BSDName release];
 	[icon release];
 	parent = nil;
@@ -208,63 +208,65 @@
 
 - (BOOL)isMountable
 {
-	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumeMountableKey) : NULL;
-	
+	CFBooleanRef value = self.diskDescription ?
+		(CFBooleanRef)[self.diskDescription objectForKey:(NSString *)kDADiskDescriptionVolumeMountableKey] : NULL;
 	return value ? CFBooleanGetValue(value) : NO;
 }
 
 - (BOOL)isMounted
 {
-	CFStringRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumePathKey) : NULL;
+	CFStringRef value = self.diskDescription ?
+		(CFStringRef)[self.diskDescription objectForKey:(NSString *)kDADiskDescriptionVolumePathKey] : NULL;
 	
 	return value ? YES : NO;
 }
 
 - (BOOL)isWholeDisk
 {
-	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaWholeKey) : NULL;
-	
+	CFBooleanRef value = self.diskDescription ?
+		(CFBooleanRef)[self.diskDescription objectForKey:(NSString *)kDADiskDescriptionMediaWholeKey] : NULL;
 	return value ? CFBooleanGetValue(value) : NO;
 }
 
 - (BOOL)isLeaf
 {
-	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaLeafKey) : NULL;
-	
+	CFBooleanRef value = self.diskDescription ?
+		(CFBooleanRef)[self.diskDescription objectForKey:(NSString *)kDADiskDescriptionMediaLeafKey] : NULL;
 	return value ? CFBooleanGetValue(value) : NO;
 }
 
 - (BOOL)isNetworkVolume
 {
-	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumeNetworkKey) : NULL;
-	
+	CFBooleanRef value = self.diskDescription ?
+		(CFBooleanRef)[self.diskDescription objectForKey:(NSString *)kDADiskDescriptionVolumeNetworkKey] : NULL;
 	return value ? CFBooleanGetValue(value) : NO;
 }
 
 - (BOOL)isWritable
 {
-	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaWritableKey) : NULL;
-	
+	CFBooleanRef value = self.diskDescription ?
+		(CFBooleanRef)[self.diskDescription objectForKey:(NSString *)kDADiskDescriptionMediaWritableKey] : NULL;
 	return value ? CFBooleanGetValue(value) : NO;
 }
 
 - (BOOL)isEjectable
 {
-	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaEjectableKey) : NULL;
-	
+	CFBooleanRef value = self.diskDescription ?
+		(CFBooleanRef)[self.diskDescription objectForKey:(NSString *)kDADiskDescriptionMediaEjectableKey] : NULL;
 	return value ? CFBooleanGetValue(value) : NO;
 }
 
 - (BOOL)isRemovable
 {
-	CFBooleanRef value = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaRemovableKey) : NULL;
-	
+	CFBooleanRef value = self.diskDescription ?
+		(CFBooleanRef)[self.diskDescription objectForKey:(NSString *)kDADiskDescriptionMediaRemovableKey] : NULL;
 	return value ? CFBooleanGetValue(value) : NO;
 }
 
 - (BOOL)isHFS
 {
-	CFStringRef volumeKind = diskDescription ? CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumeKindKey) : NULL;
+	CFStringRef volumeKind = self.diskDescription ?
+		(CFStringRef)[self.diskDescription objectForKey:(NSString *)kDADiskDescriptionVolumeKindKey] : NULL;
 	return volumeKind ? CFEqual(CFSTR("hfs"), volumeKind) : NO;
 }
 
@@ -279,7 +281,7 @@
 	if (self.isWritable == NO)
 		return NO;
 
-	volumePath = CFDictionaryGetValue(diskDescription, kDADiskDescriptionVolumePathKey);
+	volumePath = (CFURLRef)[self.diskDescription objectForKey:(NSString *)kDADiskDescriptionVolumePathKey];
 	if (volumePath) {
 
 		if (CFURLGetFileSystemRepresentation(volumePath, true, fsrep, sizeof(fsrep))) {
@@ -292,31 +294,30 @@
 	return retval;
 }
 
-- (void)setDiskDescription:(CFDictionaryRef)desc
+- (void)setDiskDescription:(NSDictionary *)desc
 {
 	NSAssert(desc, @"A NULL disk description is not allowed.");
 	
-	if (desc != diskDescription) {
+	if (desc != _diskDescription) {
 		[self willChangeValueForKey:@"diskDescription"];
 
-		SafeCFRelease(diskDescription);
-		diskDescription = desc ? CFRetain(desc) : NULL;
+		SafeCFRelease(_diskDescription);
+		_diskDescription = desc ? [desc retain] : nil;
 
 		[self didChangeValueForKey:@"diskDescription"];
 	}
 }
 
-- (CFDictionaryRef)diskDescription
-{
-	return diskDescription;	
-}
-
 - (NSImage *)icon
 {
-	if (!icon) {
-		if (diskDescription) {
-			CFDictionaryRef iconRef = CFDictionaryGetValue(diskDescription, kDADiskDescriptionMediaIconKey);
-			if (iconRef) {
+	if (!icon)
+	{
+		if (self.diskDescription)
+		{
+			CFDictionaryRef iconRef = (CFDictionaryRef)[self.diskDescription
+				objectForKey:(NSString *)kDADiskDescriptionMediaIconKey];
+			if (iconRef)
+			{
 
 				CFStringRef identifier = CFDictionaryGetValue(iconRef, CFSTR("CFBundleIdentifier"));
 				NSURL *url = [(NSURL *)KextManagerCreateURLForBundleIdentifier(kCFAllocatorDefault, identifier) autorelease];
@@ -336,12 +337,12 @@
 					}
 					else {
 						Log(LOG_WARNING, @"Failed to load bundle with URL: %@", [url absoluteString]);
-						CFShow(diskDescription);
+						CFShow(self.diskDescription);
 					}
 				}
 				else {
 					Log(LOG_WARNING, @"Failed to create URL for bundle identifier: %@", (NSString *)identifier);
-					CFShow(diskDescription);
+					CFShow(self.diskDescription);
 				}
 			}
 		}

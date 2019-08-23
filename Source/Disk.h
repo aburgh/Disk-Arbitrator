@@ -36,7 +36,7 @@ enum {
 
 @property (copy) NSString *BSDName;
 @property (readonly) int BSDNameNumber;
-@property CFDictionaryRef diskDescription;
+@property (nonatomic, retain) NSDictionary *diskDescription;
 @property (readonly) BOOL isMountable;
 @property (readonly) BOOL isMounted;
 @property (readwrite) BOOL isMounting;

@@ -136,11 +136,10 @@
 		self.mountable = disk.isMountable;
 		self.isDiskWritable = disk.isWritable;
 		self.isFileSystemWritable = disk.isFileSystemWritable;
-		
-		CFDictionaryRef descRef = disk.diskDescription;
-		self.mediaName = (NSString *) CFDictionaryGetValue(descRef, kDADiskDescriptionMediaNameKey);
-		self.mediaSize = (NSNumber *) CFDictionaryGetValue(descRef, kDADiskDescriptionMediaSizeKey);
-		self.volumeName = (NSString *) CFDictionaryGetValue(descRef, kDADiskDescriptionVolumeNameKey);
+
+		self.mediaName = (NSString *)[disk.diskDescription objectForKey: (NSString *)kDADiskDescriptionMediaNameKey];
+		self.mediaSize = (NSNumber *)[disk.diskDescription objectForKey: (NSString *)kDADiskDescriptionMediaSizeKey];
+		self.volumeName = (NSString *)[disk.diskDescription objectForKey: (NSString *)kDADiskDescriptionVolumeNameKey];
 		
 		// Create Text description cell
 		

@@ -224,14 +224,14 @@
 
 - (void)refreshDiskInfo
 {
-	self.diskDescription = (NSDictionary *)self.disk.diskDescription;
+	self.diskDescription = self.disk.diskDescription;
 	
 	NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:@""];
 
 	NSFont *font = [NSFont fontWithName:@"Helvetica Bold" size:12.0];
 	NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
 	
-	NSArray *keys = [(NSDictionary *)self.disk.diskDescription allKeys];
+	NSArray *keys = [self.disk.diskDescription allKeys];
 	keys = [keys sortedArrayUsingSelector:@selector(compare:)];
 	
 	for (NSString *key in keys)
@@ -240,7 +240,7 @@
 		if ([key isEqual: (NSString *)kDADiskDescriptionMediaIconKey])
 			continue;
 		
-		id value = [(NSDictionary *)self.disk.diskDescription objectForKey:key];
+		id value = [self.disk.diskDescription objectForKey:key];
 		
 		NSString *string;
 		NSAttributedString *attrString;

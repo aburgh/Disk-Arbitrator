@@ -23,8 +23,8 @@
 	[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:compositedImage]];
 	[[NSGraphicsContext currentContext] setShouldAntialias:NO];
 	
-	[dmgIcon drawInRect:NSMakeRect(0, 0, 32, 32) fromRect:NSZeroRect operation:NSCompositeCopy fraction:1.0];
-	[plugImage drawInRect:NSMakeRect(2, 16, 16, 16) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
+	[dmgIcon drawInRect:NSMakeRect(0, 0, 32, 32) fromRect:NSZeroRect operation:NSCompositingOperationCopy fraction:1.0];
+	[plugImage drawInRect:NSMakeRect(2, 16, 16, 16) fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0];
 	
 	[NSGraphicsContext restoreGraphicsState];
 

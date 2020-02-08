@@ -13,12 +13,6 @@
 
 @synthesize userInfo;
 
-- (void)dealloc
-{
-	[userInfo release];
-	[super dealloc];
-}
-
 - (void)windowWillLoad
 {
 	self.userInfo = [NSMutableDictionary dictionary];

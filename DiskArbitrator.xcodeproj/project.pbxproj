@@ -37,24 +37,23 @@
 		9626E5091124C63100B803AB /* DiskInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626E5081124C63100B803AB /* DiskInfoController.m */; };
 		9626E50C1124DC6900B803AB /* DiskInfo.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9626E50A1124DC6900B803AB /* DiskInfo.xib */; };
 		9626E815113149D000B803AB /* AttachDiskImageAccessory.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9626E813113149D000B803AB /* AttachDiskImageAccessory.xib */; };
-		9626E83211314E7600B803AB /* AttachDiskImageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626E83111314E7600B803AB /* AttachDiskImageController.m */; };
+		9626E83211314E7600B803AB /* AttachDiskImageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9626E83111314E7600B803AB /* AttachDiskImageController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		964E4D8C10F9E3C3007B3112 /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 964E4D8B10F9E3C3007B3112 /* DiskArbitration.framework */; };
-		964E4DCB10F9E874007B3112 /* Arbitrator.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DCA10F9E874007B3112 /* Arbitrator.m */; };
-		964E4DEE10F9F4BD007B3112 /* Disk.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DED10F9F4BD007B3112 /* Disk.m */; };
+		964E4DCB10F9E874007B3112 /* Arbitrator.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DCA10F9E874007B3112 /* Arbitrator.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		964E4DEE10F9F4BD007B3112 /* Disk.m in Sources */ = {isa = PBXBuildFile; fileRef = 964E4DED10F9F4BD007B3112 /* Disk.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		964E4EF210FA8058007B3112 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 964E4EF110FA8058007B3112 /* IOKit.framework */; };
-		9654A174110B178D00E9B0C4 /* DiskCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A173110B178D00E9B0C4 /* DiskCell.m */; };
+		9654A174110B178D00E9B0C4 /* DiskCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A173110B178D00E9B0C4 /* DiskCell.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9654A1E0110C761B00E9B0C4 /* StatusItem Disabled 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9654A1DC110C761B00E9B0C4 /* StatusItem Disabled 1.png */; };
 		9654A1E1110C761B00E9B0C4 /* StatusItem Disabled 2.png in Resources */ = {isa = PBXBuildFile; fileRef = 9654A1DD110C761B00E9B0C4 /* StatusItem Disabled 2.png */; };
 		9654A1E2110C761B00E9B0C4 /* StatusItem Green.png in Resources */ = {isa = PBXBuildFile; fileRef = 9654A1DE110C761B00E9B0C4 /* StatusItem Green.png */; };
 		9654A1E3110C761B00E9B0C4 /* StatusItem Orange.png in Resources */ = {isa = PBXBuildFile; fileRef = 9654A1DF110C761B00E9B0C4 /* StatusItem Orange.png */; };
 		9654A20B110CB55B00E9B0C4 /* AppError.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A20A110CB55B00E9B0C4 /* AppError.m */; };
-		9654A46D11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A46C11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m */; };
+		9654A46D11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A46C11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9654B788111DEBBF00E9B0C4 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 9654B742111DE2EF00E9B0C4 /* README.markdown */; };
 		96647D82133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png in Resources */ = {isa = PBXBuildFile; fileRef = 96647D81133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png */; };
 		96FCBC761140C2E700E5554C /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCBC751140C2E700E5554C /* SecurityFoundation.framework */; };
 		96FCBC871140CBF400E5554C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCBC861140CBF400E5554C /* Security.framework */; };
 		96FCCE46114491E700E5554C /* ToolbarItem Attach Disk Image.png in Resources */ = {isa = PBXBuildFile; fileRef = 96FCCE45114491E700E5554C /* ToolbarItem Attach Disk Image.png */; };
-		A5E4FC5B1CC99C64005B7675 /* ReleaseNotes.markdown in Sources */ = {isa = PBXBuildFile; fileRef = A5E4FC5A1CC99C64005B7675 /* ReleaseNotes.markdown */; };
 		A5E4FC5C1CC99D02005B7675 /* ReleaseNotes.markdown in Resources */ = {isa = PBXBuildFile; fileRef = A5E4FC5A1CC99C64005B7675 /* ReleaseNotes.markdown */; };
 /* End PBXBuildFile section */
 
@@ -306,6 +305,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* DiskArbitrator */;
@@ -366,7 +366,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5E4FC5B1CC99C64005B7675 /* ReleaseNotes.markdown in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* DiskArbitratorAppController.m in Sources */,
 				964E4DCB10F9E874007B3112 /* Arbitrator.m in Sources */,
@@ -461,7 +460,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_OBJC_INTERFACE_IVARS = YES_ERROR;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -480,7 +480,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_OBJC_INTERFACE_IVARS = YES_ERROR;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -496,11 +497,11 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -518,31 +519,27 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					x86_64,
-				);
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -558,16 +555,15 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Release;
 		};

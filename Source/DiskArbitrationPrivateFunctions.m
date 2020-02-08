@@ -113,7 +113,7 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 	for (Disk *disk in uniqueDisks) {
 		if (CFHash(diskRef)	== disk.hash) {
 			CFDictionaryRef desc = DADiskCopyDescription(diskRef);
-			disk.diskDescription = desc;
+			disk.diskDescription = (NSDictionary *)desc;
 			SafeCFRelease(desc);
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidChangeNotification object:disk];
@@ -127,13 +127,21 @@ void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 	NSMutableDictionary *info = nil;
 
 	Log(LOG_DEBUG, @"%s %@ dissenter: %p", __func__, context, dissenter);
-	
-	if (dissenter) {
+
+	if (dissenter)
+	{
 		DAReturn status = DADissenterGetStatus(dissenter);
 
 		NSString *statusString = (NSString *) DADissenterGetStatusString(dissenter);
 		if (!statusString)
-			statusString = [NSString stringWithFormat:@"%@: %#x", NSLocalizedString(@"Dissenter status code", nil), status];
+		{
+			IOReturn systemCode = err_get_system(status);
+			IOReturn subSystemCode = err_get_sub(status);
+			IOReturn errorCode = err_get_code(status);
+
+			statusString = [NSString stringWithFormat:@"%@: system: %d; subsystem: %d; error: %d",
+				NSLocalizedString(@"Dissenter status code", nil), systemCode, subSystemCode, errorCode];
+		}
 
 		Log(LOG_INFO, @"%s %@ dissenter: (%#x) %@", __func__, context, status, statusString);
 
@@ -141,7 +149,8 @@ void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 		[info setObject:statusString forKey:NSLocalizedFailureReasonErrorKey];
 		[info setObject:[NSNumber numberWithInt:status] forKey:DAStatusErrorKey];
 	}
-	else {
+	else
+	{
 		Log(LOG_DEBUG, @"%s disk %@ mounted", __func__, context);
 	}
 	

@@ -9,7 +9,7 @@
 
 #import "AppError.h"
 #include <syslog.h>
-
+#include <os/log.h>
 
 void Log(NSInteger level, NSString *format, ...)
 {
@@ -18,23 +18,21 @@ void Log(NSInteger level, NSString *format, ...)
 
 	if (level > [[NSUserDefaults standardUserDefaults] integerForKey:AppLogLevelDefaultsKey])
 		return;
-	
+
 	va_start(args, format);
-	
+
 	formattedError = [[NSString alloc] initWithFormat:format arguments:args];
-	
+
 	va_end(args);
-	
+
 	const char *utfFormattedError = [formattedError UTF8String];
-	
+
 	BOOL shouldUseSyslog = [[NSUserDefaults standardUserDefaults] boolForKey:AppShouldEnableSyslogDefaultsKey];
-	
+
 	if (shouldUseSyslog) 
 		syslog((int)level, "%s\n", utfFormattedError);
-	
-	fprintf(stderr, "%s\n", utfFormattedError);
-	
-	[formattedError release];
+
+	os_log(OS_LOG_DEFAULT, "%s\n", utfFormattedError);
 }
 
 void SetAppLogLevel(NSInteger level)

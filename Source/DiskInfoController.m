@@ -15,7 +15,6 @@
 @implementation DiskInfoController
 
 @synthesize textView;
-@synthesize disk;
 @synthesize diskDescription;
 @synthesize diskInfo;
 
@@ -30,90 +29,66 @@
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-
-	[textView release];
-	[disk release];
-	[diskDescription release];
-	[diskInfo release];
-	[super dealloc];	
 }
 
 - (NSString *)localizedStringForDADiskKey:(NSString *)key
 {
-	if ([key isEqual: (NSString *)kDADiskDescriptionVolumeKindKey])      /* ( CFString     ) */
-		return NSLocalizedString(@"Volume Kind", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionVolumeMountableKey]) /* ( CFBoolean    ) */
-		return NSLocalizedString(@"Volume Mountable", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionVolumeNameKey])      /* ( CFString     ) */
-		return NSLocalizedString(@"Volume Name", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionVolumeNetworkKey])   /* ( CFBoolean    ) */
-		return NSLocalizedString(@"Volume Network", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionVolumePathKey])      /* ( CFURL        ) */
-		return NSLocalizedString(@"Mount Path", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionVolumeUUIDKey])      /* ( CFUUID       ) */
-		return NSLocalizedString(@"Volume UUID", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaBlockSizeKey])  /* ( CFNumber     ) */
-		return NSLocalizedString(@"Media Block Size", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaBSDMajorKey])   /* ( CFNumber     ) */
-		return NSLocalizedString(@"Media BSD Major", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaBSDMinorKey])   /* ( CFNumber     ) */
-		return NSLocalizedString(@"Media BSD Minor", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaBSDNameKey])    /* ( CFString     ) */
-		return NSLocalizedString(@"Media BSD Name", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaBSDUnitKey])    /* ( CFNumber     ) */
-		return NSLocalizedString(@"Media BSD Unit", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaContentKey])    /* ( CFString     ) */
-		return NSLocalizedString(@"Media Content", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaEjectableKey])  /* ( CFBoolean    ) */
-		return NSLocalizedString(@"Media Ejectable", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaIconKey])       /* ( CFDictionary ) */
-		return NSLocalizedString(@"Media Icon", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaKindKey])       /* ( CFString     ) */
-		return NSLocalizedString(@"Media Kind", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaLeafKey])       /* ( CFBoolean    ) */
-		return NSLocalizedString(@"Media Is Leaf", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaNameKey])       /* ( CFString     ) */
-		return NSLocalizedString(@"Media Name", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaPathKey])       /* ( CFString     ) */
-		return NSLocalizedString(@"Media Path", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaRemovableKey])  /* ( CFBoolean    ) */
-		return NSLocalizedString(@"Media Is Removable", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaSizeKey])       /* ( CFNumber     ) */
-		return NSLocalizedString(@"Media Size", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaTypeKey])       /* ( CFString     ) */
-		return NSLocalizedString(@"Media Type", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaUUIDKey])       /* ( CFUUID       ) */
-		return NSLocalizedString(@"Media UUID", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaWholeKey])      /* ( CFBoolean    ) */
-		return NSLocalizedString(@"Media Is Whole", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionMediaWritableKey])   /* ( CFBoolean    ) */
-		return NSLocalizedString(@"Media Is Writable", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceGUIDKey])      /* ( CFData       ) */
-		return NSLocalizedString(@"Device GUID", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceInternalKey])  /* ( CFBoolean    ) */
-		return NSLocalizedString(@"Device Is Internal", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceModelKey])     /* ( CFString     ) */
-		return NSLocalizedString(@"Device Model", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionDevicePathKey])      /* ( CFString     ) */
-		return NSLocalizedString(@"Device Path", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceProtocolKey])  /* ( CFString     ) */
-		return NSLocalizedString(@"Device Protocol", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceRevisionKey])  /* ( CFString     ) */
-		return NSLocalizedString(@"Device Revision", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceUnitKey])      /* ( CFNumber     ) */
-		return NSLocalizedString(@"Device Unit", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionDeviceVendorKey])    /* ( CFString     ) */
-		return NSLocalizedString(@"Device Vendor", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionBusNameKey])         /* ( CFString     ) */
-		return NSLocalizedString(@"Bus", nil);
-	if ([key isEqual: (NSString *)kDADiskDescriptionBusPathKey])         /* ( CFString     ) */
-		return NSLocalizedString(@"Bus Path", nil);
-	if ([key isEqual: @"DAAppearanceTime"])
-		return NSLocalizedString(@"Appearance Time", nil);
-	
-	Log(LOG_INFO, @"Unknown disk description key: %@", key);
-	
-	return @"N/A";
+	static dispatch_once_t sOnceToken;
+	static NSDictionary *localizedStrings = nil;
+	dispatch_once(&sOnceToken, ^{
+		localizedStrings =
+		@{
+			(NSString *)kDADiskDescriptionVolumeKindKey: 		NSLocalizedString(@"Volume Kind", nil),
+			(NSString *)kDADiskDescriptionVolumeMountableKey: 	NSLocalizedString(@"Volume Mountable", nil),
+			(NSString *)kDADiskDescriptionVolumeNameKey: 		NSLocalizedString(@"Volume Name", nil),
+			(NSString *)kDADiskDescriptionVolumeNetworkKey: 	NSLocalizedString(@"Volume Network", nil),
+			(NSString *)kDADiskDescriptionVolumePathKey: 		NSLocalizedString(@"Mount Path", nil),
+			(NSString *)kDADiskDescriptionVolumeTypeKey: 		NSLocalizedString(@"Volume Type", nil),
+			(NSString *)kDADiskDescriptionVolumeUUIDKey: 		NSLocalizedString(@"Volume UUID", nil),
+			(NSString *)kDADiskDescriptionMediaBlockSizeKey: 	NSLocalizedString(@"Media Block Size", nil),
+			(NSString *)kDADiskDescriptionMediaBSDMajorKey: 	NSLocalizedString(@"Media BSD Major", nil),
+			(NSString *)kDADiskDescriptionMediaBSDMinorKey: 	NSLocalizedString(@"Media BSD Minor", nil),
+			(NSString *)kDADiskDescriptionMediaBSDNameKey: 		NSLocalizedString(@"Media BSD Name", nil),
+			(NSString *)kDADiskDescriptionMediaBSDUnitKey: 		NSLocalizedString(@"Media BSD Unit", nil),
+			(NSString *)kDADiskDescriptionMediaContentKey: 		NSLocalizedString(@"Media Content", nil),
+			(NSString *)kDADiskDescriptionMediaEjectableKey: 	NSLocalizedString(@"Media Ejectable", nil),
+			(NSString *)kDADiskDescriptionMediaIconKey: 		NSLocalizedString(@"Media Icon", nil),
+			(NSString *)kDADiskDescriptionMediaKindKey: 		NSLocalizedString(@"Media Kind", nil),
+			(NSString *)kDADiskDescriptionMediaLeafKey: 		NSLocalizedString(@"Media Is Leaf", nil),
+			(NSString *)kDADiskDescriptionMediaNameKey: 		NSLocalizedString(@"Media Name", nil),
+			(NSString *)kDADiskDescriptionMediaPathKey: 		NSLocalizedString(@"Media Path", nil),
+			(NSString *)kDADiskDescriptionMediaRemovableKey: 	NSLocalizedString(@"Media Is Removable", nil),
+			(NSString *)kDADiskDescriptionMediaSizeKey: 		NSLocalizedString(@"Media Size", nil),
+			(NSString *)kDADiskDescriptionMediaTypeKey: 		NSLocalizedString(@"Media Type", nil),
+			(NSString *)kDADiskDescriptionMediaUUIDKey: 		NSLocalizedString(@"Media UUID", nil),
+			(NSString *)kDADiskDescriptionMediaWholeKey: 		NSLocalizedString(@"Media Is Whole", nil),
+			(NSString *)kDADiskDescriptionMediaWritableKey: 	NSLocalizedString(@"Media Is Writable", nil),
+			(NSString *)kDADiskDescriptionMediaEncryptedKey: 	NSLocalizedString(@"Encrypted", nil),
+			(NSString *)kDADiskDescriptionMediaEncryptionDetailKey: NSLocalizedString(@"Encryption Detail", nil),
+			(NSString *)kDADiskDescriptionDeviceGUIDKey: 		NSLocalizedString(@"Device GUID", nil),
+			(NSString *)kDADiskDescriptionDeviceInternalKey: 	NSLocalizedString(@"Device Is Internal", nil),
+			(NSString *)kDADiskDescriptionDeviceModelKey: 		NSLocalizedString(@"Device Model", nil),
+			(NSString *)kDADiskDescriptionDevicePathKey: 		NSLocalizedString(@"Device Path", nil),
+			(NSString *)kDADiskDescriptionDeviceProtocolKey: 	NSLocalizedString(@"Device Protocol", nil),
+			(NSString *)kDADiskDescriptionDeviceRevisionKey: 	NSLocalizedString(@"Device Revision", nil),
+			(NSString *)kDADiskDescriptionDeviceUnitKey: 		NSLocalizedString(@"Device Unit", nil),
+			(NSString *)kDADiskDescriptionDeviceVendorKey: 		NSLocalizedString(@"Device Vendor", nil),
+			(NSString *)kDADiskDescriptionDeviceTDMLockedKey: 	NSLocalizedString(@"TDM Locked", nil),
+			(NSString *)kDADiskDescriptionBusNameKey: 			NSLocalizedString(@"Bus", nil),
+			(NSString *)kDADiskDescriptionBusPathKey: 			NSLocalizedString(@"Bus Path", nil),
+			@"DAAppearanceTime": 								NSLocalizedString(@"Appearance Time", nil)
+		};
+	});
+
+	NSString *description = localizedStrings[key];
+
+	if (nil == description)
+	{
+		Log(LOG_INFO, @"Unknown disk description key: %@", key);
+		description = @"N/A";
+	}
+
+	return description;
 }
 
 - (NSString *)formattedSizeDescriptionFromNumber:(NSNumber *)sizeValue
@@ -138,7 +113,7 @@
 
 - (NSString *)localizedValueStringForDADiskKey:(NSString *)key value:(id)value
 {
-	CFStringRef keyRef = (CFStringRef) key;
+	CFStringRef keyRef = (__bridge CFStringRef) key;
 
 	if (CFEqual(keyRef, kDADiskDescriptionVolumeKindKey))      /* ( CFString     ) */
 		return value;
@@ -164,9 +139,9 @@
 	if (CFEqual(keyRef, kDADiskDescriptionVolumeUUIDKey) || 	 /* ( CFUUID       ) */
 		CFEqual(keyRef, kDADiskDescriptionMediaUUIDKey))
 	{
-		NSString *uuidString = (NSString *) CFUUIDCreateString(kCFAllocatorDefault, (CFUUIDRef)value);
+		NSString *uuidString = (NSString *) CFBridgingRelease(CFUUIDCreateString(kCFAllocatorDefault, (CFUUIDRef)value));
 
-		return [uuidString autorelease];
+		return uuidString;
 	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionMediaBlockSizeKey))  /* ( CFNumber     ) */
@@ -249,14 +224,14 @@
 
 - (void)refreshDiskInfo
 {
-	self.diskDescription = (NSDictionary *)disk.diskDescription;
+	self.diskDescription = self.disk.diskDescription;
 	
 	NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:@""];
 
 	NSFont *font = [NSFont fontWithName:@"Helvetica Bold" size:12.0];
 	NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
 	
-	NSArray *keys = [(NSDictionary *)disk.diskDescription allKeys];
+	NSArray *keys = [self.disk.diskDescription allKeys];
 	keys = [keys sortedArrayUsingSelector:@selector(compare:)];
 	
 	for (NSString *key in keys)
@@ -265,7 +240,7 @@
 		if ([key isEqual: (NSString *)kDADiskDescriptionMediaIconKey])
 			continue;
 		
-		id value = [(NSDictionary *)disk.diskDescription objectForKey:key];
+		id value = [self.disk.diskDescription objectForKey:key];
 		
 		NSString *string;
 		NSAttributedString *attrString;
@@ -273,19 +248,17 @@
 		string = [NSString stringWithFormat:@"\t%@\t", [self localizedStringForDADiskKey:key]];
 		attrString = [[NSAttributedString alloc] initWithString:string attributes:attrs];
 		[text appendAttributedString:attrString];
-		[attrString release];
 
 		string = [NSString stringWithFormat:@"%@\n", [self localizedValueStringForDADiskKey:key value:value]];
 		attrString = [[NSAttributedString alloc] initWithString:string];
 		[text appendAttributedString:attrString];
-		[attrString release];
 	}
 
 	
-	NSMutableParagraphStyle *style = [[NSMutableParagraphStyle new] autorelease];
+	NSMutableParagraphStyle *style = [NSMutableParagraphStyle new];
 	NSMutableArray *tabStops = [NSMutableArray array];
-	[tabStops addObject:[[[NSTextTab alloc] initWithType:NSRightTabStopType location:2.0 * 72.0] autorelease]];
-	[tabStops addObject:[[[NSTextTab alloc] initWithType:NSLeftTabStopType location:2.125 * 72.0] autorelease]];
+	[tabStops addObject:[[NSTextTab alloc] initWithType:NSRightTabStopType location:2.0 * 72.0]];
+	[tabStops addObject:[[NSTextTab alloc] initWithType:NSLeftTabStopType location:2.125 * 72.0]];
 	style.tabStops = tabStops;
 	style.headIndent = (2.125 * 72.0);
 	
@@ -293,7 +266,6 @@
 	[text addAttributes:attrs range:NSMakeRange(0, [text length])];
 
 	self.diskInfo = text;
-	[text release];
 }
 
 - (void)diskDidChange:(NSNotification *)notif
@@ -303,11 +275,13 @@
 
 - (void)setDisk:(Disk *)newDisk
 {
-	if (newDisk	!= disk) {
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:DADiskDidChangeNotification object:disk];
-		[disk autorelease];
-		disk = [newDisk retain];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(diskDidChange:) name:DADiskDidChangeNotification object:disk];
+	if (newDisk	!= self.disk) {
+		[[NSNotificationCenter defaultCenter] removeObserver:self
+			name:DADiskDidChangeNotification object:self.disk];
+		self.disk = newDisk;
+		[[NSNotificationCenter defaultCenter] addObserver:self
+			selector:@selector(diskDidChange:) name:DADiskDidChangeNotification
+			object:self.disk];
 	}
 }
 

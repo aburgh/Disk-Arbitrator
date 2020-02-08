@@ -12,33 +12,17 @@
 @class Disk;
 
 @interface AppController : NSObject // <NSApplicationDelegate> 
-{
-    NSPanel *window;
-	NSStatusItem *statusItem;
-	NSMenu *statusMenu;
-	NSTableView *tableView;
-	
-	NSArrayController *disksArrayController;
-	Arbitrator *arbitrator;
-	NSArray *sortDescriptors;
-
-	BOOL hasUserLaunchAgent;
-	NSString *installUserLaunchAgentMenuTitle;
-	
-	NSMutableArray *displayErrorQueue; // 
-    NSMutableArray *diskInfoControllers;
-}
 
 @property (assign) IBOutlet NSPanel *window;
 @property (assign) IBOutlet NSMenu *statusMenu;
 @property (assign) IBOutlet NSTableView *tableView;
 @property (assign) IBOutlet NSArrayController *disksArrayController;
 @property (copy) NSArray *sortDescriptors;
-@property (retain) NSStatusItem *statusItem;
-@property (retain) Arbitrator *arbitrator;
-@property (readwrite) BOOL hasUserLaunchAgent;
+@property (strong) NSStatusItem *statusItem;
+@property (strong) Arbitrator *arbitrator;
+@property (assign) BOOL hasUserLaunchAgent;
 @property (readonly)  BOOL canInstallLaunchAgent;
-@property (copy) NSString *installUserLaunchAgentMenuTitle;
+@property (strong) NSString *installUserLaunchAgentMenuTitle;
 
 - (IBAction)showAboutPanel:(id)sender;
 - (IBAction)showMainWindow:(id)sender;

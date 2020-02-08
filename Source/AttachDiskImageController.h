@@ -10,19 +10,6 @@
 #import "SheetController.h"
 
 @interface AttachDiskImageController : SheetController <NSOpenSavePanelDelegate>
-{
-	NSView *view;
-	NSTask *task;
-	NSString *title;
-	NSString *message;
-	NSString *errorMessage;
-	double progress;
-	BOOL isVerifying;
-	BOOL canceled;
-@private
-	NSMutableString *stdoutBuffer;
-	NSMutableString *stderrBuffer;
-}
 
 @property (retain) IBOutlet NSView *view;
 @property (retain) NSTask *task;

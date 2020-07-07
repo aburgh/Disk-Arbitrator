@@ -29,7 +29,7 @@
 	[NSApp endSheet:self.window returnCode:NSModalResponseCancel];
 }
 
-- (IBAction)ok:(id)sener
+- (IBAction)ok:(id)sender
 {
 	[self.window endEditingFor:nil];
 	[NSApp endSheet:self.window returnCode:NSModalResponseOK];

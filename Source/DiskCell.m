@@ -107,7 +107,7 @@
             [transform concat];
         }
 
-		[lockImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:opacity];
+		[lockImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:opacity];
         
         [NSGraphicsContext restoreGraphicsState];
 	}
@@ -170,7 +170,7 @@
 		
 		self.iconCell = [[[NSImageCell alloc] initImageCell:disk.icon] autorelease];
 		iconCell.imageScaling = NSImageScaleProportionallyDown;
-		iconCell.alignment = NSLeftTextAlignment;
+		iconCell.alignment = NSTextAlignmentLeft;
 	}
 	else {
 		self.textCell = nil;

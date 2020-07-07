@@ -275,13 +275,13 @@
 
 - (void)setDisk:(Disk *)newDisk
 {
-	if (newDisk	!= self.disk) {
+	if (newDisk	!= _disk) {
 		[[NSNotificationCenter defaultCenter] removeObserver:self
-			name:DADiskDidChangeNotification object:self.disk];
-		self.disk = newDisk;
+			name:DADiskDidChangeNotification object:_disk];
+		_disk = newDisk;
 		[[NSNotificationCenter defaultCenter] addObserver:self
 			selector:@selector(diskDidChange:) name:DADiskDidChangeNotification
-			object:self.disk];
+			object:_disk];
 	}
 }
 

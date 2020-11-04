@@ -31,13 +31,19 @@
 - (id)copyWithZone:(NSZone *)zone
 {
 	id obj = [super copyWithZone:zone];
-	if (iconCell) iconCell = [iconCell copyWithZone:zone];
-	if (textCell) textCell = [textCell copyWithZone:zone];
+	if (iconCell)
+	{
+		iconCell = [iconCell copyWithZone:zone];
+	}
+	if (textCell)
+	{
+		textCell = [textCell copyWithZone:zone];
+	}
 	[BSDName retain];
 	[mediaName retain];
 	[mediaSize retain];
 	[volumeName retain];
-	
+
 	return obj;
 }
 
@@ -49,7 +55,7 @@
 	[mediaName release];
 	[mediaSize release];
 	[volumeName release];
-	
+
 	[super dealloc];
 }
 
@@ -70,36 +76,53 @@
 	// impression that a disk is completely protected, display a transparent, faint lock when the
 	// disk is R/W, and display a solid black lock when the disk and the FS are both R/O.
 
-	if (mountable && mounted && !isFileSystemWritable) {
-
+	if (mountable && mounted && !isFileSystemWritable)
+	{
 		NSImage *lockImage = [NSImage imageNamed:NSImageNameLockLockedTemplate];
 
 		CGFloat scale;
 		if (frame.size.height <= 16.0)
+		{
 			scale = 0.5;
+		}
 		else if (frame.size.height <= 32.0)
+		{
 			scale = 0.75;
+		}
 		else if (frame.size.height <= 64.0)
+		{
 			scale = 2.0;
+		}
 		else if (frame.size.height <= 128.0)
+		{
 			scale = 4.0;
+		}
 		else if (frame.size.height <= 256.0)
+		{
 			scale = 8.0;
+		}
 		else if (frame.size.height <= 512.0)
+		{
 			scale = 16.0;
+		}
 		else if (frame.size.height <= 1024.0)
+		{
 			scale = 32.0;
+		}
 		else
+		{
 			scale = 2.0;
+		}
 
 		CGFloat opacity = isDiskWritable ? 0.40 : 1.0;
 
 		CGFloat scaledWidth  = lockImage.size.width * scale;
 		CGFloat scaledHeight = lockImage.size.height * scale;
 		NSRect rect = NSMakeRect(NSMaxX(iconFrame) - scaledWidth, NSMaxY(iconFrame) - scaledHeight, scaledWidth, scaledHeight);
-        
+
         [NSGraphicsContext saveGraphicsState];
-        if ([controlView isFlipped]) {
+        if ([controlView isFlipped])
+        {
             NSAffineTransform *transform = [NSAffineTransform transform];
             [transform translateXBy:NSMidX(rect) yBy:NSMidY(rect)];
             [transform rotateByDegrees:180];
@@ -108,7 +131,7 @@
         }
 
 		[lockImage drawInRect:rect fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:opacity];
-        
+
         [NSGraphicsContext restoreGraphicsState];
 	}
 
@@ -122,12 +145,12 @@
 	[textCell drawWithFrame:textFrame inView:controlView];
 }
 
-
 - (void)setObjectValue:(id)value
 {
 	Disk *disk = (Disk *)value;
 	
-	if (disk) {
+	if (disk)
+	{
 //		Log(LOG_DEBUG, @"%s self: %p disk: %p", __func__, self, disk);
 
 		self.BSDName = disk.BSDName;
@@ -140,39 +163,53 @@
 		self.mediaName = (NSString *)[disk.diskDescription objectForKey: (NSString *)kDADiskDescriptionMediaNameKey];
 		self.mediaSize = (NSNumber *)[disk.diskDescription objectForKey: (NSString *)kDADiskDescriptionMediaSizeKey];
 		self.volumeName = (NSString *)[disk.diskDescription objectForKey: (NSString *)kDADiskDescriptionVolumeNameKey];
-		
+
 		// Create Text description cell
-		
+
 		NSString *sizeDisplayValue = nil;
-		if (mediaSize) {
+		if (mediaSize)
+		{
 			double size = [mediaSize doubleValue];
 			if (size > 999 && size < 1000000)
+			{
 				sizeDisplayValue = [NSString stringWithFormat:@"%03.02f KB ", (size / 1000.0)];
+			}
 			else if (size > 999999 && size < 1000000000)
+			{
 				sizeDisplayValue = [NSString stringWithFormat:@"%03.02f MB ", (size / 1000000.0)];
+			}
 			else if (size > 999999999 && size < 1000000000000)
+			{
 				sizeDisplayValue = [NSString stringWithFormat:@"%03.02f GB ", (size / 1000000000.0)];
+			}
 			else if (size > 999999999999)
+			{
 				sizeDisplayValue = [NSString stringWithFormat:@"%03.02f TB ", (size / 1000000000000.0)];
+			}
 		}
 		NSMutableString *desc = sizeDisplayValue ? [sizeDisplayValue mutableCopy] : [NSMutableString new];
 
 		if (volumeName)
+		{
 			[desc appendString:volumeName];
-		else if (mediaName) 
+		}
+		else if (mediaName)
+		{
 			[desc appendString:mediaName];
+		}
 
 		self.textCell = [[[NSCell alloc] initTextCell:desc] autorelease];
 		self.textCell.lineBreakMode = NSLineBreakByTruncatingTail;
 		[desc release];
-		
+
 		// Create Icon cell
-		
+
 		self.iconCell = [[[NSImageCell alloc] initImageCell:disk.icon] autorelease];
 		iconCell.imageScaling = NSImageScaleProportionallyDown;
 		iconCell.alignment = NSTextAlignmentLeft;
 	}
-	else {
+	else
+	{
 		self.textCell = nil;
 		self.iconCell = nil;
 	}

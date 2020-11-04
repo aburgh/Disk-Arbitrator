@@ -17,7 +17,9 @@ void Log(NSInteger level, NSString *format, ...)
 	NSString *formattedError;
 
 	if (level > [[NSUserDefaults standardUserDefaults] integerForKey:AppLogLevelDefaultsKey])
+	{
 		return;
+	}
 
 	va_start(args, format);
 
@@ -29,8 +31,10 @@ void Log(NSInteger level, NSString *format, ...)
 
 	BOOL shouldUseSyslog = [[NSUserDefaults standardUserDefaults] boolForKey:AppShouldEnableSyslogDefaultsKey];
 
-	if (shouldUseSyslog) 
+	if (shouldUseSyslog)
+	{
 		syslog((int)level, "%s\n", utfFormattedError);
+	}
 
 	os_log(OS_LOG_DEFAULT, "%s\n", utfFormattedError);
 }

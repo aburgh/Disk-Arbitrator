@@ -55,6 +55,7 @@
 		96FCBC871140CBF400E5554C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCBC861140CBF400E5554C /* Security.framework */; };
 		96FCCE46114491E700E5554C /* ToolbarItem Attach Disk Image.png in Resources */ = {isa = PBXBuildFile; fileRef = 96FCCE45114491E700E5554C /* ToolbarItem Attach Disk Image.png */; };
 		A5E4FC5C1CC99D02005B7675 /* ReleaseNotes.markdown in Resources */ = {isa = PBXBuildFile; fileRef = A5E4FC5A1CC99C64005B7675 /* ReleaseNotes.markdown */; };
+		DA23B41B25540DAF00EAB4FD /* Disk_ArbitratorUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = DA23B41A25540DAF00EAB4FD /* Disk_ArbitratorUITests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -75,6 +76,13 @@
 
 /* Begin PBXContainerItemProxy section */
 		9654B7A7111E470600E9B0C4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D1107260486CEB800E47090;
+			remoteInfo = DiskArbitrator;
+		};
+		DA23B41D25540DAF00EAB4FD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
@@ -127,6 +135,9 @@
 		96FCBC861140CBF400E5554C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		96FCCE45114491E700E5554C /* ToolbarItem Attach Disk Image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolbarItem Attach Disk Image.png"; path = "Resources/ToolbarItem Attach Disk Image.png"; sourceTree = "<group>"; };
 		A5E4FC5A1CC99C64005B7675 /* ReleaseNotes.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = ReleaseNotes.markdown; sourceTree = "<group>"; };
+		DA23B41825540DAF00EAB4FD /* Disk ArbitratorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Disk ArbitratorUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA23B41A25540DAF00EAB4FD /* Disk_ArbitratorUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Disk_ArbitratorUITests.m; sourceTree = "<group>"; };
+		DA23B41C25540DAF00EAB4FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E48EB2D323EE60EC00C0B297 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		E48EB2D423EE60EC00C0B297 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MountOptions.xib; sourceTree = "<group>"; };
 		E48EB2D523EE60ED00C0B297 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/DiskInfo.xib; sourceTree = "<group>"; };
@@ -144,6 +155,13 @@
 				964E4EF210FA8058007B3112 /* IOKit.framework in Frameworks */,
 				96FCBC871140CBF400E5554C /* Security.framework in Frameworks */,
 				96FCBC761140C2E700E5554C /* SecurityFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA23B41525540DAE00EAB4FD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,6 +210,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* Disk Arbitrator.app */,
+				DA23B41825540DAF00EAB4FD /* Disk ArbitratorUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -202,6 +221,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				DA23B41925540DAF00EAB4FD /* Disk ArbitratorUITests */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -272,6 +292,15 @@
 			name = Nibs;
 			sourceTree = "<group>";
 		};
+		DA23B41925540DAF00EAB4FD /* Disk ArbitratorUITests */ = {
+			isa = PBXGroup;
+			children = (
+				DA23B41A25540DAF00EAB4FD /* Disk_ArbitratorUITests.m */,
+				DA23B41C25540DAF00EAB4FD /* Info.plist */,
+			);
+			path = "Disk ArbitratorUITests";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -294,6 +323,24 @@
 			productReference = 8D1107320486CEB800E47090 /* Disk Arbitrator.app */;
 			productType = "com.apple.product-type.application";
 		};
+		DA23B41725540DAE00EAB4FD /* Disk ArbitratorUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA23B42125540DAF00EAB4FD /* Build configuration list for PBXNativeTarget "Disk ArbitratorUITests" */;
+			buildPhases = (
+				DA23B41425540DAE00EAB4FD /* Sources */,
+				DA23B41525540DAE00EAB4FD /* Frameworks */,
+				DA23B41625540DAE00EAB4FD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DA23B41E25540DAF00EAB4FD /* PBXTargetDependency */,
+			);
+			name = "Disk ArbitratorUITests";
+			productName = "Disk ArbitratorUITests";
+			productReference = DA23B41825540DAF00EAB4FD /* Disk ArbitratorUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -301,6 +348,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1130;
+				TargetAttributes = {
+					DA23B41725540DAE00EAB4FD = {
+						CreatedOnToolsVersion = 12.0.1;
+						TestTargetID = 8D1107260486CEB800E47090;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "DiskArbitrator" */;
 			compatibilityVersion = "Xcode 11.0";
@@ -317,6 +370,7 @@
 			targets = (
 				8D1107260486CEB800E47090 /* DiskArbitrator */,
 				9654B7A3111E46D600E9B0C4 /* Build Disk Arbitrator DMG */,
+				DA23B41725540DAE00EAB4FD /* Disk ArbitratorUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -343,6 +397,13 @@
 				96FCCE46114491E700E5554C /* ToolbarItem Attach Disk Image.png in Resources */,
 				96033DD51210E1DB006F4F11 /* Preferences.xib in Resources */,
 				96647D82133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA23B41625540DAE00EAB4FD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,6 +444,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DA23B41425540DAE00EAB4FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA23B41B25540DAF00EAB4FD /* Disk_ArbitratorUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -390,6 +459,11 @@
 			isa = PBXTargetDependency;
 			target = 8D1107260486CEB800E47090 /* DiskArbitrator */;
 			targetProxy = 9654B7A7111E470600E9B0C4 /* PBXContainerItemProxy */;
+		};
+		DA23B41E25540DAF00EAB4FD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D1107260486CEB800E47090 /* DiskArbitrator */;
+			targetProxy = DA23B41D25540DAF00EAB4FD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -580,6 +654,90 @@
 			};
 			name = Release;
 		};
+		DA23B41F25540DAF00EAB4FD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = XQKX38U9F4;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "Disk ArbitratorUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.GTB.Disk-ArbitratorUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = DiskArbitrator;
+			};
+			name = Debug;
+		};
+		DA23B42025540DAF00EAB4FD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = XQKX38U9F4;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = "Disk ArbitratorUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.GTB.Disk-ArbitratorUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = DiskArbitrator;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -606,6 +764,15 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DA23B42125540DAF00EAB4FD /* Build configuration list for PBXNativeTarget "Disk ArbitratorUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA23B41F25540DAF00EAB4FD /* Debug */,
+				DA23B42025540DAF00EAB4FD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

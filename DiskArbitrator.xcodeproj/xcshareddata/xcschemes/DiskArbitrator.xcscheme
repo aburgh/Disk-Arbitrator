@@ -37,6 +37,16 @@
          </BuildableReference>
       </MacroExpansion>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "DA23B41725540DAE00EAB4FD"
+               BuildableName = "Disk ArbitratorUITests.xctest"
+               BlueprintName = "Disk ArbitratorUITests"
+               ReferencedContainer = "container:DiskArbitrator.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

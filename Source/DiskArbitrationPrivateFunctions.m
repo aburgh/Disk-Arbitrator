@@ -18,21 +18,25 @@ DASessionRef session;
 void InitializeDiskArbitration(void)
 {
 	static BOOL isInitialized = NO;
-	
-	if (isInitialized) return;
-	
+
+	if (isInitialized)
+	{
+		return;
+	}
+
 	isInitialized = YES;
-	
+
 	uniqueDisks = [NSMutableSet new];
-	
+
 	session = DASessionCreate(kCFAllocatorDefault);
-	if (!session) {
+	if (!session)
+	{
 		[NSException raise:NSInternalInconsistencyException format:@"Failed to create Disk Arbitration session."];
 		return;
 	}
-	
+
 	DASessionScheduleWithRunLoop(session, CFRunLoopGetMain(), kCFRunLoopCommonModes);
-	
+
 	CFMutableDictionaryRef matching = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 	CFDictionaryAddValue(matching, kDADiskDescriptionVolumeNetworkKey, kCFBooleanFalse);
 
@@ -48,38 +52,50 @@ BOOL DADiskValidate(DADiskRef diskRef)
 	//
 	// Reject certain disk media
 	//
-	
+
 	BOOL isOK = YES;
-	
+
 	// Reject if no BSDName
-	if (DADiskGetBSDName(diskRef) == NULL) 
+	if (DADiskGetBSDName(diskRef) == NULL)
+	{
 		[NSException raise:NSInternalInconsistencyException format:@"Disk without BSDName"];
 //		return NO;
-	
+	}
+
 	CFDictionaryRef desc = DADiskCopyDescription(diskRef);
 	//	CFShow(desc);
-	
+
 	// Reject if no key-value for Whole Media
 	CFBooleanRef wholeMediaValue = CFDictionaryGetValue(desc, kDADiskDescriptionMediaWholeKey);
-	if (isOK && !wholeMediaValue) isOK = NO;
-		
-		// If not a whole disk, then must be a media leaf
-		if (isOK && CFBooleanGetValue(wholeMediaValue) == false)
+	if (isOK && !wholeMediaValue)
+	{
+		isOK = NO;
+	}
+
+	// If not a whole disk, then must be a media leaf
+	if (isOK && CFBooleanGetValue(wholeMediaValue) == false)
+	{
+		CFBooleanRef mediaLeafValue = CFDictionaryGetValue(desc, kDADiskDescriptionMediaLeafKey);
+		if (!mediaLeafValue || CFBooleanGetValue(mediaLeafValue) == false)
 		{
-			CFBooleanRef mediaLeafValue = CFDictionaryGetValue(desc, kDADiskDescriptionMediaLeafKey);
-			if (!mediaLeafValue || CFBooleanGetValue(mediaLeafValue) == false) isOK = NO;
+			isOK = NO;
 		}
+	}
+
 	SafeCFRelease(desc);
-	
+
 	return isOK;
 }
 
 void DiskAppearedCallback(DADiskRef diskRef, void *context)
 {
-	if (context != [Disk class]) return;
-	
+	if (context != [Disk class])
+	{
+		return;
+	}
+
 	Log(LOG_DEBUG, @"%s <%p> %s", __func__, diskRef, DADiskGetBSDName(diskRef));
-	
+
 	if (DADiskValidate(diskRef)) 
 	{
 		Disk *disk = [Disk uniqueDiskForDADisk:diskRef create:YES];
@@ -89,33 +105,42 @@ void DiskAppearedCallback(DADiskRef diskRef, void *context)
 
 void DiskDisappearedCallback(DADiskRef diskRef, void *context)
 {
-	if (context != [Disk class]) return;
-	
-	Log(LOG_DEBUG, @"%s <%p> %s", __func__, diskRef, DADiskGetBSDName(diskRef));
-	
-	Disk *tmpDisk = [Disk uniqueDiskForDADisk:diskRef create:NO];
-	if (!tmpDisk) {
+	if (context != [Disk class])
+	{
 		return;
 	}
-	
+
+	Log(LOG_DEBUG, @"%s <%p> %s", __func__, diskRef, DADiskGetBSDName(diskRef));
+
+	Disk *tmpDisk = [Disk uniqueDiskForDADisk:diskRef create:NO];
+	if (!tmpDisk)
+	{
+		return;
+	}
+
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidDisappearNotification object:tmpDisk];
-	
+
 	[tmpDisk diskDidDisappear];
 }
 
 void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *context)
 {
-	if (context != [Disk class]) return;
-	
+	if (context != [Disk class])
+	{
+		return;
+	}
+
 	Log(LOG_DEBUG, @"%s <%p> %s, keys changed:", __func__, diskRef, DADiskGetBSDName(diskRef));
 	Log(LOG_DEBUG, @"%@", keys);
-	
-	for (Disk *disk in uniqueDisks) {
-		if (CFHash(diskRef)	== disk.hash) {
+
+	for (Disk *disk in uniqueDisks)
+	{
+		if (CFHash(diskRef)	== disk.hash)
+		{
 			CFDictionaryRef desc = DADiskCopyDescription(diskRef);
 			disk.diskDescription = (NSDictionary *)desc;
 			SafeCFRelease(desc);
-			
+
 			[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidChangeNotification object:disk];
 		}
 	}
@@ -160,13 +185,16 @@ void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 void DiskUnmountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *context)
 {
 	NSDictionary *info = nil;
-	
-	if (dissenter) {
+
+	if (dissenter)
+	{
 		DAReturn status = DADissenterGetStatus(dissenter);
 
 		NSString *statusString = (NSString *) DADissenterGetStatusString(dissenter);
 		if (!statusString)
+		{
 			statusString = [NSString stringWithFormat:@"Error code: %d", status];
+		}
 
 		Log(LOG_DEBUG, @"%s disk %@ dissenter: (%d) %@", __func__, context, status, statusString);
 
@@ -176,10 +204,11 @@ void DiskUnmountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *cont
 				statusString, NSLocalizedRecoverySuggestionErrorKey,
 				nil];
 	}
-	else {
+	else
+	{
 		Log(LOG_DEBUG, @"%s disk %@ unmounted", __func__, context);
 	}
-	
+
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidAttemptUnmountNotification object:context userInfo:info];
 }
 
@@ -187,29 +216,32 @@ void DiskEjectCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 {
 	[(id)context autorelease]; // got retained when passed in
 	NSDictionary *info = nil;
-	
-	if (dissenter) {
+
+	if (dissenter)
+	{
 		DAReturn status = DADissenterGetStatus(dissenter);
-		
+
 		NSString *statusString = (NSString *) DADissenterGetStatusString(dissenter);
 		if (!statusString)
+		{
 			statusString = [NSString stringWithFormat:@"Error code: %d", status];
-		
+		}
+
 		Log(LOG_INFO, @"%s disk: %@ dissenter: (%d) %@", __func__, context, status, statusString);
-		
+
 		info = [NSDictionary dictionaryWithObjectsAndKeys:
 				[NSNumber numberWithInt:status], DAStatusErrorKey,
 				statusString, NSLocalizedFailureReasonErrorKey,
 				statusString, NSLocalizedRecoverySuggestionErrorKey,
 				nil];
 	}
-	else {
+	else
+	{
 		Log(LOG_DEBUG, @"%s disk ejected: %@ ", __func__, context);
 	}
-	
+
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidAttemptEjectNotification object:context userInfo:info];
 }
-
 
 NSString * const DADiskDidAppearNotification = @"DADiskDidAppearNotification";
 NSString * const DADiskDidDisappearNotification = @"DADiskDidDisppearNotification";

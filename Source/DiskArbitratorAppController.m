@@ -51,7 +51,7 @@
 {
 	NSString *iconPath = [[NSBundle mainBundle] pathForResource:name ofType:@"png"];
 	NSImage *statusIcon = [[NSImage alloc] initWithContentsOfFile:iconPath];
-	statusItem.image = statusIcon;
+	statusItem.button.image = statusIcon;
 }
 
 - (void)refreshStatusItemIcon
@@ -90,8 +90,8 @@
 	self.statusItem = [bar statusItemWithLength:NSSquareStatusItemLength];
     NSImage *altImage = [[NSImage imageNamed:@"StatusItem Disabled 1.png"] copy];
     [altImage setTemplate:YES];
-    self.statusItem.alternateImage = altImage;
-    [self.statusItem setHighlightMode:YES];
+    self.statusItem.button.alternateImage = altImage;
+    [(NSButtonCell *)self.statusItem.button.cell setHighlightsBy:NSPushInCellMask];
 	[self setStatusItemIconWithName:@"StatusItem Disabled 1"];
 	statusItem.menu = statusMenu;
 
@@ -112,7 +112,7 @@
 	window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces;
 	window.worksWhenModal = YES;
 
-	[tableView registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
+	[tableView registerForDraggedTypes:[NSArray arrayWithObject:NSPasteboardTypeFileURL]];
 
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ShowMainWindowAtStartup"])
 	{
@@ -600,9 +600,9 @@
 
     NSPasteboard* pboard = [info draggingPasteboard];
 
-	if (op == NSDragOperationCopy && [pboard.types containsObject:NSFilenamesPboardType])
+	if (op == NSDragOperationCopy && [pboard.types containsObject:NSPasteboardTypeFileURL])
 	{
-		NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
+		NSArray *files = [pboard propertyListForType:NSPasteboardTypeFileURL];
 		NSArray *extensions = [AttachDiskImageController diskImageFileExtensions];
 
 		for (NSString *file in files)
@@ -647,9 +647,9 @@
 
 	Log(LOG_DEBUG, @"%s", __func__);
 
-	if (operation == NSDragOperationCopy && [pboard.types containsObject:NSFilenamesPboardType] )
+	if (operation == NSDragOperationCopy && [pboard.types containsObject:NSPasteboardTypeFileURL] )
 	{
-		NSArray *files = [pboard propertyListForType:NSFilenamesPboardType];
+		NSArray *files = [pboard propertyListForType:NSPasteboardTypeFileURL];
 
 		Log(LOG_DEBUG, @"files: %@", files);
 

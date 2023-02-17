@@ -21,7 +21,9 @@
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key
 {
 	if ([key isEqual:@"diskDescription"])
+	{
 		return [NSSet setWithObject:@"disk.diskDescription"];
+	}
 
 	return [super keyPathsForValuesAffectingValueForKey:key];
 }
@@ -96,17 +98,27 @@
 	NSString *formattedValue;
 
 	double size = [sizeValue doubleValue];
-	
+
 	if (size > 999.0 && size < 1000000.0)
+	{
 		formattedValue = [NSString stringWithFormat:@"%03.02f KB (%@ bytes)", (size / 1000.0), sizeValue];
+	}
 	else if (size > 999999.0 && size < 1000000000.0)
+	{
 		formattedValue = [NSString stringWithFormat:@"%03.02f MB (%@ bytes)", (size / 1000000.0), sizeValue];
+	}
 	else if (size > 999999999.0 && size < 1000000000000.0)
+	{
 		formattedValue = [NSString stringWithFormat:@"%03.02f GB (%@ bytes)", (size / 1000000000.0), sizeValue];
+	}
 	else if (size > 999999999999.0)
+	{
 		formattedValue = [NSString stringWithFormat:@"%03.02f TB (%@ bytes)", (size / 1000000000000.0), sizeValue];
+	}
 	else
+	{
 		formattedValue = sizeValue.stringValue;
+	}
 
 	return formattedValue;
 }
@@ -116,7 +128,9 @@
 	CFStringRef keyRef = (__bridge CFStringRef) key;
 
 	if (CFEqual(keyRef, kDADiskDescriptionVolumeKindKey))      /* ( CFString     ) */
+	{
 		return value;
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionVolumeMountableKey) || /* ( CFBoolean    ) */
 		CFEqual(keyRef, kDADiskDescriptionVolumeNetworkKey)   ||
@@ -127,15 +141,20 @@
 		CFEqual(keyRef, kDADiskDescriptionMediaWritableKey)   ||
 		CFEqual(keyRef, kDADiskDescriptionDeviceInternalKey)
 		)
+	{
 		return [value boolValue] ? @"Yes" : @"No";
-	
-	
+	}
+
 	if (CFEqual(keyRef, kDADiskDescriptionVolumeNameKey))      /* ( CFString     ) */
+	{
 		return value;
-	
+	}
+
 	if (CFEqual(keyRef, kDADiskDescriptionVolumePathKey))      /* ( CFURL        ) */
+	{
 		return [(NSURL *)value path];
-	
+	}
+
 	if (CFEqual(keyRef, kDADiskDescriptionVolumeUUIDKey) || 	 /* ( CFUUID       ) */
 		CFEqual(keyRef, kDADiskDescriptionMediaUUIDKey))
 	{
@@ -145,73 +164,117 @@
 	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionMediaBlockSizeKey))  /* ( CFNumber     ) */
+	{
 		return [value stringValue];
-	
+	}
+
 	if (CFEqual(keyRef, kDADiskDescriptionMediaBSDMajorKey))   /* ( CFNumber     ) */
+	{
 		return [value stringValue];
-	
+	}
+
 	if (CFEqual(keyRef, kDADiskDescriptionMediaBSDMinorKey))   /* ( CFNumber     ) */
+	{
 		return [value stringValue];
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionMediaBSDNameKey))    /* ( CFString     ) */
+	{
 		return value;
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionMediaBSDUnitKey))    /* ( CFNumber     ) */
+	{
 		return [value stringValue];
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionMediaContentKey))    /* ( CFString     ) */
+	{
 		return value;
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionMediaIconKey))       /* ( CFDictionary ) */
+	{
 		return [value description];
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionMediaKindKey))       /* ( CFString     ) */
+	{
 		return value;
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionMediaNameKey))       /* ( CFString     ) */
+	{
 		return value;
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionMediaPathKey))       /* ( CFString     ) */
+	{
 		return value;
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionMediaSizeKey))       /* ( CFNumber     ) */
+	{
 		return [self formattedSizeDescriptionFromNumber:(NSNumber *)value];
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionMediaTypeKey))       /* ( CFString     ) */
+	{
 		return value;
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionDeviceGUIDKey))      /* ( CFData       ) */
+	{
 		return [value description];
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionDeviceModelKey))     /* ( CFString     ) */
+	{
 		return value;
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionDevicePathKey))      /* ( CFString     ) */
+	{
 		return value;
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionDeviceProtocolKey))  /* ( CFString     ) */
+	{
 		return value;
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionDeviceRevisionKey))  /* ( CFString     ) */
+	{
 		return value;
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionDeviceUnitKey))      /* ( CFNumber     ) */
+	{
 		return [value stringValue];
-	
+	}
+
 	if (CFEqual(keyRef, kDADiskDescriptionDeviceVendorKey))    /* ( CFString     ) */
+	{
 		return value;
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionBusNameKey))         /* ( CFString     ) */
+	{
 		return value;
+	}
 
 	if (CFEqual(keyRef, kDADiskDescriptionBusPathKey))         /* ( CFString     ) */
+	{
 		return value;
-	
+	}
+
 	if (CFEqual(keyRef, CFSTR("DAAppearanceTime")))
+	{
 		return [[NSDate dateWithTimeIntervalSinceReferenceDate:[value doubleValue]] description];
+	}
 
 	Log(LOG_INFO, @"Unknown disk description key: %@", keyRef);
-	
+
 	return @"N/A";
 }
 
@@ -225,25 +288,27 @@
 - (void)refreshDiskInfo
 {
 	self.diskDescription = self.disk.diskDescription;
-	
+
 	NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:@""];
 
 	NSFont *font = [NSFont fontWithName:@"Helvetica Bold" size:12.0];
 	NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
-	
+
 	NSArray *keys = [self.disk.diskDescription allKeys];
 	keys = [keys sortedArrayUsingSelector:@selector(compare:)];
-	
+
 	for (NSString *key in keys)
 	{
 		// Ignore certain keys
 		if ([key isEqual: (NSString *)kDADiskDescriptionMediaIconKey])
+		{
 			continue;
-		
+		}
+
 		id value = [self.disk.diskDescription objectForKey:key];
-		
-		NSString *string;
-		NSAttributedString *attrString;
+
+		NSString *string = nil;
+		NSAttributedString *attrString = nil;
 
 		string = [NSString stringWithFormat:@"\t%@\t", [self localizedStringForDADiskKey:key]];
 		attrString = [[NSAttributedString alloc] initWithString:string attributes:attrs];
@@ -254,14 +319,13 @@
 		[text appendAttributedString:attrString];
 	}
 
-	
 	NSMutableParagraphStyle *style = [NSMutableParagraphStyle new];
 	NSMutableArray *tabStops = [NSMutableArray array];
 	[tabStops addObject:[[NSTextTab alloc] initWithType:NSRightTabStopType location:2.0 * 72.0]];
 	[tabStops addObject:[[NSTextTab alloc] initWithType:NSLeftTabStopType location:2.125 * 72.0]];
 	style.tabStops = tabStops;
 	style.headIndent = (2.125 * 72.0);
-	
+
 	attrs = [NSDictionary dictionaryWithObjectsAndKeys:style, NSParagraphStyleAttributeName, nil];
 	[text addAttributes:attrs range:NSMakeRange(0, [text length])];
 
@@ -275,7 +339,8 @@
 
 - (void)setDisk:(Disk *)newDisk
 {
-	if (newDisk	!= _disk) {
+	if (newDisk	!= _disk)
+	{
 		[[NSNotificationCenter defaultCenter] removeObserver:self
 			name:DADiskDidChangeNotification object:_disk];
 		_disk = newDisk;

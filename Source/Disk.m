@@ -45,34 +45,51 @@
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key
 {
 	if ([key isEqual:@"isMountable"])
+	{
 		return [NSSet setWithObject:@"diskDescription"];
+	}
 
 	if ([key isEqual:@"isMounted"])
+	{
 		return [NSSet setWithObject:@"diskDescription"];
+	}
 
 	if ([key isEqual:@"isEjectable"])
+	{
 		return [NSSet setWithObject:@"diskDescription"];
+	}
 
 	if ([key isEqual:@"isWritable"])
+	{
 		return [NSSet setWithObject:@"diskDescription"];
+	}
 
 	if ([key isEqual:@"isRemovable"])
+	{
 		return [NSSet setWithObject:@"diskDescription"];
+	}
 
 	if ([key isEqual:@"isFileSystemWritable"])
+	{
 		return [NSSet setWithObject:@"diskDescription"];
+	}
 
 	if ([key isEqual:@"icon"])
+	{
 		return [NSSet setWithObject:@"diskDescription"];
+	}
 
 	return [super keyPathsForValuesAffectingValueForKey:key];
 }
 
 + (id)uniqueDiskForDADisk:(DADiskRef)diskRef create:(BOOL)create
 {
-	for (Disk *disk in uniqueDisks) {
+	for (Disk *disk in uniqueDisks)
+	{
 		if (disk.hash == CFHash(diskRef))
+		{
 			return disk;
+		}
 	}
 
 	return create ? [[[self.class alloc] initWithDADisk:diskRef shouldCreateParent:YES] autorelease] : nil;
@@ -81,7 +98,7 @@
 - (id)initWithDADisk:(DADiskRef)diskRef shouldCreateParent:(BOOL)shouldCreateParent
 {
 	NSAssert(diskRef, @"No Disk Arbitration disk provided to initializer.");
-	
+
 	self = [super init];
 
 	// Return unique instance
@@ -91,7 +108,7 @@
 		[self release];
 		return [uniqueDisk retain];
 	}
-	
+
 	if (self)
 	{
 		disk = CFRetain(diskRef);
@@ -171,7 +188,7 @@
 	[args getObjects:argv range:NSMakeRange(0, args.count)];
 
 	NSURL *url = path ? [NSURL fileURLWithPath:path.stringByExpandingTildeInPath] : NULL;
-	
+
 	DADiskMountWithArguments((DADiskRef) disk, (CFURLRef) url, kDADiskMountOptionDefault,
 		DiskMountCallback, self, (CFStringRef *)argv);
 
@@ -182,14 +199,14 @@
 {
 	NSAssert(self.isMountable, @"Disk isn't mountable.");
 	NSAssert(self.isMounted, @"Disk isn't mounted.");
-	
+
 	DADiskUnmount((DADiskRef) disk, (DADiskUnmountOptions)options, DiskUnmountCallback, self);
 }
 
 - (void)eject
 {
 	NSAssert1(self.isEjectable, @"Disk is not ejectable: %@", self);
-	
+
 	DADiskEject((DADiskRef) disk, kDADiskEjectOptionDefault, DiskEjectCallback, [self retain]); // self is released in DiskEjectCallback
 }
 
@@ -203,7 +220,7 @@
 
 	self.parent = nil;
 	[children removeAllObjects];
-	
+
 	self.rejectedMount = NO;
 	self.mountArgs = [NSArray array];
 	self.mountPath = nil;
@@ -220,7 +237,7 @@
 {
 	CFStringRef value = self.diskDescription ?
 		(CFStringRef)[self.diskDescription objectForKey:(NSString *)kDADiskDescriptionVolumePathKey] : NULL;
-	
+
 	return value ? YES : NO;
 }
 
@@ -282,15 +299,19 @@
 
 	// if the media is not writable, the file system cannot be either
 	if (self.isWritable == NO)
+	{
 		return NO;
+	}
 
 	volumePath = (CFURLRef)[self.diskDescription objectForKey:(NSString *)kDADiskDescriptionVolumePathKey];
-	if (volumePath) {
-
-		if (CFURLGetFileSystemRepresentation(volumePath, true, fsrep, sizeof(fsrep))) {
-
+	if (volumePath)
+	{
+		if (CFURLGetFileSystemRepresentation(volumePath, true, fsrep, sizeof(fsrep)))
+		{
 			if (statfs((char *)fsrep, &fsstat) == 0)
+			{
 				retval = (fsstat.f_flags & MNT_RDONLY) ? NO : YES;
+			}
 		}
 	}
 
@@ -300,7 +321,7 @@
 - (void)setDiskDescription:(NSDictionary *)desc
 {
 	NSAssert(desc, @"A NULL disk description is not allowed.");
-	
+
 	if (desc != _diskDescription)
 	{
 		[self willChangeValueForKey:@"diskDescription"];
@@ -322,36 +343,40 @@
 				objectForKey:(NSString *)kDADiskDescriptionMediaIconKey];
 			if (iconRef)
 			{
-
 				CFStringRef identifier = CFDictionaryGetValue(iconRef, CFSTR("CFBundleIdentifier"));
 				NSURL *url = [(NSURL *)KextManagerCreateURLForBundleIdentifier(kCFAllocatorDefault, identifier) autorelease];
-				if (url) {
+				if (url)
+				{
 					NSString *bundlePath = [url path];
 
 					NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
-					if (bundle) {
+					if (bundle)
+					{
 						NSString *filename = (NSString *) CFDictionaryGetValue(iconRef, CFSTR("IOBundleResourceFile"));
 						NSString *basename = [filename stringByDeletingPathExtension];
 						NSString *fileext =  [filename pathExtension];
 
 						NSString *path = [bundle pathForResource:basename ofType:fileext];
-						if (path) {
+						if (path)
+						{
 							icon = [[NSImage alloc] initWithContentsOfFile:path];
 						}
 					}
-					else {
+					else
+					{
 						Log(LOG_WARNING, @"Failed to load bundle with URL: %@", [url absoluteString]);
 						CFShow(self.diskDescription);
 					}
 				}
-				else {
+				else
+				{
 					Log(LOG_WARNING, @"Failed to create URL for bundle identifier: %@", (NSString *)identifier);
 					CFShow(self.diskDescription);
 				}
 			}
 		}
 	}
-	
+
 	return icon;
 }
 
@@ -364,7 +389,8 @@
 	int device = 0;
 	int slice = 0;
 	const int found = sscanf(s.UTF8String, "disk%ds%d", &device, &slice);
-	if (found == 0 || device < 0 || slice < 0) {
+	if (found == 0 || device < 0 || slice < 0)
+	{
 		NSLog(@"Invalid BSD Name %@", s);
 	}
 	return (device * 1000) + slice;

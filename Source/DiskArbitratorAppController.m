@@ -105,8 +105,8 @@
 	window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces;
 	window.worksWhenModal = YES;
 	
-	[tableView registerForDraggedTypes:[NSArray arrayWithObject:NSPasteboardTypeFileURL]];
-	
+	[tableView registerForDraggedTypes: @[NSPasteboardTypeFileURL] ];
+
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ShowMainWindowAtStartup"])
 		[window makeKeyAndOrderFront:self];
 }
@@ -509,18 +509,15 @@
 {
     Log(LOG_DEBUG, @"%s op: %ld info: %@", __func__, op, info);
 
-    NSPasteboard* pboard = [info draggingPasteboard];
-	
-	if (op == NSDragOperationCopy && [pboard.types containsObject:NSPasteboardTypeFileURL])
-	{
-		NSArray *files = [pboard propertyListForType:NSPasteboardTypeFileURL];
+	NSURL *file = [NSURL URLFromPasteboard:info.draggingPasteboard];
+
+	if ( file ) {
 		NSArray *extensions = [AttachDiskImageController diskImageFileExtensions];
-		
-		for (NSURL *file in files) {
-			if ([extensions containsObject:[file pathExtension]] == NO)
-				return NSDragOperationNone;
+
+		if ([extensions containsObject:file.pathExtension.lowercaseString] == NO) {
+			return NSDragOperationNone;
 		}
-		return NSDragOperationCopy;
+		return NSDragOperationGeneric;
 	}
 	return NSDragOperationNone;
 }
@@ -547,17 +544,14 @@
 - (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id <NSDraggingInfo>)info
 			  row:(int)row dropOperation:(NSTableViewDropOperation)operation
 {
-    NSPasteboard* pboard = [info draggingPasteboard];
-	
 	Log(LOG_DEBUG, @"%s", __func__);
 
-	if (operation == NSDragOperationCopy && [pboard.types containsObject:NSPasteboardTypeFileURL] ) {
-		NSArray *files = [pboard propertyListForType:NSPasteboardTypeFileURL];
-		
-		Log(LOG_DEBUG, @"files: %@", files);
-		
-		for (NSURL *file in files)
-			[self performSelector:@selector(doAttachDiskImageAtPath:) withObject:file afterDelay:0.01];
+	NSURL *file = [NSURL URLFromPasteboard:info.draggingPasteboard];
+	if ( file ) {
+		Log(LOG_DEBUG, @"file: %@", file);
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self doAttachDiskImageAtPath:file.path];
+		});
 	}
 	return YES;
 }

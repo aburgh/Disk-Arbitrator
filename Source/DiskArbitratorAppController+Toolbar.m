@@ -75,10 +75,8 @@
 //---------------------------------------------------------- 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
 	return [NSArray arrayWithObjects: 
-			NSToolbarSeparatorItemIdentifier,
 			NSToolbarSpaceItemIdentifier,
 			NSToolbarFlexibleSpaceItemIdentifier,
-			NSToolbarCustomizeToolbarItemIdentifier,
 			ToolbarItemInfoIdentifier,
 			ToolbarItemMountIdentifier,
 			ToolbarItemEjectIdentifier,
@@ -96,7 +94,6 @@
 			NSToolbarSpaceItemIdentifier,
 			ToolbarItemAttachDiskImageIdentifier,
 			NSToolbarFlexibleSpaceItemIdentifier,
-			NSToolbarCustomizeToolbarItemIdentifier, 
 			nil];
 }
 

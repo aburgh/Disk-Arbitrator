@@ -11,7 +11,7 @@
 @class Arbitrator;
 @class Disk;
 
-@interface AppController : NSObject // <NSApplicationDelegate> 
+@interface AppController : NSObject <NSToolbarItemValidation> // <NSApplicationDelegate>
 
 @property (assign) IBOutlet NSPanel *window;
 @property (assign) IBOutlet NSMenu *statusMenu;

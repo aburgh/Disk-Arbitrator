@@ -21,6 +21,7 @@
 @property BOOL canceled;
 
 + (NSArray *)diskImageFileExtensions;
++ (NSArray *)diskImageContentTypes;
 
 - (NSTask *)hdiutilTaskWithCommand:(NSString *)command path:(NSString *)path options:(NSArray *)options password:(NSString *)password;
 

@@ -22,3 +22,4 @@ extern NSString * const ToolbarItemInfoIdentifier;
 extern NSString * const ToolbarItemMountIdentifier;
 extern NSString * const ToolbarItemEjectIdentifier;
 extern NSString * const ToolbarItemAttachDiskImageIdentifier;
+extern NSString * const ToolbarItemTrustIdentifier;

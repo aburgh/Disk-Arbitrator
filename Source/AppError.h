@@ -35,6 +35,9 @@ void Log(NSInteger level, NSString *format, ...);
 void SetAppLogLevel(NSInteger level);
 void SetShouldLogToSyslog(BOOL flag);
 
+/* macOS 14 replaced -activateIgnoringOtherApps:. Keep Ventura working. */
+void ActivateDiskArbitratorApp(void);
+
 extern NSString * const AppErrorDomain;
 extern NSString * const AppLogLevelDefaultsKey;
 extern NSString * const AppShouldEnableSyslogDefaultsKey;

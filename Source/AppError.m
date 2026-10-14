@@ -45,6 +45,18 @@ void SetShouldLogToSyslog(BOOL flag)
 	[[NSUserDefaults standardUserDefaults] setBool:flag forKey:AppShouldEnableSyslogDefaultsKey];
 }
 
+void ActivateDiskArbitratorApp(void)
+{
+	if (@available(macOS 14.0, *)) {
+		[NSApp activate];
+	} else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+		[NSApp activateIgnoringOtherApps:YES];
+#pragma clang diagnostic pop
+	}
+}
+
 NSString * const AppErrorDomain = @"AppErrorDomain";
 NSString * const AppLogLevelDefaultsKey = @"AppLogLevel";
 NSString * const AppShouldEnableSyslogDefaultsKey = @"AppShouldEnableSyslog";

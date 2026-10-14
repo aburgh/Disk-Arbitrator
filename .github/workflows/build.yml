@@ -1,0 +1,65 @@
+name: macOS build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  universal:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Show Xcode
+        run: xcodebuild -version
+
+      - name: Build Release universal
+        run: |
+          xcodebuild \
+            -project DiskArbitrator.xcodeproj \
+            -scheme DiskArbitrator \
+            -configuration Release \
+            -derivedDataPath "${RUNNER_TEMP}/disk-arbitrator" \
+            ONLY_ACTIVE_ARCH=NO \
+            ARCHS="arm64 x86_64" \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM="" \
+            build
+
+      - name: Verify architectures and layout
+        run: |
+          APP="${RUNNER_TEMP}/disk-arbitrator/Build/Products/Release/Disk Arbitrator.app"
+          BINARY="${APP}/Contents/MacOS/Disk Arbitrator"
+          test -d "${APP}"
+          lipo -info "${BINARY}"
+          lipo -info "${BINARY}" | grep -q arm64
+          lipo -info "${BINARY}" | grep -q x86_64
+          test -f "${APP}/Contents/Library/LaunchAgents/us.burghardt.Disk-Arbitrator.plist"
+          test -f "${APP}/Contents/Resources/PrivacyInfo.xcprivacy"
+          plutil -lint "${APP}/Contents/Info.plist"
+          plutil -lint "${APP}/Contents/Library/LaunchAgents/us.burghardt.Disk-Arbitrator.plist"
+          test -d "${APP}/Contents/Frameworks/Sparkle.framework"
+          # Sparkle is optional. Empty SUFeedURL and SUPublicEDKey mean update checks are off.
+          # An unexpanded $(SPARKLE_...) value must not ship in the built plist.
+          PLIST="${APP}/Contents/Info.plist" python3 - <<'PY'
+          import os, plistlib, sys
+          with open(os.environ["PLIST"], "rb") as handle:
+              info = plistlib.load(handle)
+          ok = True
+          for key in ("SUFeedURL", "SUPublicEDKey"):
+              value = info.get(key, "")
+              if not isinstance(value, str) or "$(" in value:
+                  print(f"{key} is missing or was not expanded: {value!r}", file=sys.stderr)
+                  ok = False
+          feed = info.get("SUFeedURL", "")
+          if isinstance(feed, str) and feed and "appcast.xml" not in feed:
+              print(f"SUFeedURL is set but is not an appcast: {feed}", file=sys.stderr)
+              ok = False
+          key = info.get("SUPublicEDKey", "")
+          print(f"SUFeedURL={feed or '<empty>'}")
+          print("SUPublicEDKey=" + ("set" if isinstance(key, str) and key.strip() else "empty"))
+          sys.exit(0 if ok else 1)
+          PY
+          # Hardened runtime is recorded as the runtime codesign flag (0x10000).
+          codesign -d --verbose=2 "${APP}" 2>&1 | grep -q "runtime"

@@ -11,7 +11,11 @@
 @class Arbitrator;
 @class Disk;
 
-@interface AppController : NSObject <NSToolbarItemValidation> // <NSApplicationDelegate>
+// YES when SUFeedURL and SUPublicEDKey are both non-empty after the build.
+// An empty string or an unexpanded $(SPARKLE_...) value means update checks stay off.
+BOOL DiskArbitratorSparkleUpdatesConfigured(void);
+
+@interface AppController : NSObject <NSToolbarItemValidation, NSMenuItemValidation> // <NSApplicationDelegate>
 
 @property (assign) IBOutlet NSPanel *window;
 @property (assign) IBOutlet NSMenu *statusMenu;
@@ -27,6 +31,10 @@
 - (IBAction)showAboutPanel:(id)sender;
 - (IBAction)showMainWindow:(id)sender;
 - (IBAction)showPreferences:(id)sender;
+- (IBAction)showAuditLog:(id)sender;
+- (IBAction)showTrustedDisks:(id)sender;
+- (IBAction)checkForUpdates:(id)sender;
+- (IBAction)trustSelectedDisk:(id)sender;
 - (IBAction)performActivation:(id)sender;
 - (IBAction)performDeactivation:(id)sender;
 - (IBAction)toggleActivation:(id)sender;
@@ -40,6 +48,7 @@
 - (IBAction)performEject:(id)sender;
 - (IBAction)performGetInfo:(id)sender;
 - (IBAction)performAttachDiskImage:(id)sender;
+- (IBAction)copyDiskDetails:(id)sender;
 
 - (void)refreshLaunchAgentStatus;
 - (IBAction)installUserLaunchAgent:(id)sender;

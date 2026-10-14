@@ -21,5 +21,8 @@
 @property (copy) NSString *mediaName;
 @property (copy) NSNumber *mediaSize;
 @property (copy) NSString *volumeName;
+@property (copy) NSString *fileSystem;
+@property (copy) NSString *statusText;
+@property BOOL trusted;
 
 @end

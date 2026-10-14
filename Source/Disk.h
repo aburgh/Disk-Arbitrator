@@ -41,6 +41,9 @@ enum {
 @property (readonly) BOOL isMounted;
 @property (readwrite) BOOL isMounting;
 @property (readwrite) BOOL rejectedMount;
+/* Set only for the mount Disk Arbitrator itself just submitted. */
+@property (readwrite) BOOL allowNextMount;
+@property (readonly) BOOL isAttached;
 @property (readonly) BOOL isWritable;
 @property (readonly) BOOL isFileSystemWritable;
 @property (readonly) BOOL isEjectable;
@@ -59,5 +62,7 @@ enum {
 - (void)mountAtPath:(NSString *)path withArguments:(NSArray *)args;
 - (void)unmountWithOptions:(NSUInteger)options;
 - (void)eject;
+/* Logs unmounted when a volume disappears while still mounted. */
+- (void)recordAuditUnmountIfMounted;
 
 @end

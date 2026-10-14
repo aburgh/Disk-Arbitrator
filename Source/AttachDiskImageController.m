@@ -7,9 +7,8 @@
 //
 
 #import "AttachDiskImageController.h"
-#import <Security/Security.h>
-#import <SecurityFoundation/SFAuthorization.h>
 #import "AppError.h"
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -44,6 +43,34 @@
 	return diskImageFileExtensions;
 }
 
++ (NSArray *)diskImageContentTypes
+{
+	static NSArray *contentTypes = nil;
+	if (contentTypes)
+		return contentTypes;
+
+	NSMutableArray *types = [NSMutableArray array];
+	NSArray *identifiers = [NSArray arrayWithObjects:
+		@"public.disk-image",
+		@"com.apple.disk-image-udif",
+		@"com.apple.disk-image-sparse",
+		@"com.apple.disk-image-sparse-bundle",
+		@"public.iso-image",
+		nil];
+	for (NSString *identifier in identifiers) {
+		UTType *type = [UTType typeWithIdentifier:identifier];
+		if (type)
+			[types addObject:type];
+	}
+	for (NSString *extension in [self diskImageFileExtensions]) {
+		UTType *type = [UTType typeWithFilenameExtension:extension];
+		if (type && [types containsObject:type] == NO)
+			[types addObject:type];
+	}
+	contentTypes = [types copy];
+	return contentTypes;
+}
+
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -65,7 +92,7 @@
 	NSFileHandle *stdinHandle;
 	
 	newTask = [[NSTask new] autorelease];
-	newTask.launchPath = @"/usr/bin/hdiutil";
+	newTask.executableURL = [NSURL fileURLWithPath:@"/usr/bin/hdiutil"];
 	
 	NSMutableArray *arguments = [NSMutableArray arrayWithObject:command];
 	[arguments addObject:path];
@@ -77,8 +104,10 @@
 	
 	if (password) {
 		stdinHandle = [newTask.standardInput fileHandleForWriting];
-		[stdinHandle writeData:[password dataUsingEncoding:NSUTF8StringEncoding]];
-		[stdinHandle writeData:[NSData dataWithBytes:"" length:1]];
+		// hdiutil -stdinpass reads a NUL-terminated passphrase.
+		NSMutableData *secret = [NSMutableData dataWithData:[password dataUsingEncoding:NSUTF8StringEncoding]];
+		[secret appendBytes:"" length:1];
+		[stdinHandle writeData:secret error:NULL];
 		
 		[arguments addObject:@"-stdinpass"];
 	}
@@ -98,12 +127,20 @@
 
 	NSArray *options = [NSArray arrayWithObjects:@"-plist", nil];
 	newTask = [self hdiutilTaskWithCommand:command path:path options:options password:password];
-	[newTask launch];
-	[newTask waitUntilExit];
+	[[newTask.standardInput fileHandleForWriting] closeAndReturnError:NULL];
+	NSError *launchError = nil;
+	if (![newTask launchAndReturnError:&launchError]) {
+		Log(LOG_ERR, @"hdiutil failed to launch: %@", launchError);
+		failureReason = launchError.localizedDescription ?: NSLocalizedString(@"hdiutil failed to launch.", nil);
+		retval = NO;
+		outputData = nil;
+	}
+	else {
+		[newTask waitUntilExit];
+		outputData = [[newTask.standardOutput fileHandleForReading] readDataToEndOfFileAndReturnError:NULL];
+	}
 
-	outputData = [[newTask.standardOutput fileHandleForReading] readDataToEndOfFile];
-
-	if (newTask.terminationStatus == 0) {
+	if (retval && newTask.terminationStatus == 0 && outputData) {
         NSError *plistErr = nil;
         *outPlist = [NSPropertyListSerialization propertyListWithData:outputData options:NSPropertyListImmutable format:nil error:&plistErr];
         if (plistErr) {
@@ -115,7 +152,7 @@
 			retval = NO;
 		}
 	}
-	else {
+	else if (retval) {
 		Log(LOG_ERR, @"hdiutil termination status: %d", newTask.terminationStatus);
 		failureReason = NSLocalizedString(@"hdiutil ended abnormally.", nil); 
 		retval = NO;
@@ -194,6 +231,8 @@
 	[self.window orderOut:self];
 	
 	NSTask *theTask = notif.object;
+	[theTask.standardOutput fileHandleForReading].readabilityHandler = nil;
+	[theTask.standardError fileHandleForReading].readabilityHandler = nil;
 	
 	if (!canceled && theTask.terminationStatus != 0) {
 		
@@ -219,59 +258,34 @@
 
 - (NSString *)promptUserForPasswordAtPath:(NSString *)path error:(NSError **)outError
 {
-	SFAuthorization *authorization;
-	AuthorizationRights rights;
-	AuthorizationEnvironment env;
-	AuthorizationFlags flags;
-	AuthorizationItemSet *info;
-	OSStatus status;
-	NSString *password;
-	
+	// AuthorizationCopyInfo(kAuthorizationEnvironmentPassword) no longer returns the
+	// password the user typed. Ask with a secure field instead.
 	NSString *fileName = path.lastPathComponent;
-	NSString *prompt = [NSString stringWithFormat:NSLocalizedString(@"Enter password to access %@", nil), fileName];
-	
-	AuthorizationItem rightsItems[1] = { { "com.apple.builtin.generic-unlock", 0, NULL, 0 } };
-	rights.count = sizeof(rightsItems) / sizeof(AuthorizationItem);;
-	rights.items = rightsItems;
+	NSAlert *alert = [[NSAlert alloc] init];
+	alert.messageText = NSLocalizedString(@"Disk Image Password", nil);
+	alert.informativeText = [NSString stringWithFormat:NSLocalizedString(@"Enter the password to access %@.", nil), fileName];
+	[alert addButtonWithTitle:NSLocalizedString(@"OK", nil)];
+	[alert addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
 
-	AuthorizationItem envItems[1] = {
-		{ kAuthorizationEnvironmentPrompt, strlen([prompt UTF8String]), (void *)[prompt UTF8String], 0 }
-//		{ kAuthorizationEnvironmentPassword, 0, NULL, 0 }
-	};
-	env.count = sizeof(envItems) / sizeof(AuthorizationItem);
-	env.items = envItems;
+	NSSecureTextField *field = [[NSSecureTextField alloc] initWithFrame:NSMakeRect(0, 0, 280, 24)];
+	alert.accessoryView = field;
+	ActivateDiskArbitratorApp();
+	NSModalResponse response = [alert runModal];
+	NSString *password = [field.stringValue copy];
+	[field release];
+	[alert release];
 
-	flags = kAuthorizationFlagDefaults| kAuthorizationFlagInteractionAllowed | kAuthorizationFlagPreAuthorize;
-	
-	authorization = [SFAuthorization authorization];
-
-	if (![authorization obtainWithRights:&rights flags:flags environment:&env authorizedRights:NULL error:outError])
-	{
-		if (outError && [*outError code] != errAuthorizationCanceled)
-			Log(LOG_ERR, @"Authorization error: %@", *outError);
+	if (response != NSAlertFirstButtonReturn || password.length == 0) {
+		[password release];
+		if (outError) {
+			NSDictionary *info = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Password entry was canceled.", nil)
+			                                                 forKey:NSLocalizedDescriptionKey];
+			*outError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:info];
+		}
 		return nil;
 	}
-	
-	password = nil;
 
-	status = AuthorizationCopyInfo([authorization authorizationRef], kAuthorizationEnvironmentPassword, &info);
-	
-	if (status == noErr) {
-		if (info->count > 0 && info->items[0].valueLength > 0)
-			password = [NSString stringWithUTF8String:info->items[0].value];
-	}
-	else {
-		if (outError) {
-			NSDictionary *info;
-			info = [NSDictionary dictionaryWithObject:NSLocalizedString(@"Authorization did not return a password.", nil)
-											   forKey:NSLocalizedDescriptionKey];
-			*outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:status userInfo:info];
-		}
-	}
-	
-	AuthorizationFreeItemSet(info);
-
-	return password;
+	return [password autorelease];
 }
 
 - (BOOL)attachDiskImageAtPath:(NSString *)path options:(NSArray *)options password:(NSString *)password error:(NSError **)outError
@@ -286,7 +300,7 @@
 			if (isEncrypted) {
 				password = [self promptUserForPasswordAtPath:path error:outError];
 				if (!password)
-					return [*outError code] == errAuthorizationCanceled ? YES : NO;
+					return (outError && *outError && [*outError code] == NSUserCancelledError) ? YES : NO;
 			}
 		}
 		else {
@@ -306,24 +320,38 @@
 	
 	newTask = [self hdiutilTaskWithCommand:@"attach" path:path options:arguments password:password];
 
-	if (hasSLA) {
-		[[newTask.standardInput fileHandleForWriting] writeData:[NSData dataWithBytes:"Y\n" length:3]];
-	}
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(processStandardOutput:)
-												 name:NSFileHandleReadCompletionNotification
-											   object:[newTask.standardOutput fileHandleForReading]];
-	[[newTask.standardOutput fileHandleForReading] readInBackgroundAndNotify];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(processStandardError:)
-												 name:NSFileHandleReadCompletionNotification
-											   object:[newTask.standardError fileHandleForReading]];
-	[[newTask.standardError fileHandleForReading] readInBackgroundAndNotify];
+	if (hasSLA)
+		[[newTask.standardInput fileHandleForWriting] writeData:[NSData dataWithBytes:"Y\n" length:3] error:NULL];
+	[[newTask.standardInput fileHandleForWriting] closeAndReturnError:NULL];
+
+	NSFileHandle *stdoutHandle = [newTask.standardOutput fileHandleForReading];
+	NSFileHandle *stderrHandle = [newTask.standardError fileHandleForReading];
+	stdoutHandle.readabilityHandler = ^(NSFileHandle *handle) {
+		NSData *data = [handle readDataUpToLength:64 * 1024 error:NULL];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self consumeStandardOutput:data];
+			if (data.length == 0)
+				handle.readabilityHandler = nil;
+		});
+	};
+	stderrHandle.readabilityHandler = ^(NSFileHandle *handle) {
+		NSData *data = [handle readDataUpToLength:64 * 1024 error:NULL];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self consumeStandardError:data];
+			if (data.length == 0)
+				handle.readabilityHandler = nil;
+		});
+	};
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hdiutilAttachDidTerminate:) name:NSTaskDidTerminateNotification object:newTask];
-	[newTask launch];
+	NSError *launchError = nil;
+	if (![newTask launchAndReturnError:&launchError]) {
+		stdoutHandle.readabilityHandler = nil;
+		stderrHandle.readabilityHandler = nil;
+		if (outError)
+			*outError = launchError;
+		return NO;
+	}
 	self.task = newTask;
 	[self retain];
 	return YES;
@@ -390,7 +418,7 @@
 	panel.allowsMultipleSelection = NO;
 	panel.message = NSLocalizedString(@"Select a disk image to attach:", nil);
 	
-	panel.allowedFileTypes = [self.class diskImageFileExtensions];
+	panel.allowedContentTypes = [self.class diskImageContentTypes];
 	
 	[self.userInfo setObject:[NSNumber numberWithBool:YES] forKey:@"readOnly"];
 	
@@ -431,10 +459,13 @@
 	
 	Log(LOG_DEBUG, @"%s ", __func__);
 	
-	filename = [sender filename];
+	NSOpenPanel *panel = sender;
+	NSURL *selectedURL = panel.URL;
+	filename = selectedURL.path;
 	
-	if (!filename) {
-		filename = [[[sender directoryURL] path] stringByAppendingPathComponent:@"token"]; // SparseBundle
+	BOOL isDirectory = NO;
+	if (filename && [[NSFileManager defaultManager] fileExistsAtPath:filename isDirectory:&isDirectory] && isDirectory) {
+		filename = [filename stringByAppendingPathComponent:@"token"]; // SparseBundle
 	}
 	
 	Log(LOG_DEBUG, @"filename: %@\n", filename);
@@ -443,8 +474,8 @@
 	
 	if (handle) {
 		
-		header = [handle readDataOfLength:8];
-		[handle closeFile];
+		header = [handle readDataUpToLength:8 error:NULL];
+		[handle closeAndReturnError:NULL];
 		
 		// This check only works for Version 2 encrypted disk images, the default in Tiger and beyond
 		// We check only to remind the user if a password is needed, so do not need to catch every case.
@@ -501,16 +532,12 @@
 	return returnString;
 }
 
-- (void)processStandardOutput:(NSNotification *)notif
+- (void)consumeStandardOutput:(NSData *)data
 {
 	Log(LOG_DEBUG, @"%s", __func__);
 
 	NSString *mymessage;
-	NSFileHandle *stdoutHandle = notif.object;
 	double percentage;
-	
-//	NSData *data = [stdoutHandle availableData];
-	NSData *data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
 	
 	while ((mymessage = [self _parseNextMessage:&stdoutBuffer newData:data]))
 	{
@@ -553,21 +580,13 @@
 			Log(LOG_ERR, @"hdiutil stdout: %@", mymessage);
 		}
 	}
-	
-	if (self.task && self.task.isRunning)
-		[stdoutHandle readInBackgroundAndNotify];
 }
 
-- (void)processStandardError:(NSNotification *)notif
+- (void)consumeStandardError:(NSData *)data
 {
 	Log(LOG_DEBUG, @"%s", __func__);
 	
 	NSString *mymessage;
-	NSFileHandle *stderrHandle = notif.object;
-	
-//	NSData *data = [stderrHandle availableData];
-
-	NSData *data = [[notif userInfo] objectForKey:NSFileHandleNotificationDataItem];
 	
 	while ((mymessage = [self _parseNextMessage:&stderrBuffer newData:data]))
 	{
@@ -579,9 +598,6 @@
 		Log(LOG_ERR, @"Error: %@", mymessage);
 		self.errorMessage = mymessage;
 	}
-	
-	if (self.task && self.task.isRunning)
-		[stderrHandle readInBackgroundAndNotify];
 }
 
 @end

@@ -1,0 +1,14 @@
+// Copy this file to Config/Sparkle.local.xcconfig (gitignored) to override
+// Config/Sparkle.xcconfig, or replace the values in Config/Sparkle.xcconfig.
+// Leave the two settings empty to build with Sparkle update checks hidden.
+//
+// xcconfig treats // as a comment. Write a feed URL like this:
+//   SPARKLE_URL_SLASH = /
+//   SPARKLE_FEED_URL = https:$(SPARKLE_URL_SLASH)/github.com/OWNER/REPO/releases/latest/download/appcast.xml
+//   SPARKLE_PUBLIC_ED_KEY = <EdDSA public key printed by generate_keys>
+//
+// The private key does not belong here. Put it in the SPARKLE_PRIVATE_KEY secret.
+
+SPARKLE_URL_SLASH = /
+SPARKLE_FEED_URL =
+SPARKLE_PUBLIC_ED_KEY =

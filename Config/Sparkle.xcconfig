@@ -1,0 +1,16 @@
+// Fork default for derekgboyer/Disk-Arbitrator.
+// Upstream and other forks: replace or clear SPARKLE_FEED_URL and SPARKLE_PUBLIC_ED_KEY.
+// An empty value still builds. Update checks stay hidden until both are set.
+// Do not put a private key in this file. Appcast signing uses the SPARKLE_PRIVATE_KEY secret.
+//
+// xcconfig treats // as a comment. The feed URL uses $(SPARKLE_URL_SLASH) so the
+// slashes in https:// are not eaten. Copy Config/Sparkle.xcconfig.example to
+// Config/Sparkle.local.xcconfig (gitignored) to override these values locally.
+// The release workflow passes its own feed URL and public key to xcodebuild and
+// does not depend on Sparkle.local.xcconfig.
+
+SPARKLE_URL_SLASH = /
+SPARKLE_FEED_URL = https:$(SPARKLE_URL_SLASH)/github.com/derekgboyer/Disk-Arbitrator/releases/latest/download/appcast.xml
+SPARKLE_PUBLIC_ED_KEY = kwGfxsca37dMWVwYY/YElw+U+vF6QDXHnXbqCpWNm18=
+
+#include? "Sparkle.local.xcconfig"

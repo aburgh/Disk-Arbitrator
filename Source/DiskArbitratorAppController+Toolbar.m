@@ -8,27 +8,33 @@
 
 #import "DiskArbitratorAppController+Toolbar.h"
 #import "Disk.h"
+#import "AuditLog.h"
+#import "TrustedDiskStore.h"
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 
 
 @implementation AppController (AppControllerToolbar)
 
+- (NSImage *)toolbarSymbol:(NSString *)name fallback:(NSString *)fallback
+{
+	NSImage *image = [NSImage imageWithSystemSymbolName:name accessibilityDescription:name];
+	if (!image && fallback)
+		image = [NSImage imageNamed:fallback];
+	NSImageSymbolConfiguration *configuration = [NSImageSymbolConfiguration configurationWithPointSize:16 weight:NSFontWeightMedium scale:NSImageSymbolScaleLarge];
+	return [image imageWithSymbolConfiguration:configuration] ?: image;
+}
+
 - (NSImage *)attachDiskImageIcon
 {
-	NSImage *dmgIcon = [[NSWorkspace sharedWorkspace] iconForFileType:@"dmg"];
+	UTType *diskImageType = [UTType typeWithFilenameExtension:@"dmg"];
+	NSImage *dmgIcon = diskImageType ? [[NSWorkspace sharedWorkspace] iconForContentType:diskImageType] : nil;
 	NSImage *plugImage = [NSImage imageNamed:@"ToolbarItem Attach Disk Plug"];
-	
-	NSBitmapImageRep *compositedImage = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:32 pixelsHigh:32 bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO colorSpaceName:NSCalibratedRGBColorSpace bytesPerRow:0 bitsPerPixel:0];
 
-	[NSGraphicsContext saveGraphicsState];
-	[NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:compositedImage]];
-	[[NSGraphicsContext currentContext] setShouldAntialias:NO];
-	
-	[dmgIcon drawInRect:NSMakeRect(0, 0, 32, 32) fromRect:NSZeroRect operation:NSCompositingOperationCopy fraction:1.0];
-	[plugImage drawInRect:NSMakeRect(2, 16, 16, 16) fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0];
-	
-	[NSGraphicsContext restoreGraphicsState];
-
-	return [[NSImage alloc] initWithData:[compositedImage TIFFRepresentation]];
+	return [NSImage imageWithSize:NSMakeSize(32, 32) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+		[dmgIcon drawInRect:dstRect];
+		[plugImage drawInRect:NSMakeRect(2, 16, 16, 16)];
+		return YES;
+	}];
 }
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
@@ -38,7 +44,7 @@
 	if ([itemIdentifier isEqual:ToolbarItemInfoIdentifier]) {				// Info/Inspect
 		item.label = NSLocalizedString(@"Info", nil);
 		item.paletteLabel = NSLocalizedString(@"Info", nil);
-		item.image = [NSImage imageNamed:@"ToolbarItem Info"]; // NSImageNameInfo]];
+		item.image = [self toolbarSymbol:@"info.circle" fallback:NSImageNameInfo];
 		item.target = self;
 		item.action = @selector(performGetInfo:);
 		item.toolTip = NSLocalizedString(@"Show detailed disk info", nil);
@@ -46,7 +52,7 @@
 	else if ([itemIdentifier isEqual:ToolbarItemEjectIdentifier]) {		// Eject
 		item.label = NSLocalizedString(@"Eject", nil);
 		item.paletteLabel = NSLocalizedString(@"Eject", nil);
-		item.image = [NSImage imageNamed:@"ToolbarItem Eject"];
+		item.image = [self toolbarSymbol:@"eject.fill" fallback:NSImageNameStopProgressTemplate];
 		item.target = self;
 		item.action = @selector(performEject:);
 		item.toolTip = NSLocalizedString(@"Eject removable media.", nil);
@@ -54,7 +60,7 @@
 	else if ([itemIdentifier isEqual:ToolbarItemMountIdentifier]) {			// Mount
 		item.label = NSLocalizedString(@"Mount", nil);
 		item.paletteLabel = NSLocalizedString(@"Mount/Unmount", nil);
-		item.image = [NSImage imageNamed:@"ToolbarItem Mount"];
+		item.image = [self toolbarSymbol:@"externaldrive.badge.plus" fallback:NSImageNameAddTemplate];
 		item.target = self;
 		item.action = @selector(performMountOrUnmount:);
 		item.toolTip = NSLocalizedString(@"Select a volume, then click to mount or unmount.", nil);
@@ -63,10 +69,18 @@
 		item.label = NSLocalizedString(@"Attach", nil);
 		item.paletteLabel = NSLocalizedString(@"Attach Disk Image", nil);
 //		item.image = [NSImage imageNamed:@"ToolbarItem Attach Disk Image"];
-		item.image = self.attachDiskImageIcon;
+		item.image = [self toolbarSymbol:@"doc.badge.plus" fallback:nil] ?: self.attachDiskImageIcon;
 		item.target = self;
 		item.action = @selector(performAttachDiskImage:);
 		item.toolTip = NSLocalizedString(@"Attach Disk Image", nil);
+	}
+	else if ([itemIdentifier isEqual:ToolbarItemTrustIdentifier]) {
+		item.label = NSLocalizedString(@"Trust", nil);
+		item.paletteLabel = NSLocalizedString(@"Trust Disk", nil);
+		item.image = [self toolbarSymbol:@"checkmark.seal" fallback:NSImageNameMenuOnStateTemplate];
+		item.target = self;
+		item.action = @selector(trustSelectedDisk:);
+		item.toolTip = NSLocalizedString(@"Let the selected disk mount normally.", nil);
 	}
 	return item;
 }
@@ -80,6 +94,7 @@
 			ToolbarItemInfoIdentifier,
 			ToolbarItemMountIdentifier,
 			ToolbarItemEjectIdentifier,
+			ToolbarItemTrustIdentifier,
 			ToolbarItemAttachDiskImageIdentifier,
 			nil];
 }
@@ -89,11 +104,11 @@
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
 	return [NSArray arrayWithObjects:   
 			ToolbarItemInfoIdentifier,
-			ToolbarItemEjectIdentifier,
 			ToolbarItemMountIdentifier,
-			NSToolbarSpaceItemIdentifier,
-			ToolbarItemAttachDiskImageIdentifier,
+			ToolbarItemEjectIdentifier,
+			ToolbarItemTrustIdentifier,
 			NSToolbarFlexibleSpaceItemIdentifier,
+			ToolbarItemAttachDiskImageIdentifier,
 			nil];
 }
 
@@ -112,14 +127,22 @@
 		
 		if (self.canUnmountSelectedDisk) {
 			[toolbarItem setLabel:NSLocalizedString(@"Unmount", nil)];
+			toolbarItem.image = [self toolbarSymbol:@"externaldrive.badge.minus" fallback:NSImageNameStopProgressTemplate];
 			enabled	= YES;
 		}
 		else {
 			[toolbarItem setLabel:NSLocalizedString(@"Mount", nil)];
+			toolbarItem.image = [self toolbarSymbol:@"externaldrive.badge.plus" fallback:NSImageNameAddTemplate];
 
 			if (!self.canMountSelectedDisk)
 				enabled = NO;
 		}
+	}
+	else if ([[toolbarItem itemIdentifier] isEqual:ToolbarItemTrustIdentifier]) {
+		Disk *disk = self.selectedDisk;
+		BOOL identifiable = DAVolumeUUIDForDisk(disk).length > 0 || DAMediaUUIDForDisk(disk).length > 0;
+		BOOL alreadyTrusted = identifiable && [[TrustedDiskStore sharedStore] ruleMatchingDisk:disk] != nil;
+		enabled = identifiable && !alreadyTrusted;
 	}
 	
 	else if ([[toolbarItem itemIdentifier] isEqual:ToolbarItemEjectIdentifier]) {
@@ -145,9 +168,10 @@ void SetupToolbar(NSWindow *window, id delegate)
 
 
 // Toolbar Item Identifier constants
-NSString * const ToolbarItemMainIdentifier = @"ToolbarItemMainIdentifier";
+NSString * const ToolbarItemMainIdentifier = @"DiskArbitratorToolbar-v2";
 NSString * const ToolbarItemInfoIdentifier = @"ToolbarItemInfoIdentifier"; 
 NSString * const ToolbarItemMountIdentifier = @"ToolbarItemMountIdentifier";
 NSString * const ToolbarItemEjectIdentifier = @"ToolbarItemEjectIdentifier"; 
-NSString * const ToolbarItemAttachDiskImageIdentifier = @"ToolbarItemAttachDiskImageIdentifier"; 
+NSString * const ToolbarItemAttachDiskImageIdentifier = @"ToolbarItemAttachDiskImageIdentifier";
+NSString * const ToolbarItemTrustIdentifier = @"ToolbarItemTrustIdentifier"; 
 

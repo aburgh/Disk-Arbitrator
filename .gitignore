@@ -6,3 +6,4 @@
 *.out
 *.aux
 xcuserdata
+Config/Sparkle.local.xcconfig

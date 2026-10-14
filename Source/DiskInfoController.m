@@ -228,7 +228,7 @@
 	
 	NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:@""];
 
-	NSFont *font = [NSFont fontWithName:@"Helvetica Bold" size:12.0];
+	NSFont *font = [NSFont boldSystemFontOfSize:12.0];
 	NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
 	
 	NSArray *keys = [self.disk.diskDescription allKeys];
@@ -257,8 +257,8 @@
 	
 	NSMutableParagraphStyle *style = [NSMutableParagraphStyle new];
 	NSMutableArray *tabStops = [NSMutableArray array];
-	[tabStops addObject:[[NSTextTab alloc] initWithType:NSRightTabStopType location:2.0 * 72.0]];
-	[tabStops addObject:[[NSTextTab alloc] initWithType:NSLeftTabStopType location:2.125 * 72.0]];
+	[tabStops addObject:[[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentRight location:2.0 * 72.0 options:@{}]];
+	[tabStops addObject:[[NSTextTab alloc] initWithTextAlignment:NSTextAlignmentLeft location:2.125 * 72.0 options:@{}]];
 	style.tabStops = tabStops;
 	style.headIndent = (2.125 * 72.0);
 	

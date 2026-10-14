@@ -51,10 +51,17 @@
 		9654A46D11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9654A46C11119FB600E9B0C4 /* DiskArbitrationPrivateFunctions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9654B788111DEBBF00E9B0C4 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 9654B742111DE2EF00E9B0C4 /* README.markdown */; };
 		96647D82133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png in Resources */ = {isa = PBXBuildFile; fileRef = 96647D81133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png */; };
-		96FCBC761140C2E700E5554C /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCBC751140C2E700E5554C /* SecurityFoundation.framework */; };
-		96FCBC871140CBF400E5554C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96FCBC861140CBF400E5554C /* Security.framework */; };
 		96FCCE46114491E700E5554C /* ToolbarItem Attach Disk Image.png in Resources */ = {isa = PBXBuildFile; fileRef = 96FCCE45114491E700E5554C /* ToolbarItem Attach Disk Image.png */; };
 		A5E4FC5C1CC99D02005B7675 /* ReleaseNotes.markdown in Resources */ = {isa = PBXBuildFile; fileRef = A5E4FC5A1CC99C64005B7675 /* ReleaseNotes.markdown */; };
+		F59400021LAUNCHAGENT /* us.burghardt.Disk-Arbitrator.plist in Copy Launch Agent */ = {isa = PBXBuildFile; fileRef = F59400011LAUNCHAGENT /* us.burghardt.Disk-Arbitrator.plist */; };
+		F59400051UTIFW /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F59400041UTIFW /* UniformTypeIdentifiers.framework */; };
+		F59400071SMFW /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F59400061SMFW /* ServiceManagement.framework */; };
+		F59400091PRIVACY /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F59400081PRIVACY /* PrivacyInfo.xcprivacy */; };
+		F594A1030000000000000003 /* AuditLog.m in Sources */ = {isa = PBXBuildFile; fileRef = F594A1020000000000000002 /* AuditLog.m */; };
+		F594B1030000000000000003 /* TrustedDiskStore.m in Sources */ = {isa = PBXBuildFile; fileRef = F594B1020000000000000002 /* TrustedDiskStore.m */; };
+		F594C1030000000000000003 /* SettingsWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = F594C1020000000000000002 /* SettingsWindowController.m */; };
+		F594D1030000000000000003 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = F594D1020000000000000002 /* Sparkle */; };
+		F594E2020000000000000002 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F594E2010000000000000001 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -84,7 +91,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		256AC3D80F4B6AC300CF3369 /* DiskArbitratorAppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiskArbitratorAppController.h; sourceTree = "<group>"; };
 		256AC3D90F4B6AC300CF3369 /* DiskArbitratorAppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiskArbitratorAppController.m; sourceTree = "<group>"; };
 		256AC3F00F4B6AF500CF3369 /* DiskArbitrator_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiskArbitrator_Prefix.pch; sourceTree = "<group>"; };
@@ -123,9 +130,20 @@
 		9654B742111DE2EF00E9B0C4 /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.markdown; sourceTree = "<group>"; };
 		9654B7A9111E473200E9B0C4 /* build_dmg.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = build_dmg.sh; sourceTree = "<group>"; };
 		96647D81133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolbarItem Attach Disk Plug.png"; path = "Resources/ToolbarItem Attach Disk Plug.png"; sourceTree = "<group>"; };
-		96FCBC751140C2E700E5554C /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = System/Library/Frameworks/SecurityFoundation.framework; sourceTree = SDKROOT; };
-		96FCBC861140CBF400E5554C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		96FCCE45114491E700E5554C /* ToolbarItem Attach Disk Image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ToolbarItem Attach Disk Image.png"; path = "Resources/ToolbarItem Attach Disk Image.png"; sourceTree = "<group>"; };
+		F59400011LAUNCHAGENT /* us.burghardt.Disk-Arbitrator.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Resources/LaunchAgents/us.burghardt.Disk-Arbitrator.plist"; sourceTree = "<group>"; };
+		F59400041UTIFW /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
+		F59400061SMFW /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
+		F59400081PRIVACY /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Resources/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		F594E2010000000000000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Resources/Assets.xcassets; sourceTree = "<group>"; };
+		F594F0010000000000000001 /* Sparkle.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Sparkle.xcconfig; sourceTree = "<group>"; };
+		F594F0030000000000000003 /* Sparkle.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Sparkle.xcconfig.example; sourceTree = "<group>"; };
+		F594A1010000000000000001 /* AuditLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AuditLog.h; sourceTree = "<group>"; };
+		F594A1020000000000000002 /* AuditLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AuditLog.m; sourceTree = "<group>"; };
+		F594B1010000000000000001 /* TrustedDiskStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrustedDiskStore.h; sourceTree = "<group>"; };
+		F594B1020000000000000002 /* TrustedDiskStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrustedDiskStore.m; sourceTree = "<group>"; };
+		F594C1010000000000000001 /* SettingsWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsWindowController.h; sourceTree = "<group>"; };
+		F594C1020000000000000002 /* SettingsWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingsWindowController.m; sourceTree = "<group>"; };
 		A5E4FC5A1CC99C64005B7675 /* ReleaseNotes.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = ReleaseNotes.markdown; sourceTree = "<group>"; };
 		E48EB2D323EE60EC00C0B297 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		E48EB2D423EE60EC00C0B297 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MountOptions.xib; sourceTree = "<group>"; };
@@ -142,8 +160,9 @@
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				964E4D8C10F9E3C3007B3112 /* DiskArbitration.framework in Frameworks */,
 				964E4EF210FA8058007B3112 /* IOKit.framework in Frameworks */,
-				96FCBC871140CBF400E5554C /* Security.framework in Frameworks */,
-				96FCBC761140C2E700E5554C /* SecurityFoundation.framework in Frameworks */,
+				F59400051UTIFW /* UniformTypeIdentifiers.framework in Frameworks */,
+				F59400071SMFW /* ServiceManagement.framework in Frameworks */,
+				F594D1030000000000000003 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,6 +190,12 @@
 				9626E83111314E7600B803AB /* AttachDiskImageController.m */,
 				9626E5071124C63100B803AB /* DiskInfoController.h */,
 				9626E5081124C63100B803AB /* DiskInfoController.m */,
+				F594A1010000000000000001 /* AuditLog.h */,
+				F594A1020000000000000002 /* AuditLog.m */,
+				F594B1010000000000000001 /* TrustedDiskStore.h */,
+				F594B1020000000000000002 /* TrustedDiskStore.m */,
+				F594C1010000000000000001 /* SettingsWindowController.h */,
+				F594C1020000000000000002 /* SettingsWindowController.m */,
 			);
 			name = Classes;
 			path = Source;
@@ -180,10 +205,10 @@
 			isa = PBXGroup;
 			children = (
 				964E4EF110FA8058007B3112 /* IOKit.framework */,
-				96FCBC751140C2E700E5554C /* SecurityFoundation.framework */,
 				964E4D8B10F9E3C3007B3112 /* DiskArbitration.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
-				96FCBC861140CBF400E5554C /* Security.framework */,
+				F59400041UTIFW /* UniformTypeIdentifiers.framework */,
+				F59400061SMFW /* ServiceManagement.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -199,6 +224,7 @@
 		29B97314FDCFA39411CA2CEA /* DiskArbitrator */ = {
 			isa = PBXGroup;
 			children = (
+				F594F0020000000000000002 /* Config */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -229,6 +255,9 @@
 				9654A1D8110C760300E9B0C4 /* Images */,
 				A532F1F31B93C4A0007DC4FD /* Nibs */,
 				8D1107310486CEB800E47090 /* DiskArbitrator-Info.plist */,
+				F59400081PRIVACY /* PrivacyInfo.xcprivacy */,
+				F594E2010000000000000001 /* Assets.xcassets */,
+				F59400011LAUNCHAGENT /* us.burghardt.Disk-Arbitrator.plist */,
 				9654B742111DE2EF00E9B0C4 /* README.markdown */,
 				A5E4FC5A1CC99C64005B7675 /* ReleaseNotes.markdown */,
 			);
@@ -260,6 +289,15 @@
 			name = Images;
 			sourceTree = "<group>";
 		};
+		F594F0020000000000000002 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				F594F0010000000000000001 /* Sparkle.xcconfig */,
+				F594F0030000000000000003 /* Sparkle.xcconfig.example */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		A532F1F31B93C4A0007DC4FD /* Nibs */ = {
 			isa = PBXGroup;
 			children = (
@@ -282,6 +320,8 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				F59400031COPYPHASE /* Copy Launch Agent */,
+				F594F0040000000000000004 /* Normalize Sparkle Info.plist */,
 			);
 			buildRules = (
 				9654B73F111DE27C00E9B0C4 /* PBXBuildRule */,
@@ -291,6 +331,9 @@
 			name = DiskArbitrator;
 			productInstallPath = "$(HOME)/Applications";
 			productName = DiskArbitrator;
+			packageProductDependencies = (
+				F594D1020000000000000002 /* Sparkle */,
+			);
 			productReference = 8D1107320486CEB800E47090 /* Disk Arbitrator.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -313,6 +356,9 @@
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* DiskArbitrator */;
 			projectDirPath = "";
+			packageReferences = (
+				F594D1010000000000000001 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* DiskArbitrator */,
@@ -343,10 +389,26 @@
 				96FCCE46114491E700E5554C /* ToolbarItem Attach Disk Image.png in Resources */,
 				96033DD51210E1DB006F4F11 /* Preferences.xib in Resources */,
 				96647D82133F95CB00E3EF30 /* ToolbarItem Attach Disk Plug.png in Resources */,
+				F59400091PRIVACY /* PrivacyInfo.xcprivacy in Resources */,
+				F594E2020000000000000002 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F59400031COPYPHASE /* Copy Launch Agent */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LaunchAgents;
+			dstSubfolderSpec = 1;
+			files = (
+				F59400021LAUNCHAGENT /* us.burghardt.Disk-Arbitrator.plist in Copy Launch Agent */,
+			);
+			name = "Copy Launch Agent";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		9654B7A2111E46D600E9B0C4 /* ShellScript */ = {
@@ -361,6 +423,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Source/build_dmg.sh\" \"Disk Arbitrator\"\n";
+		};
+		F594F0040000000000000004 /* Normalize Sparkle Info.plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)",
+				"$(SRCROOT)/scripts/normalize_sparkle_info_plist.py",
+			);
+			name = "Normalize Sparkle Info.plist";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/sparkle-info-plist-normalized",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -x /usr/bin/python3 ]; then\n  exec /usr/bin/python3 \"${SRCROOT}/scripts/normalize_sparkle_info_plist.py\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\" \"${DERIVED_FILE_DIR}/sparkle-info-plist-normalized\"\nfi\nexec python3 \"${SRCROOT}/scripts/normalize_sparkle_info_plist.py\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\" \"${DERIVED_FILE_DIR}/sparkle-info-plist-normalized\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -380,6 +459,9 @@
 				9626E46A112395DD00B803AB /* SheetController.m in Sources */,
 				9626E5091124C63100B803AB /* DiskInfoController.m in Sources */,
 				9626E83211314E7600B803AB /* AttachDiskImageController.m in Sources */,
+				F594A1030000000000000003 /* AuditLog.m in Sources */,
+				F594B1030000000000000003 /* TrustedDiskStore.m in Sources */,
+				F594C1030000000000000003 /* SettingsWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,7 +528,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				MACOSX_DEPLOYMENT_TARGET = 14.2;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_NAME = "Disk Arbitrator.dmg";
 			};
 			name = Debug;
@@ -459,7 +541,7 @@
 				COPY_PHASE_STRIP = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				MACOSX_DEPLOYMENT_TARGET = 14.2;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_NAME = "Disk Arbitrator.dmg";
 				ZERO_LINK = NO;
 			};
@@ -467,14 +549,18 @@
 		};
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F594F0010000000000000001 /* Sparkle.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_INTERFACE_IVARS = YES_ERROR;
 				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 12;
 				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -482,8 +568,13 @@
 				GCC_PREFIX_HEADER = Source/DiskArbitrator_Prefix.pch;
 				INFOPLIST_FILE = "Resources/DiskArbitrator-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = 14.2;
-				PRODUCT_BUNDLE_IDENTIFIER = "us.burghardt.${PRODUCT_NAME:rfc1034identifier}";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 0.10.2;
+				PRODUCT_BUNDLE_IDENTIFIER = "us.burghardt.Disk-Arbitrator";
 				PRODUCT_NAME = "Disk Arbitrator";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -492,21 +583,32 @@
 		};
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F594F0010000000000000001 /* Sparkle.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_OBJC_INTERFACE_IVARS = YES_ERROR;
+				CODE_SIGN_ENTITLEMENTS = Resources/DiskArbitrator.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/DiskArbitrator_Prefix.pch;
 				INFOPLIST_FILE = "Resources/DiskArbitrator-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				MACOSX_DEPLOYMENT_TARGET = 14.2;
-				PRODUCT_BUNDLE_IDENTIFIER = "us.burghardt.${PRODUCT_NAME:rfc1034identifier}";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 0.10.2;
+				PRODUCT_BUNDLE_IDENTIFIER = "us.burghardt.Disk-Arbitrator";
 				PRODUCT_NAME = "Disk Arbitrator";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -516,6 +618,7 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
@@ -543,22 +646,29 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.5;
-				ONLY_ACTIVE_ARCH = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
+				ARCHS = (
+					arm64,
+					x86_64,
+				);
+				SPARKLE_FEED_URL = "";
+				SPARKLE_PUBLIC_ED_KEY = "";
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
@@ -584,15 +694,22 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
+				ARCHS = (
+					arm64,
+					x86_64,
+				);
+				SPARKLE_FEED_URL = "";
+				SPARKLE_PUBLIC_ED_KEY = "";
 			};
 			name = Release;
 		};
@@ -627,6 +744,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F594D1010000000000000001 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F594D1020000000000000002 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F594D1010000000000000001 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
 }

@@ -9,6 +9,8 @@
 
 #import "DiskArbitrationPrivateFunctions.h"
 #import "AppError.h"
+#import "AuditLog.h"
+#import "Disk.h"
 
 // Globals
 NSMutableSet *uniqueDisks;
@@ -46,18 +48,19 @@ void InitializeDiskArbitration(void)
 BOOL DADiskValidate(DADiskRef diskRef)
 {
 	//
-	// Reject certain disk media
+	// Reject certain disk media. Do not raise: an exception inside a Disk Arbitration
+	// callback kills the process and drops mount protection.
 	//
 	
 	BOOL isOK = YES;
 	
-	// Reject if no BSDName
-	if (DADiskGetBSDName(diskRef) == NULL) 
-		[NSException raise:NSInternalInconsistencyException format:@"Disk without BSDName"];
-//		return NO;
+	// APFS synthesized disks, snapshots, and some disk-image pieces have no BSD name.
+	if (DADiskGetBSDName(diskRef) == NULL)
+		return NO;
 	
 	CFDictionaryRef desc = DADiskCopyDescription(diskRef);
-	//	CFShow(desc);
+	if (!desc)
+		return NO;
 	
 	// Reject if no key-value for Whole Media
 	CFBooleanRef wholeMediaValue = CFDictionaryGetValue(desc, kDADiskDescriptionMediaWholeKey);
@@ -97,6 +100,8 @@ void DiskDisappearedCallback(DADiskRef diskRef, void *context)
 	if (!tmpDisk) {
 		return;
 	}
+
+	[tmpDisk recordAuditUnmountIfMounted];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidDisappearNotification object:tmpDisk];
 	
@@ -121,27 +126,57 @@ void DiskDescriptionChangedCallback(DADiskRef diskRef, CFArrayRef keys, void *co
 	}
 }
 
+static NSString *DissenterStatusString(DADissenterRef dissenter)
+{
+	DAReturn status = DADissenterGetStatus(dissenter);
+	NSString *statusString = (NSString *)DADissenterGetStatusString(dissenter);
+	if (statusString)
+		return statusString;
+
+	IOReturn systemCode = err_get_system(status);
+	IOReturn subSystemCode = err_get_sub(status);
+	IOReturn errorCode = err_get_code(status);
+	return [NSString stringWithFormat:@"%@: system: %d; subsystem: %d; error: %d",
+		NSLocalizedString(@"Dissenter status code", nil), systemCode, subSystemCode, errorCode];
+}
+
+static void RecordMountResult(Disk *disk, DADissenterRef dissenter, NSString *statusString)
+{
+	if (![disk isKindOfClass:[Disk class]])
+		return;
+
+	// A successful mount or unmount is recorded when the volume path changes.
+	// This callback only records failures of a mount Disk Arbitrator itself submitted.
+	if (dissenter)
+		[[AuditLog sharedLog] recordEvent:DAAuditEventError disk:disk action:@"mount_failed" message:statusString];
+}
+
 void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *context)
 {
-//	Disk *disk = (Disk *)context;
 	NSMutableDictionary *info = nil;
+
+	if ([((id)context) isKindOfClass:[Disk class]]) {
+		Disk *disk = (Disk *)context;
+		CFDictionaryRef desc = diskRef ? DADiskCopyDescription(diskRef) : NULL;
+		if (desc) {
+			disk.diskDescription = (NSDictionary *)desc;
+			CFRelease(desc);
+		}
+		disk.isMounting = NO;
+		disk.allowNextMount = NO;
+		// Keep rejectedMount set when our read-only remount fails so a system retry
+		// cannot schedule another attempt and loop the failure dialog.
+		if (!dissenter)
+			disk.rejectedMount = NO;
+	}
 
 	Log(LOG_DEBUG, @"%s %@ dissenter: %p", __func__, context, dissenter);
 
+	NSString *statusString = nil;
 	if (dissenter)
 	{
 		DAReturn status = DADissenterGetStatus(dissenter);
-
-		NSString *statusString = (NSString *) DADissenterGetStatusString(dissenter);
-		if (!statusString)
-		{
-			IOReturn systemCode = err_get_system(status);
-			IOReturn subSystemCode = err_get_sub(status);
-			IOReturn errorCode = err_get_code(status);
-
-			statusString = [NSString stringWithFormat:@"%@: system: %d; subsystem: %d; error: %d",
-				NSLocalizedString(@"Dissenter status code", nil), systemCode, subSystemCode, errorCode];
-		}
+		statusString = DissenterStatusString(dissenter);
 
 		Log(LOG_INFO, @"%s %@ dissenter: (%#x) %@", __func__, context, status, statusString);
 
@@ -153,7 +188,9 @@ void DiskMountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 	{
 		Log(LOG_DEBUG, @"%s disk %@ mounted", __func__, context);
 	}
-	
+
+	RecordMountResult((Disk *)context, dissenter, statusString);
+
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidAttemptMountNotification object:context userInfo:info];
 }
 
@@ -169,6 +206,7 @@ void DiskUnmountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *cont
 			statusString = [NSString stringWithFormat:@"Error code: %d", status];
 
 		Log(LOG_DEBUG, @"%s disk %@ dissenter: (%d) %@", __func__, context, status, statusString);
+		[[AuditLog sharedLog] recordEvent:DAAuditEventError disk:(Disk *)context action:@"unmount_failed" message:statusString];
 
 		info = [NSDictionary dictionaryWithObjectsAndKeys:
 				[NSNumber numberWithInt:status], DAStatusErrorKey,
@@ -178,6 +216,18 @@ void DiskUnmountCallback(DADiskRef diskRef, DADissenterRef dissenter, void *cont
 	}
 	else {
 		Log(LOG_DEBUG, @"%s disk %@ unmounted", __func__, context);
+		if (diskRef && [((id)context) isKindOfClass:[Disk class]]) {
+			Disk *disk = (Disk *)context;
+			CFDictionaryRef desc = DADiskCopyDescription(diskRef);
+			if (desc) {
+				disk.diskDescription = (NSDictionary *)desc;
+				CFRelease(desc);
+			}
+			// The description update logs the unmount when the volume path is gone.
+			// If that copy still shows a path, a later description change records it.
+			if (!disk.isMounted)
+				[disk recordAuditUnmountIfMounted];
+		}
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidAttemptUnmountNotification object:context userInfo:info];
@@ -196,6 +246,7 @@ void DiskEjectCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 			statusString = [NSString stringWithFormat:@"Error code: %d", status];
 		
 		Log(LOG_INFO, @"%s disk: %@ dissenter: (%d) %@", __func__, context, status, statusString);
+		[[AuditLog sharedLog] recordEvent:DAAuditEventError disk:(Disk *)context action:@"eject_failed" message:statusString];
 		
 		info = [NSDictionary dictionaryWithObjectsAndKeys:
 				[NSNumber numberWithInt:status], DAStatusErrorKey,
@@ -205,6 +256,7 @@ void DiskEjectCallback(DADiskRef diskRef, DADissenterRef dissenter, void *contex
 	}
 	else {
 		Log(LOG_DEBUG, @"%s disk ejected: %@ ", __func__, context);
+		[[AuditLog sharedLog] recordEvent:DAAuditEventEjected disk:(Disk *)context action:@"ejected" message:nil];
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:DADiskDidAttemptEjectNotification object:context userInfo:info];

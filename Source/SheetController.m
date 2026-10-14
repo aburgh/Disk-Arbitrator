@@ -18,21 +18,29 @@
 	self.userInfo = [NSMutableDictionary dictionary];
 }
 
-- (IBAction)alternate:(id)sender
+- (void)endWithReturnCode:(NSModalResponse)returnCode
 {
 	[self.window endEditingFor:nil];
-	[NSApp endSheet:self.window returnCode:-1];
+	NSWindow *parent = self.window.sheetParent;
+	if (parent)
+		[parent endSheet:self.window returnCode:returnCode];
+	else
+		[NSApp stopModalWithCode:returnCode];
+}
+
+- (IBAction)alternate:(id)sender
+{
+	[self endWithReturnCode:-1];
 }
 
 - (IBAction)cancel:(id)sender
 {
-	[NSApp endSheet:self.window returnCode:NSModalResponseCancel];
+	[self endWithReturnCode:NSModalResponseCancel];
 }
 
 - (IBAction)ok:(id)sender
 {
-	[self.window endEditingFor:nil];
-	[NSApp endSheet:self.window returnCode:NSModalResponseOK];
+	[self endWithReturnCode:NSModalResponseOK];
 }
 
 @end

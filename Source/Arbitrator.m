@@ -10,6 +10,8 @@
 #import "AppError.h"
 #import "Disk.h"
 #import "DiskArbitrationPrivateFunctions.h"
+#import "AuditLog.h"
+#import "TrustedDiskStore.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -64,6 +66,8 @@
 
 - (void)dealloc
 {
+	[NSObject cancelPreviousPerformRequestsWithTarget:self];
+
 	if (approvalSession)
 		[self deactivate];
 	
@@ -96,11 +100,14 @@
 	Log(LOG_DEBUG, @"%s disk: %@", __func__, disk.BSDName);
 
 	[self addDisksObject:disk];
+	[[AuditLog sharedLog] recordEvent:DAAuditEventAppeared disk:disk action:@"observed" message:nil];
 }
 
 - (void)diskDidDisappear:(NSNotification *)notif
 {
-	[self removeDisksObject:notif.object];
+	Disk *disk = notif.object;
+	[[AuditLog sharedLog] recordEvent:DAAuditEventDisappeared disk:disk action:@"observed" message:nil];
+	[self removeDisksObject:disk];
 }
 
 - (void)diskDidChange:(NSNotification *)notif
@@ -136,26 +143,17 @@
 
 - (void)mountApprovedDisk:(Disk *)disk
 {
-	NSAssert(self.isActivated, @"bug");
-	
-	NSArray *args = disk.mountArgs;
-	NSString *path = disk.mountPath;
-	if (!args || !args.count) {
-		NSAssert(self.mountMode == MM_READONLY, @"Unknown mount mode");
-		
-		// Arguments will be passed via the -o flag of mount. If the file system specific mount, e.g. mount_hfs,
-		// supports additional flags that mount(8) doesn't, they can be passed to -o.  That feature is used to
-		// pass -j to mount_hfs, which instructs HFS to ignore journal.  Normally, an HFS volume that
-		// has a dirty journal will fail to mount read-only because the file system is inconsistent.  "-j" is
-		// a work-around.
-		
-		if (disk.isHFS)
-			args = [NSArray arrayWithObjects:@"-j", @"rdonly", nil];
-		else
-			args = [NSArray arrayWithObjects:@"rdonly", nil];
-		path = nil;
-	}
-	[disk mountAtPath:path withArguments:args];
+	// Only the read-only mode replaces a blocked system mount. Block mode leaves the volume unmounted.
+	// Always request rdonly here. Reusing mountArgs from an earlier manual mount could remount read-write.
+	if (!self.isActivated || self.mountMode != MM_READONLY)
+		return;
+	if (!disk.isAttached || !disk.isMountable || disk.isMounted || disk.isMounting)
+		return;
+
+	// Arguments are passed via mount -o. "-j" is mount_hfs's ignore-journal flag, so a dirty HFS
+	// volume can still be mounted read-only. APFS, FAT, and exFAT do not take that flag.
+	NSArray *args = disk.isHFS ? [NSArray arrayWithObjects:@"-j", @"rdonly", nil] : [NSArray arrayWithObjects:@"rdonly", nil];
+	[disk mountAtPath:nil withArguments:args];
 }
 
 - (NSString *)dissenterMessage
@@ -170,51 +168,74 @@
 
 - (DADissenterRef)approveMount:(Disk *)disk __attribute__((cf_returns_retained))
 {
-	if (self.isActivated) {
-		// Block mode prevents everything from mounting, unless this disk is being mounted from our GUI
-		if (self.mountMode == MM_BLOCK && !disk.isMounting) {
-			return [self defaultDissenter];
-		}
+	if (!self.isActivated)
+		return NULL;
 
-		// When an approve mount callback is received, we have no idea if this approval was from
-		// a mount that belongs to us, or someone else. So we track whether we have rejected a
-		// mount request, and only allow mounts after we have rejected the initial request.
-		if (!disk.rejectedMount) {
-			disk.rejectedMount = YES;
-			// Do the mount after a slight delay to allow time for this approval to finish
-			[self performSelector:@selector(mountApprovedDisk:) withObject:disk afterDelay:0.1];
-			return [self defaultDissenter];
-		} else {
-			// Allow the mount since we previously rejected it
-			NSAssert(disk.isMounting == YES, @"invalid state");
-			disk.isMounting = NO;
-			disk.rejectedMount = NO;
-			return NULL;
-		}
+	// mountAtPath: sets this immediately before DADiskMountWithArguments. That call does not
+	// spin the run loop, so the next approval delivered for this disk is the one we just issued
+	// (a manual mount, or the read-only remount below). A system retry that arrives before that
+	// flag is set must keep being rejected — allowing it was a read-write hole.
+	if (disk.allowNextMount) {
+		disk.allowNextMount = NO;
+		disk.rejectedMount = NO;
+		return NULL;
 	}
 
-	// Not activated, all mounting of everything
-	return NULL;
+	// A trusted disk mounts the way the system asked. Block and read-only still apply to every other disk.
+	TrustedDiskRule *trusted = [[TrustedDiskStore sharedStore] ruleMatchingDisk:disk];
+	if (trusted) {
+		NSString *message = [NSString stringWithFormat:@"%@ %@", trusted.kind, trusted.identifier];
+		[[AuditLog sharedLog] recordEvent:DAAuditEventRuleMatched disk:disk action:@"allowed_normal_mount" message:message];
+		return NULL;
+	}
+
+	// Read-only mode dissents, then mounts again with rdonly. Block mode dissents and leaves it unmounted.
+	BOOL scheduleReadOnly = (self.mountMode == MM_READONLY && !disk.rejectedMount && disk.isMountable && disk.isAttached);
+	if (scheduleReadOnly) {
+		disk.rejectedMount = YES;
+		// Let diskarbitrationd finish the dissented mount before we submit our own.
+		[self performSelector:@selector(mountApprovedDisk:) withObject:disk afterDelay:0.25];
+	}
+
+	[[AuditLog sharedLog] recordEvent:DAAuditEventBlocked
+								  disk:disk
+								action:(scheduleReadOnly ? @"dissented_read_only_remount" : @"dissented")
+							   message:self.dissenterMessage];
+
+	return [self defaultDissenter];
 }
 
 - (BOOL)activate
 {
 	BOOL success;
+	BOOL wasActivated = self.isActivated;
 	
 	[self willChangeValueForKey:@"isActivated"];
 	success = [self registerApprovalSession];
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:ArbitratorIsEnabled];
-	[self didChangeValueForKey:@"isActivated"];	
+	[self didChangeValueForKey:@"isActivated"];
+
+	// Log the transition only. A second activate while the session is already up is not a new mode.
+	if (success && !wasActivated)
+		[[AuditLog sharedLog] recordModeChange:@"activated"];
 	
 	return success;
 }
 
 - (void)deactivate
 {
+	BOOL wasActivated = self.isActivated;
+
+	for (Disk *disk in disks)
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(mountApprovedDisk:) object:disk];
+
 	[self willChangeValueForKey:@"isActivated"];
 	[self unregisterApprovalSession];
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:ArbitratorIsEnabled];
-	[self didChangeValueForKey:@"isActivated"];	
+	[self didChangeValueForKey:@"isActivated"];
+
+	if (wasActivated)
+		[[AuditLog sharedLog] recordModeChange:@"deactivated"];
 }
 
 - (BOOL)isActivated
@@ -235,12 +256,28 @@
 	return [[NSUserDefaults standardUserDefaults] integerForKey:ArbitratorMountMode];
 }
 
+- (void)recordMountModeChangeFrom:(NSInteger)previous to:(NSInteger)mountMode
+{
+	// One entry for each mode that actually flipped. Switching block to read-only is
+	// "blocking off" and "read-only on", not a refresh of the window.
+	if (previous == MM_BLOCK && mountMode != MM_BLOCK)
+		[[AuditLog sharedLog] recordModeChange:@"blocking off"];
+	else if (previous != MM_BLOCK && mountMode == MM_BLOCK)
+		[[AuditLog sharedLog] recordModeChange:@"blocking on"];
+
+	if (previous == MM_READONLY && mountMode != MM_READONLY)
+		[[AuditLog sharedLog] recordModeChange:@"read-only off"];
+	else if (previous != MM_READONLY && mountMode == MM_READONLY)
+		[[AuditLog sharedLog] recordModeChange:@"read-only on"];
+}
+
 - (void)setMountMode:(NSInteger)mountMode {
 	NSInteger currentMode = [[NSUserDefaults standardUserDefaults] integerForKey:ArbitratorMountMode];
 	if (currentMode != mountMode) {
 		[self willChangeValueForKey:@"mountMode"];
 		[[NSUserDefaults standardUserDefaults] setInteger:mountMode forKey:ArbitratorMountMode];
 		[self didChangeValueForKey:@"mountMode"];
+		[self recordMountModeChangeFrom:currentMode to:mountMode];
 	}
 }
 

@@ -8,18 +8,30 @@
 
 #import "Disk.h"
 #import "AppError.h"
+#import "AuditLog.h"
 #import <DiskArbitration/DiskArbitration.h>
 #import "DiskArbitrationPrivateFunctions.h"
-#import <IOKit/kext/KextManager.h>
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #include <sys/param.h>
 #include <sys/mount.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 
+enum {
+	DAAuditMountUnmounted = 0,
+	DAAuditMountReadOnly = 1,
+	DAAuditMountReadWrite = 2
+};
+
 @interface Disk ()
 {
 	CFTypeRef disk;
+	NSInteger auditMountState;
+	BOOL auditStateKnown;
 }
+
+- (NSInteger)currentAuditMountState;
+- (void)recordAuditMountTransition;
 
 @end
 
@@ -31,6 +43,7 @@
 @synthesize BSDName;
 @synthesize isMounting;
 @synthesize rejectedMount;
+@synthesize allowNextMount;
 @synthesize icon;
 @synthesize parent;
 @synthesize children;
@@ -117,6 +130,8 @@
 			}
 		}
 		[uniqueDisks addObject:self];
+		auditMountState = [self currentAuditMountState];
+		auditStateKnown = YES;
 	}
 	return self;
 }
@@ -154,10 +169,19 @@
 	[self mountAtPath:nil withArguments:[NSArray array]];
 }
 
+- (BOOL)isAttached
+{
+	return disk != NULL;
+}
+
 - (void)mountAtPath:(NSString *)path withArguments:(NSArray *)args
 {
-	NSAssert(self.isMountable, @"Disk isn't mountable.");
-	NSAssert(self.isMounted == NO, @"Disk is already mounted.");
+	if (disk == NULL || !self.isMountable || self.isMounted) {
+		Log(LOG_ERR, @"Not mounting %@ (attached=%d mountable=%d mounted=%d)", BSDName, disk != NULL, self.isMountable, self.isMounted);
+		self.isMounting = NO;
+		self.allowNextMount = NO;
+		return;
+	}
 
 	self.isMounting = YES;
 	self.mountArgs = args;
@@ -166,12 +190,16 @@
 	Log(LOG_DEBUG, @"%s mount %@ at mountpoint: %@ arguments: %@", __func__, BSDName, path, args.description);
 
 	// ensure arg list is NULL terminated
-	id *argv = calloc(args.count + 1, sizeof(id));
-
-	[args getObjects:argv range:NSMakeRange(0, args.count)];
+	id __unsafe_unretained *argv = calloc(args.count + 1, sizeof(id));
+	if (args.count > 0)
+		[args getObjects:argv range:NSMakeRange(0, args.count)];
 
 	NSURL *url = path ? [NSURL fileURLWithPath:path.stringByExpandingTildeInPath] : NULL;
-	
+
+	// Consumed by the mount-approval callback. Set immediately before the call; that call
+	// returns without spinning the run loop, so this is not cleared by an unrelated callback.
+	self.allowNextMount = YES;
+
 	DADiskMountWithArguments((DADiskRef) disk, (CFURLRef) url, kDADiskMountOptionDefault,
 		DiskMountCallback, self, (CFStringRef *)argv);
 
@@ -180,15 +208,20 @@
 
 - (void)unmountWithOptions:(NSUInteger)options
 {
-	NSAssert(self.isMountable, @"Disk isn't mountable.");
-	NSAssert(self.isMounted, @"Disk isn't mounted.");
+	if (disk == NULL || !self.isMountable || !self.isMounted) {
+		Log(LOG_ERR, @"Not unmounting %@ (attached=%d mountable=%d mounted=%d)", BSDName, disk != NULL, self.isMountable, self.isMounted);
+		return;
+	}
 	
 	DADiskUnmount((DADiskRef) disk, (DADiskUnmountOptions)options, DiskUnmountCallback, self);
 }
 
 - (void)eject
 {
-	NSAssert1(self.isEjectable, @"Disk is not ejectable: %@", self);
+	if (disk == NULL || !self.isEjectable) {
+		Log(LOG_ERR, @"Not ejecting %@ (attached=%d ejectable=%d)", BSDName, disk != NULL, self.isEjectable);
+		return;
+	}
 	
 	DADiskEject((DADiskRef) disk, kDADiskEjectOptionDefault, DiskEjectCallback, [self retain]); // self is released in DiskEjectCallback
 }
@@ -205,6 +238,8 @@
 	[children removeAllObjects];
 	
 	self.rejectedMount = NO;
+	self.allowNextMount = NO;
+	self.isMounting = NO;
 	self.mountArgs = [NSArray array];
 	self.mountPath = nil;
 }
@@ -297,61 +332,92 @@
 	return retval;
 }
 
+- (NSInteger)currentAuditMountState
+{
+	if (!self.isMounted)
+		return DAAuditMountUnmounted;
+	return self.isFileSystemWritable ? DAAuditMountReadWrite : DAAuditMountReadOnly;
+}
+
+- (void)recordAuditMountTransition
+{
+	NSInteger current = [self currentAuditMountState];
+	if (!auditStateKnown) {
+		auditMountState = current;
+		auditStateKnown = YES;
+		return;
+	}
+	if (current == auditMountState)
+		return;
+
+	NSInteger previous = auditMountState;
+	auditMountState = current;
+
+	if (previous != DAAuditMountUnmounted && current == DAAuditMountUnmounted) {
+		[[AuditLog sharedLog] recordEvent:DAAuditEventUnmounted disk:self action:@"unmounted" message:nil];
+		return;
+	}
+	if (previous == DAAuditMountUnmounted && current != DAAuditMountUnmounted) {
+		// The app controller unmounts this case and records the error itself.
+		if ([self.mountArgs containsObject:@"rdonly"] && self.isFileSystemWritable)
+			return;
+		if (current == DAAuditMountReadOnly)
+			[[AuditLog sharedLog] recordEvent:DAAuditEventMountedReadOnly disk:self action:@"mounted_read_only" message:nil];
+		else
+			[[AuditLog sharedLog] recordEvent:DAAuditEventMountedReadWrite disk:self action:@"mounted_read_write" message:nil];
+	}
+}
+
+- (void)recordAuditUnmountIfMounted
+{
+	if (!auditStateKnown || auditMountState == DAAuditMountUnmounted)
+		return;
+	auditMountState = DAAuditMountUnmounted;
+	[[AuditLog sharedLog] recordEvent:DAAuditEventUnmounted disk:self action:@"unmounted" message:nil];
+}
+
 - (void)setDiskDescription:(NSDictionary *)desc
 {
 	NSAssert(desc, @"A NULL disk description is not allowed.");
-	
-	if (desc != _diskDescription)
-	{
+
+	if (desc != _diskDescription) {
 		[self willChangeValueForKey:@"diskDescription"];
 
 		SafeCFRelease(_diskDescription);
 		_diskDescription = desc ? [desc retain] : nil;
+		[icon release];
+		icon = nil;
 
 		[self didChangeValueForKey:@"diskDescription"];
+		[self recordAuditMountTransition];
 	}
 }
 
 - (NSImage *)icon
 {
-	if (!icon)
-	{
-		if (self.diskDescription)
-		{
-			CFDictionaryRef iconRef = (CFDictionaryRef)[self.diskDescription
-				objectForKey:(NSString *)kDADiskDescriptionMediaIconKey];
-			if (iconRef)
-			{
+	if (icon)
+		return icon;
 
-				CFStringRef identifier = CFDictionaryGetValue(iconRef, CFSTR("CFBundleIdentifier"));
-				NSURL *url = [(NSURL *)KextManagerCreateURLForBundleIdentifier(kCFAllocatorDefault, identifier) autorelease];
-				if (url) {
-					NSString *bundlePath = [url path];
+	NSDictionary *description = self.diskDescription;
+	if (!description)
+		return nil;
 
-					NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
-					if (bundle) {
-						NSString *filename = (NSString *) CFDictionaryGetValue(iconRef, CFSTR("IOBundleResourceFile"));
-						NSString *basename = [filename stringByDeletingPathExtension];
-						NSString *fileext =  [filename pathExtension];
-
-						NSString *path = [bundle pathForResource:basename ofType:fileext];
-						if (path) {
-							icon = [[NSImage alloc] initWithContentsOfFile:path];
-						}
-					}
-					else {
-						Log(LOG_WARNING, @"Failed to load bundle with URL: %@", [url absoluteString]);
-						CFShow(self.diskDescription);
-					}
-				}
-				else {
-					Log(LOG_WARNING, @"Failed to create URL for bundle identifier: %@", (NSString *)identifier);
-					CFShow(self.diskDescription);
-				}
-			}
+	// KextManagerCreateURLForBundleIdentifier no longer finds media icons: on current macOS those
+	// kexts live in the kernel collection. Finder's volume icon is the supported replacement.
+	id volumePath = [description objectForKey:(NSString *)kDADiskDescriptionVolumePathKey];
+	if ([volumePath isKindOfClass:[NSURL class]]) {
+		NSImage *volumeIcon = [[NSWorkspace sharedWorkspace] iconForFile:[(NSURL *)volumePath path]];
+		if (volumeIcon) {
+			icon = [volumeIcon retain];
+			return icon;
 		}
 	}
-	
+
+	UTType *volumeType = [UTType typeWithIdentifier:@"public.volume"];
+	NSImage *generic = volumeType ? [[NSWorkspace sharedWorkspace] iconForContentType:volumeType] : nil;
+	if (!generic)
+		generic = [NSImage imageNamed:NSImageNameFolder];
+	icon = [generic retain];
 	return icon;
 }
 
